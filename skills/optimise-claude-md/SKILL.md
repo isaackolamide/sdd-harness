@@ -11,11 +11,27 @@ Audits and improves CLAUDE.md files using the `claude-md-management` quality rub
 
 ## Phase 1 — Discovery
 
+**Step 1a — Confirm scope.** Ask the user which directory to treat as the project root (default: cwd). This prevents accidentally scanning sibling projects or unrelated workspaces in a monorepo. Confirm before running any `find` commands.
+
+**Step 1b — Find existing CLAUDE.md / AGENTS.md files:**
+
 ```bash
-find . -name "CLAUDE.md" -o -name "AGENTS.md" 2>/dev/null | grep -v node_modules | grep -v .git
+find <root> -name "CLAUDE.md" -o -name "AGENTS.md" 2>/dev/null | grep -v node_modules | grep -v .git
 ```
 
 Read each file completely before continuing.
+
+**Step 1c — Identify major subdirectories.** A subdirectory is "major" if it contains any of:
+- A manifest file: `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`, `pom.xml`, `build.gradle`
+- A test directory (`__tests__`, `test/`, `spec/`, `tests/`) or CI config (`.github/workflows/`, `Jenkinsfile`, `.circleci/`)
+- Conventional monorepo structure paths at depth 1-2: `apps/*/`, `packages/*/`, `services/*/`, `libs/*/`, `modules/*/`
+
+```bash
+# Find subdirs with manifest files (depth 1-3, exclude root)
+find <root> -mindepth 2 -maxdepth 4 \( -name "package.json" -o -name "go.mod" -o -name "Cargo.toml" -o -name "pyproject.toml" -o -name "pom.xml" -o -name "build.gradle" \) 2>/dev/null | grep -v node_modules | grep -v .git | xargs -I{} dirname {} | sort -u
+```
+
+For each major subdirectory found, note whether a CLAUDE.md already exists there.
 
 ## Phase 2 — Base Audit
 
@@ -63,6 +79,8 @@ Flag content that belongs in another layer of the harness:
 
 If the file exceeds 80 lines, check whether it's covering concerns from multiple modules. Flag sections that belong in a module-level CLAUDE.md closer to the relevant code. The root file should route, not dump.
 
+See the **Subdirectory Coverage** section of the Phase 6 report for directories that may warrant their own CLAUDE.md.
+
 ## Phase 4 — Anchoring Check
 
 Scan for:
@@ -97,6 +115,16 @@ Output before making any changes:
 
 ### Codebase Smells
 - [Root causes worth fixing so the line stays gone]
+
+### Subdirectory Coverage
+| Directory | Has CLAUDE.md | Significance Signal |
+|-----------|---------------|---------------------|
+| [path] | ✓ / ✗ | package.json / go.mod / Dockerfile / etc. |
+
+**Gaps:** [list uncovered dirs, or "none — all major subdirs have CLAUDE.md"]
+
+If gaps exist: consider adding CLAUDE.md to uncovered directories.
+Use `claude-md-management:claude-md-improver` on each to scaffold a minimal, module-scoped file.
 ```
 
 ## Phase 7 — Apply With Approval

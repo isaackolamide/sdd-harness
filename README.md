@@ -10,7 +10,7 @@ harnesspowers is a Claude Code plugin that provides the **SDD (Spec-Driven Devel
 spec → plan → implement → review
 ```
 
-It owns no primitive skills itself. It delegates everything to `agent-skills` (engineering primitives) and `superpowers` (core disciplines).
+It owns no primitive skills itself. It delegates to four companion plugins: `agent-skills` (engineering primitives), `superpowers` (core disciplines), `frontend-design` (UI/design direction), and `claude-md-management` (CLAUDE.md tooling).
 
 ## Plugin Stack
 
@@ -19,6 +19,8 @@ harnesspowers (orchestrator)      — 7 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, debugging, brainstorming
+frontend-design (UI/design)       — design direction, frontend quality
+claude-md-management (tooling)    — CLAUDE.md audit and improvement
 ```
 
 ## Skills
@@ -40,8 +42,14 @@ superpowers (discipline)          — TDD, debugging, brainstorming
 Install the companion plugins first:
 
 ```
+# From addyosmani/agent-skills (custom repo)
 /plugin marketplace add addy-agent-skills github:addyosmani/agent-skills
 /plugin install agent-skills@addy-agent-skills
+
+# From the official Claude plugin marketplace
+/plugin install superpowers
+/plugin install frontend-design
+/plugin install claude-md-management
 ```
 
 ### Install harnesspowers

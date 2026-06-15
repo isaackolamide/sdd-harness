@@ -1,15 +1,17 @@
 # Harnesspowers v2
 
-SDD workflow orchestrator for Claude Code. Thin orchestration layer that composes `agent-skills`, `superpowers`, and `claude-md-management` into end-to-end development workflows.
+SDD workflow orchestrator for Claude Code. Thin orchestration layer that composes `agent-skills`, `superpowers`, `frontend-design`, and `claude-md-management` into end-to-end development workflows.
 
 ## Architecture
 
-Three-plugin stack:
+Four-plugin dependency stack:
 - **harnesspowers** — 7 SDD workflow skills + unified routing tree (this plugin)
-- **agent-skills** — 24 engineering primitive skills (installed separately from `addyosmani/agent-skills`)
-- **superpowers** — Core disciplines: TDD, debugging, brainstorming
+- **agent-skills** — 24 engineering primitive skills (from `addyosmani/agent-skills`)
+- **superpowers** — Core disciplines: TDD, debugging, brainstorming (from `claude-plugins-official`)
+- **frontend-design** — Design direction + frontend UI engineering (from `claude-plugins-official`)
+- **claude-md-management** — CLAUDE.md audit and improvement (from `claude-plugins-official`)
 
-harnesspowers delegates to the other two. It owns no copies of their skills.
+harnesspowers delegates to the other four. It owns no copies of their skills.
 
 ## Skills
 

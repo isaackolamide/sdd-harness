@@ -1,6 +1,6 @@
 {
   "name": "harnesspowers",
-  "description": "SDD workflow orchestrator — unified routing across agent-skills and superpowers for the full development lifecycle",
+  "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
   "version": "2.0.0",
   "author": {
     "name": "Isaac"
@@ -30,6 +30,9 @@
     },
     "claude-md-management@claude-plugins-official": {
       "skills": ["claude-md-improver"]
+    },
+    "frontend-design@claude-plugins-official": {
+      "skills": ["frontend-design"]
     }
   }
 }

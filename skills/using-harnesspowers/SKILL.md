@@ -1,13 +1,13 @@
 ---
 name: using-harnesspowers
-description: Unified skill router across harnesspowers, agent-skills, and superpowers. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
+description: Unified skill router across harnesspowers, agent-skills, superpowers, frontend-design, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
 ---
 
 # Using Harnesspowers — Unified Skill Router
 
 ## Authority
 
-This routing tree is **authoritative for this environment**. If you also see a routing tree from `agent-skills:using-agent-skills`, defer to this one. This tree covers all skills from all three plugins in this stack.
+This routing tree is **authoritative for this environment**. If you also see a routing tree from `agent-skills:using-agent-skills`, defer to this one. This tree covers all skills from all plugins in this stack.
 
 ## Skill Discovery
 
@@ -118,5 +118,7 @@ Every skill includes a verification step. A task is not complete until verificat
 | **harnesspowers** | SDD workflow orchestration — wraps primitives into opinionated workflows |
 | **agent-skills** | Engineering primitives — implementation, review, CI/CD, observability, etc. |
 | **superpowers** | Core disciplines — brainstorming, TDD, systematic debugging, writing plans |
+| **frontend-design** | Design direction and frontend UI engineering quality |
+| **claude-md-management** | CLAUDE.md audit and improvement tooling |
 
 Use harnesspowers wrapper skills (sdd-write-spec, sdd-plan-feature, sdd-implement-plan) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.
