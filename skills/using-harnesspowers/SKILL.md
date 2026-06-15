@@ -30,7 +30,10 @@ Task arrives
     │
     ├── Implementing code (no plan)?             → agent-skills:incremental-implementation
     │   ├── Designing APIs or interfaces?        → agent-skills:api-and-interface-design
-    │   ├── Building frontend / UI?              → agent-skills:frontend-ui-engineering
+    │   ├── Building frontend / UI?
+    │   │   ├── Visual design / creative direction? → frontend-design:frontend-design
+    │   │   ├── Engineering quality (a11y, patterns, state)? → agent-skills:frontend-ui-engineering
+    │   │   └── Full frontend work?              → both in sequence (design → engineering)
     │   ├── Working from documentation?          → agent-skills:source-driven-development
     │   └── Following a spec file?               → agent-skills:spec-driven-development
     │
@@ -48,6 +51,8 @@ Task arrives
     ├── CI/CD pipeline work?                     → agent-skills:ci-cd-and-automation
     ├── Adding logs/metrics/alerts?              → agent-skills:observability-and-instrumentation
     ├── Writing docs or ADRs?                    → agent-skills:documentation-and-adrs
+    │                                               (also auto-triggered inside sdd-plan-feature for arch decisions
+    │                                                and inside sdd-implement-plan for API/interface slices + completion)
     ├── Deprecating or migrating systems?        → agent-skills:deprecation-and-migration
     ├── Shipping / preparing for launch?         → agent-skills:shipping-and-launch
     ├── Git workflow (branching, commits, PRs)?  → agent-skills:git-workflow-and-versioning

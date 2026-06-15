@@ -36,6 +36,8 @@ Trigger `agent-skills:planning-and-task-breakdown` with the confirmed feature de
 
 Do not proceed to 4b until the task order, sizing, and checkpoints are confirmed.
 
+**ADR trigger:** When `requirements.md` records a significant architectural or technology choice (framework selection, data model, auth strategy, API architecture, or any decision that would be expensive to reverse), invoke `agent-skills:documentation-and-adrs` to write an ADR alongside the plan files. Do not apply this to every decision — only to choices where the rationale and rejected alternatives have future value.
+
 ### Step 4b: Run Writing-Plans
 Trigger `superpowers:writing-plans` on the structured task list from 4a. This pass fills in executable detail for each task:
 - Actual code for every step

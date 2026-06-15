@@ -44,6 +44,18 @@ Do not ask again during execution.
 
 For each unchecked task in `plan.md`, in order:
 
+**0. CLASSIFY**
+
+Read the task name and description from `plan.md`. Match against these keyword groups and invoke matching domain skills *before* coding:
+
+| Keywords in task name/description | Invoke (in order) |
+|-----------------------------------|-------------------|
+| `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` | `frontend-design:frontend-design` → `agent-skills:frontend-ui-engineering` |
+| `API`, `endpoint`, `schema`, `interface`, `contract`, `route` | `agent-skills:api-and-interface-design` → if a significant choice between alternatives is present, also `agent-skills:documentation-and-adrs` (write ADR before coding) |
+| anything else | no domain skill |
+
+Ambiguous slices default to no domain skill — bias toward fewer invocations.
+
 **1. ANNOUNCE**
 
 > "Starting slice N of M: [task name from plan.md]"
@@ -66,6 +78,8 @@ Follow Red-Green-Refactor strictly:
 - Write minimal code to pass the test
 - Run it — verify it passes and no other tests break
 - Refactor only after green
+
+For framework-specific test patterns, structure conventions, and anti-patterns relevant to this project's test stack, consult `agent-skills:test-driven-development`'s `references/testing-patterns.md`.
 
 **Failure rule:** If a RED test will not go green after a reasonable attempt, block regardless of mode. Surface the problem to the user. Never skip a failing test to preserve momentum.
 
@@ -103,7 +117,12 @@ When all checkboxes in `plan.md` are ticked:
 2. Walk through each criterion:
    > "Are all acceptance criteria above met? Any manual checks still outstanding?"
 3. If any criteria are unmet, surface exactly which ones and do not proceed
-4. When all confirmed:
+4. Documentation check — before handing off, confirm:
+   - ADRs written for any significant decisions made during this feature?
+   - README updated if user-facing behaviour changed?
+   - Changelog entry for user-facing changes?
+   - API docs / type definitions current?
+5. When all confirmed:
    > "Implementation complete and validated. Next step: `/i-need-code-review`"
 
 Do **not** auto-invoke `/i-need-code-review`. The user triggers it explicitly.
