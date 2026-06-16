@@ -37,51 +37,43 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 
 ## Installation
 
-### Prerequisites
-
-Install the companion plugins first:
-
-```bash
-# From addyosmani/agent-skills (custom repo)
-/plugin marketplace add addy-agent-skills github:addyosmani/agent-skills
-/plugin install agent-skills@addy-agent-skills
-
-# From the official Claude plugin marketplace
-/plugin install superpowers
-/plugin install frontend-design
-/plugin install claude-md-management
-```
-
----
-
 ### Platform Integration Guides
 
 #### 1. Claude Code
-**Local development (symlink):**
-```bash
-# Clone the repo
-git clone https://github.com/isaackolamide/harnesspowers <path-to-harnesspowers>
 
-# Symlink into plugin cache
-mkdir -p ~/.claude/plugins/cache/isaac-harnesspowers/harnesspowers
-ln -sf <path-to-harnesspowers> ~/.claude/plugins/cache/isaac-harnesspowers/harnesspowers/2.0.0
+```bash
+# Register marketplaces for harnesspowers and its agent-skills dependency
+claude plugin marketplace add https://github.com/isaackolamide/harnesspowers.git
+claude plugin marketplace add https://github.com/addyosmani/agent-skills.git
+
+# Install companion plugins
+claude plugin install superpowers@claude-plugins-official
+claude plugin install frontend-design@claude-plugins-official
+claude plugin install claude-md-management@claude-plugins-official
+claude plugin install agent-skills@addy-agent-skills
+
+# Install harnesspowers
+claude plugin install harnesspowers@isaac-harnesspowers
 ```
-Then add the plugin to `~/.claude/plugins/installed_plugins.json` and enable it in `~/.claude/settings.json`.
+
+Restart Claude Code after installation to apply changes.
+
+**Updating harnesspowers:**
+```bash
+claude plugin update harnesspowers@isaac-harnesspowers
+```
 
 #### 2. Antigravity CLI / IDE
 Antigravity automatically discovers and loads plugins from the `~/.gemini/config/plugins` directory.
 
-**Local development (symlink):**
 ```bash
 # Clone the repo
 git clone https://github.com/isaackolamide/harnesspowers <path-to-harnesspowers>
 
 # Symlink into Antigravity plugins directory
 ln -sf <path-to-harnesspowers> ~/.gemini/config/plugins/harnesspowers
-
-# Ensure plugin.json is linked to the root of harnesspowers
-ln -sf .claude-plugin/plugin.json <path-to-harnesspowers>/plugin.json
 ```
+
 Restart your Antigravity session to discover and enable the skills.
 
 #### 3. GitHub Copilot
