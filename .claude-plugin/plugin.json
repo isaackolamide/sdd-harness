@@ -26,7 +26,7 @@
       ]
     },
     "superpowers@claude-plugins-official": {
-      "skills": ["brainstorming", "writing-plans", "test-driven-development"]
+      "skills": ["brainstorming", "writing-plans", "test-driven-development", "subagent-driven-development"]
     },
     "claude-md-management@claude-plugins-official": {
       "skills": ["claude-md-improver"]

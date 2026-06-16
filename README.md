@@ -18,7 +18,7 @@ It owns no primitive skills itself. It delegates to four companion plugins: `age
 harnesspowers (orchestrator)      — 7 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
-superpowers (discipline)          — TDD, debugging, brainstorming
+superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
 frontend-design (UI/design)       — design direction, frontend quality
 claude-md-management (tooling)    — CLAUDE.md audit and improvement
 ```
