@@ -9,8 +9,9 @@
   "repository": "https://github.com/isaackolamide/harnesspowers",
   "license": "MIT",
   "skills": "./skills",
-  "dependencies": {
-    "agent-skills@addy-agent-skills": {
+  "dependencies": [
+    {
+      "plugin": "agent-skills@addy-agent-skills",
       "skills": [
         "incremental-implementation",
         "interview-me",
@@ -25,14 +26,17 @@
         "planning-and-task-breakdown"
       ]
     },
-    "superpowers@claude-plugins-official": {
+    {
+      "plugin": "superpowers@claude-plugins-official",
       "skills": ["brainstorming", "writing-plans", "test-driven-development", "subagent-driven-development"]
     },
-    "claude-md-management@claude-plugins-official": {
+    {
+      "plugin": "claude-md-management@claude-plugins-official",
       "skills": ["claude-md-improver"]
     },
-    "frontend-design@claude-plugins-official": {
+    {
+      "plugin": "frontend-design@claude-plugins-official",
       "skills": ["frontend-design"]
     }
-  }
+  ]
 }

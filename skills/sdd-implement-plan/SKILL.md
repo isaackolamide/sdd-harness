@@ -37,7 +37,7 @@ Read all three files before any code is touched:
 Before starting any slice, ask once using AskUserQuestion:
 
 > "How should slices be executed?
->   - **Subagent-driven** *(recommended for ≥4 slices or production features)* — fresh subagent per slice + spec compliance review + code quality review per slice. Continuous only. Best for preserving context over long plans.
+>   - **Subagent-driven** *(recommended for ≥4 slices or production features)* — fresh subagent per slice + task review (spec + quality) per slice. Continuous only. Best for preserving context over long plans.
 >   - **Autonomous** — current session executes each slice inline, no pauses. Best for small plans or prototypes.
 >   - **Checkpoint** — current session executes each slice inline, pauses after each slice for confirmation."
 
@@ -73,35 +73,33 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 
 #### Subagent-Driven Mode
 
-Follow `superpowers:subagent-driven-development` discipline for this slice.
+Follow `superpowers:subagent-driven-development` for this slice. The steps below specify only what sdd-implement-plan adds on top — the primitive owns the general dispatch process, file handoffs, progress ledger, and model selection.
 
-**2. DISPATCH implementer subagent**
+**2. SDD ADDITIONS — implementer brief**
 
-Build the implementer prompt with all necessary context — the subagent must not need to read spec files:
-- Full task text from `plan.md`
-- Relevant constraints from `requirements.md`
+When the primitive builds the implementer brief, also include:
 - CLASSIFY result: "This is a [frontend/API/general] slice. Invoke [domain skill names] before coding."
-- If ADR written: "ADR at [path]. Use as implementation context."
+- Relevant constraints from `requirements.md` (only what binds this slice)
+- If ADR written: ADR path as implementation context
 - Disciplines required: `agent-skills:incremental-implementation` + `superpowers:test-driven-development` (Red-Green-Refactor)
-- Instruction: tick `plan.md` `[ ]` → `[x]` and commit atomically with slice code when done
+- Instruction: commit code changes only — do not touch `plan.md`
 
-The subagent reports status: DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED.
+**3. SDD ADDITIONS — task reviewer dispatch**
 
-Status handling:
-- DONE → proceed to spec compliance review
-- DONE_WITH_CONCERNS → address if correctness/scope issue; note and proceed if observational
-- NEEDS_CONTEXT → provide missing context and re-dispatch
-- BLOCKED → assess: re-dispatch with context, escalate model, break down task, or surface to user
+When the primitive dispatches the task reviewer, also include:
+- Full `requirements.md` — the spec compliance verdict requires the actual spec
+- Relevant constraints from `requirements.md` for this slice
 
-**3. SPEC COMPLIANCE REVIEW**
+**4. TICK + COMMIT (controller)**
 
-Dispatch spec reviewer subagent with: slice task text, full `requirements.md`, git diff of the slice commit. Confirms all requirements met, nothing extra built. Loop until pass.
+After the task review passes, the controller ticks `plan.md` and commits it alone:
 
-Never start code quality review before spec compliance passes.
+```bash
+git add specs/[feature-dir]/plan.md
+git commit -m "✓ [task name] reviewed"
+```
 
-**4. CODE QUALITY REVIEW**
-
-Dispatch code quality reviewer subagent with the git diff. Loop until pass.
+`[x]` means the same thing in all three modes: code committed and review cleared.
 
 **5. NEXT SLICE**
 
@@ -190,6 +188,7 @@ When all checkboxes in `plan.md` are ticked:
 - Never proceed past `validation.md` if any criterion is unmet
 - **Inline mode**: orchestrator invokes domain skills directly and commits tick atomically with code
 - **Inline mode**: orchestrator invokes `superpowers:test-driven-development` directly — never delegate TDD to a subagent
-- **Subagent-driven mode**: CLASSIFY and any ADR decisions must complete before the implementer subagent is dispatched
+- **Subagent-driven mode**: `superpowers:subagent-driven-development` is the authority for the general dispatch process — this skill's subagent steps are additions only, never re-statements of the primitive's steps
+- **Subagent-driven mode**: CLASSIFY and any ADR decisions must complete before the implementer is dispatched
 - **Subagent-driven mode**: never invoke `superpowers:test-driven-development` at the controller level — TDD is the subagent's responsibility
-- **Subagent-driven mode**: spec compliance must pass before code quality review begins
+- **Subagent-driven mode**: the implementer commits code only — the controller ticks `plan.md` and commits it after the task review passes

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "isaac-harnesspowers",
+  "description": "SDD workflow orchestrator for Claude Code — harnesspowers by Isaac Kolamide",
+  "owner": {
+    "name": "Isaac Kolamide",
+    "url": "https://github.com/isaackolamide"
+  },
+  "plugins": [
+    {
+      "name": "harnesspowers",
+      "source": {
+        "source": "github",
+        "repo": "isaackolamide/harnesspowers"
+      },
+      "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
+      "homepage": "https://github.com/isaackolamide/harnesspowers",
+      "license": "MIT",
+      "keywords": ["sdd", "workflow", "orchestration", "skills", "agents"]
+    }
+  ]
+}
