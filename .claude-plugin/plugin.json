@@ -10,33 +10,9 @@
   "license": "MIT",
   "skills": "./skills",
   "dependencies": [
-    {
-      "plugin": "agent-skills@addy-agent-skills",
-      "skills": [
-        "incremental-implementation",
-        "interview-me",
-        "idea-refine",
-        "api-and-interface-design",
-        "code-review-and-quality",
-        "security-and-hardening",
-        "ci-cd-and-automation",
-        "observability-and-instrumentation",
-        "documentation-and-adrs",
-        "deprecation-and-migration",
-        "planning-and-task-breakdown"
-      ]
-    },
-    {
-      "plugin": "superpowers@claude-plugins-official",
-      "skills": ["brainstorming", "writing-plans", "test-driven-development", "subagent-driven-development"]
-    },
-    {
-      "plugin": "claude-md-management@claude-plugins-official",
-      "skills": ["claude-md-improver"]
-    },
-    {
-      "plugin": "frontend-design@claude-plugins-official",
-      "skills": ["frontend-design"]
-    }
+    "agent-skills@addy-agent-skills",
+    "superpowers@claude-plugins-official",
+    "claude-md-management@claude-plugins-official",
+    "frontend-design@claude-plugins-official"
   ]
 }
