@@ -78,7 +78,6 @@ Invoked only when one or more core fields are missing.
 **Instructions for invocation:**
 - Frame questions around what the seed and project context could NOT answer — never re-ask covered ground
 - Use the project context block from Step 1 to make informed guesses (attach them to each question per interview-me protocol)
-- Follow interview-me's full protocol: hypothesis with confidence, one question at a time, guess attached, listen for "want vs. should want"
 
 **Stop condition:** interview-me's native stop — can predict the user's reaction to the next three questions, and all four core fields are filled.
 
@@ -113,12 +112,6 @@ Trigger `agent-skills:planning-and-task-breakdown` with:
 - Constraints and out-of-scope from Steps 2/2b
 - Any referenced files read during Pre-Step 0
 
-This pass establishes:
-- Dependency graph (what must be built before what)
-- Vertical slices (each task delivers working software, not just a layer)
-- Task sizing (break down anything XL before continuing)
-- Checkpoint placement between phases
-
 **User confirmation gate:** Do not proceed to Step 4b until the task order, sizing, and checkpoints are confirmed.
 
 **ADR trigger:** When decomposition surfaces a significant architectural or technology choice (framework selection, data model, auth strategy, API architecture, or any decision expensive to reverse):
@@ -130,14 +123,7 @@ Apply the ADR trigger only to choices where the rationale and rejected alternati
 
 ### Step 4b: Run Writing-Plans
 
-Trigger `superpowers:writing-plans` on the structured task list from Step 4a, using project context from Step 1 as background.
-
-This pass fills in executable detail for each task:
-- Actual code for every step
-- Exact commands with expected output
-- TDD steps (write failing test → run → implement → run → commit)
-
-Let writing-plans drive the per-task detail — do not hand-write steps. The output location for this skill is `specs/YYYY-MM-DD-{feature-name}/plan.md` (not writing-plans' default `docs/superpowers/plans/`).
+Trigger `superpowers:writing-plans` on the structured task list from Step 4a, using project context from Step 1 as background. Output location: `specs/YYYY-MM-DD-{feature-name}/plan.md` (not writing-plans' default `docs/superpowers/plans/`).
 
 ### Step 5: Pre-Write Review
 
@@ -187,22 +173,7 @@ specs/
 
 ### plan.md
 
-Structured output from writing-plans, reformatted into task groups:
-
-```markdown
-# Feature Plan: {feature-name}
-
-## Group 1: {Group Name}
-1. [ ] Task
-2. [ ] Task
-
-## Group 2: {Group Name}
-1. [ ] Task
-2. [ ] Task
-
-## Group N: {Group Name}
-1. [ ] Task
-```
+Executable implementation plan produced by `superpowers:writing-plans`. Format is owned by that skill — do not reformat or simplify the output.
 
 ### requirements.md
 
@@ -278,20 +249,15 @@ When you invoke `/sdd-plan-feature`:
 8. Trigger `agent-skills:planning-and-task-breakdown` — dependency graph, vertical slices, task sizing, checkpoints
 9. If a significant architectural decision surfaces: invoke `agent-skills:documentation-and-adrs` → save to `docs/decisions/ADR-{NNN}-{title}.md`; cross-reference in requirements.md
 10. Confirm task order and sizing with user before continuing
-11. Trigger `superpowers:writing-plans` on the structured task list — fill in code, commands, TDD steps
+11. Trigger `superpowers:writing-plans` on the structured task list — output to `specs/YYYY-MM-DD-{feature-name}/plan.md`
 12. Present pre-write summary of all three files — ask focused probe; resolve concerns before writing
 13. Create `specs/YYYY-MM-DD-{feature-name}/` directory and write plan.md, requirements.md, and validation.md
 
 ## Key Points
 
-- Seed input short-circuits the workflow — never re-ask things already answered by the user's prompt, a referenced file, or conversation context
-- Context gathering (mission.md, tech-stack.md, roadmap.md) happens **before** any user questions — come to the interview informed, not blank
-- Roadmap.md is **one** valid input source, not the mandated starting point — features can originate from prompts, files, or conversation context
 - Minimum viable fields check (Who/Why/Success/Constraint + Dependencies) gates interview-me — only invoke the deep interview when fields are genuinely missing
-- Branch strategy is **not** asked here — it belongs to implementation time (`sdd-implement-plan` or `agent-skills:git-workflow-and-versioning`)
 - Two-pass planning: breakdown first (order + sizing), writing-plans second (executable detail) — never skip the breakdown pass
 - ADRs are project-level artifacts saved to `docs/decisions/` with sequential numbering — not in the feature directory
 - Pre-write review probes for gaps with a structured summary and a focused probe question before committing files to disk
-- plan.md combines structure from planning-and-task-breakdown with executable steps from writing-plans
 - requirements.md makes out-of-scope explicit, not just in-scope
 - validation.md defines "done" before implementation starts — not after
