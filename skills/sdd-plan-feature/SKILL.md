@@ -129,7 +129,7 @@ Apply the ADR trigger only to choices where the rationale and rejected alternati
 
 ### Step 4b: Run Writing-Plans
 
-Trigger `superpowers:writing-plans` using `specs/plans/YYYY-MM-DD-{feature-name}/breakdown.md` as the task source. If Step 4a's output is not in context (e.g., after compaction or session restart), read that file before triggering. Use project context from Step 1 as background. Its output becomes plan.md.
+Trigger `superpowers:writing-plans` using `specs/plans/YYYY-MM-DD-{feature-name}/breakdown.md` as the task source. If Step 4a's output is not in context (e.g., after compaction or session restart), read that file before triggering. Use project context from Step 1 as background. Its output becomes plan.md. Before writing, strip the `**For agentic workers:**` routing line from the top if present — execution routing is handled by `sdd-implement-plan`.
 
 Output location: `specs/plans/YYYY-MM-DD-{feature-name}/plan.md` (not writing-plans' default `docs/superpowers/plans/`).
 
@@ -183,7 +183,7 @@ specs/plans/
 
 ### plan.md
 
-Executable implementation plan produced by `superpowers:writing-plans`. Format is owned by that skill — do not reformat or simplify the output.
+Executable implementation plan produced by `superpowers:writing-plans`. Format is owned by that skill — do not reformat or simplify the output. Exception: strip the `**For agentic workers:**` routing line from the top if present.
 
 ### requirements.md
 
