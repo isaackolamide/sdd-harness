@@ -88,8 +88,7 @@ This catalog is the authoritative reference for all installed skills. Update it 
 | `/using-harnesspowers` | Authoritative routing tree for all three plugins — routes any development task to the right skill | Starting a session, want routing across all plugins |
 | `/sdd-write-spec` | Creates SDD constitution: mission.md, tech-stack.md, roadmap.md — new or existing project | Starting any initiative that needs a spec, greenfield or brownfield |
 | `/sdd-plan-feature` | Plans a feature — outputs plan.md, requirements.md, validation.md | Have an SDD constitution, planning the next feature |
-| `/sdd-implement-plan` | Executes a feature plan — 3-way mode (subagent-driven with per-slice review; autonomous inline; checkpoint inline), domain-aware dispatch, TDD enforced | Have a plan.md, ready to implement |
-| `/i-need-code-review` | Context-aware review router — recommends the right review tool | Want any kind of code review, not sure which type |
+| `/sdd-implement-plan` | Executes a feature plan — 3-way mode (subagent-driven with per-slice review; autonomous inline; checkpoint inline), domain-aware dispatch, TDD enforced, validation gate | Have a plan.md, ready to implement |
 | `/optimise-claude-md` | Audits and improves CLAUDE.md files using agent-skills lens | Onboarding to a project, improving agent context quality |
 
 ---

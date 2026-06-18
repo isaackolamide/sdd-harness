@@ -1,6 +1,6 @@
 ---
 name: sdd-implement-plan
-description: Execute a feature plan — 3-way mode (subagent-driven with per-slice review, autonomous inline, or checkpoint inline), domain-aware dispatch, TDD enforced, plan.md progress tracking, hands off to /i-need-code-review on completion
+description: Execute a feature plan — 3-way mode (subagent-driven with per-slice review, autonomous inline, or checkpoint inline), domain-aware dispatch, TDD enforced, plan.md progress tracking, validation gate, hands off to agent-skills:code-review-and-quality
 metadata:
   type: implementation
   composesWith: [superpowers:test-driven-development, superpowers:subagent-driven-development]
@@ -15,7 +15,7 @@ Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superp
 ```
 /sdd-write-spec      → specs/mission.md, tech-stack.md, roadmap.md
 /sdd-plan-feature    → specs/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
-/sdd-implement-plan  → commits per slice; plan.md checkboxes ticked per-slice (inline) or batched at end (subagent) → /i-need-code-review
+/sdd-implement-plan  → commits per slice; plan.md checkboxes ticked per-slice (inline) or batched at end (subagent); validation.md ticked at completion → agent-skills:code-review-and-quality
 ```
 
 ## Workflow
@@ -165,36 +165,55 @@ Autonomous mode: proceed immediately to the next slice.
 
 ### Step 5: All Slices Complete
 
-**Subagent-driven mode:** tick all checkboxes in `plan.md` and commit. If any task has no checkbox, insert `- [ ]` before ticking:
+#### 5a: Tick plan.md (subagent-driven mode only)
+
+Tick all checkboxes in `plan.md` and commit. If any task has no checkbox, insert `- [ ]` before ticking:
 
 ```bash
 git add specs/[feature-dir]/plan.md
 git commit -m "✓ all slices complete"
 ```
 
-Once all checkboxes in `plan.md` are ticked:
+#### 5b: Validation Gate
 
-1. Print the full contents of `validation.md`
-2. Walk through each criterion:
-   > "Are all acceptance criteria above met? Any manual checks still outstanding?"
-3. If any criteria are unmet, surface exactly which ones and do not proceed
-4. Documentation check — before handing off, confirm:
-   - ADRs written for any significant decisions made during this feature?
-   - README updated if user-facing behaviour changed?
-   - Changelog entry for user-facing changes?
-   - API docs / type definitions current?
-5. When all confirmed:
-   > "Implementation complete and validated. Run `/i-need-code-review` for a context-aware review recommendation."
+Print `validation.md` in full. Walk through each group in order:
+
+> "Group N — [group name]: go through each criterion — is it met?"
+
+For each criterion the user confirms met: tick it `[ ]` → `[x]` in `validation.md`.
+If any criterion is unmet: surface it and stop. Do not proceed until resolved.
+
+Once all criteria are ticked:
+
+```bash
+git add specs/[feature-dir]/validation.md
+git commit -m "✓ validation complete"
+```
+
+#### 5c: Documentation Check
+
+Before handing off, confirm:
+- ADRs written for any significant decisions made during this feature?
+- README updated if user-facing behaviour changed?
+- Changelog entry for user-facing changes?
+- API docs / type definitions current?
+
+#### 5d: Code Quality Review
+
+Invoke `agent-skills:code-review-and-quality` to review the full feature diff.
 
 ## Key Rules
 
 - Always read all three spec files before touching code
 - Always ask mode once — never mid-execution
 - Never skip a failing test regardless of mode
-- Never proceed past `validation.md` if any criterion is unmet
+- Never proceed past the validation gate (5b) if any criterion is unmet
+- `plan.md` checkboxes track implementation progress — ticked per-slice (inline) or batched at Step 5a (subagent-driven)
+- `validation.md` checkboxes track spec compliance — ticked during the validation gate (5b), never before
+- Final code quality review is `agent-skills:code-review-and-quality`
 - **Inline mode**: orchestrator invokes domain skills directly and commits tick atomically with code
 - **Inline mode**: orchestrator invokes `superpowers:test-driven-development` directly — never delegate TDD to a subagent
 - **Subagent-driven mode**: `superpowers:subagent-driven-development` is the authority for the general dispatch process — this skill's subagent steps are additions only, never re-statements of the primitive's steps
 - **Subagent-driven mode**: CLASSIFY and any ADR decisions must complete before the implementer is dispatched
 - **Subagent-driven mode**: never invoke `superpowers:test-driven-development` at the controller level — TDD is the subagent's responsibility
-- **Subagent-driven mode**: the implementer commits code only — the controller updates the progress ledger after each review; `plan.md` checkboxes are committed in a single batch at Step 5
+- **Subagent-driven mode**: the implementer commits code only — the controller updates the progress ledger after each review; `plan.md` checkboxes are committed in a single batch at Step 5a

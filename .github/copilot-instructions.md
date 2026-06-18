@@ -5,7 +5,7 @@ SDD workflow orchestrator plugin. Composes `agent-skills`, `superpowers`, `front
 ## Architecture
 
 Four-plugin dependency stack:
-- **harnesspowers** (this plugin) — 7 SDD workflow skills + unified routing tree
+- **harnesspowers** (this plugin) — 6 SDD workflow skills + unified routing tree
 - **agent-skills** — 24 engineering primitive skills
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming
 - **frontend-design** — Design direction + frontend UI engineering
@@ -18,8 +18,7 @@ harnesspowers delegates to the other four. It owns no copies of their skills.
 - `using-harnesspowers` — Authoritative routing tree across all plugins
 - `sdd-write-spec` — Creates specs: mission.md, tech-stack.md, roadmap.md
 - `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
-- `sdd-implement-plan` — Executes feature plan: subagent-driven (per-slice review) or inline (autonomous/checkpoint), domain-aware dispatch, TDD enforced
-- `i-need-code-review` — Context-aware review router
+- `sdd-implement-plan` — Executes feature plan: subagent-driven (per-slice review) or inline (autonomous/checkpoint), domain-aware dispatch, TDD enforced, validation gate, hands off to agent-skills:code-review-and-quality
 - `optimise-claude-md` — CLAUDE.md / AGENTS.md audit with discoverability lens
 - `suggest-skills` — Cross-plugin skill discovery
 

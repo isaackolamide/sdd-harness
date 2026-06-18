@@ -47,11 +47,10 @@ Task arrives
     ├── Something broke?                         → superpowers:systematic-debugging
     │   └── Need structured doubt-first analysis? → agent-skills:doubt-driven-development
     │
-    ├── Reviewing code?                          → harnesspowers:i-need-code-review (router)
-    │   ├── Five-axis review                     → agent-skills:code-review-and-quality
-    │   ├── Security-focused review              → agent-skills:security-and-hardening
-    │   ├── Code simplification                  → agent-skills:code-simplification
-    │   └── Browser/devtools testing             → agent-skills:browser-testing-with-devtools
+    ├── Reviewing code (quality/correctness)?    → agent-skills:code-review-and-quality
+    ├── Security-focused review?                 → agent-skills:security-and-hardening
+    ├── Simplifying code?                        → agent-skills:code-simplification
+    ├── Browser/devtools testing?                → agent-skills:browser-testing-with-devtools
     │
     ├── Performance work?                        → agent-skills:performance-optimization
     ├── CI/CD pipeline work?                     → agent-skills:ci-cd-and-automation
@@ -115,7 +114,7 @@ Every skill includes a verification step. A task is not complete until verificat
 
 1. **Check for an applicable skill before starting work.**
 2. **Skills are workflows, not suggestions.** Follow the steps in order.
-3. **Multiple skills can apply in sequence.** Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `harnesspowers:i-need-code-review`.
+3. **Multiple skills can apply in sequence.** Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `agent-skills:code-review-and-quality`.
 
 ## Plugin Stack Overview
 
