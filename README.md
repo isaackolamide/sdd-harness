@@ -53,14 +53,14 @@ claude plugin install claude-md-management@claude-plugins-official
 claude plugin install agent-skills@addy-agent-skills
 
 # Install harnesspowers
-claude plugin install harnesspowers@isaac-harnesspowers
+claude plugin install harnesspowers@harnesspowers
 ```
 
 Restart Claude Code after installation to apply changes.
 
 **Updating harnesspowers:**
 ```bash
-claude plugin update harnesspowers@isaac-harnesspowers
+claude plugin update harnesspowers@harnesspowers
 ```
 
 #### 2. Antigravity CLI / IDE
