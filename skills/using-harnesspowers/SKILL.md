@@ -34,6 +34,10 @@ Task arrives
     │                                               (wraps TDD + subagent-driven-development;
     │                                                3-way mode: subagent-driven, autonomous, or checkpoint)
     │
+    ├── Found bugs/missing features after        → harnesspowers:sdd-write-spec (feature spec mode)
+    │   manual testing post-implementation?         seed input: inline notes or path to findings file
+    │                                               then: sdd-plan-feature → sdd-implement-plan
+    │
     ├── Implementing code (no plan)?             → agent-skills:incremental-implementation
     │   ├── Designing APIs or interfaces?        → agent-skills:api-and-interface-design
     │   ├── Building frontend / UI?
@@ -114,7 +118,7 @@ Every skill includes a verification step. A task is not complete until verificat
 
 1. **Check for an applicable skill before starting work.**
 2. **Skills are workflows, not suggestions.** Follow the steps in order.
-3. **Multiple skills can apply in sequence.** Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `agent-skills:code-review-and-quality`.
+3. **Multiple skills can apply in sequence.** Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `agent-skills:code-review-and-quality` → *(post-impl findings)* → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan`.
 
 ## Plugin Stack Overview
 

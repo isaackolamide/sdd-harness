@@ -4,10 +4,12 @@
 
 ## What This Is
 
-harnesspowers is a Claude Code plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature:
+harnesspowers is a Claude Code plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature, with a built-in iteration loop for post-implementation findings:
 
 ```
 spec → plan → implement → review
+                              ↓
+                findings → spec → plan → implement
 ```
 
 It owns no primitive skills itself. It delegates to four companion plugins: `agent-skills` (engineering primitives), `superpowers` (core disciplines), `frontend-design` (UI/design direction), and `claude-md-management` (CLAUDE.md tooling).
@@ -128,6 +130,19 @@ You already know what to build and the codebase is familiar.
 /sdd-plan-feature    # Describe the feature directly → plan.md, requirements.md, validation.md
 /sdd-implement-plan
 ```
+
+### Found bugs or missing features after testing
+
+After manual testing reveals issues post-implementation, re-enter the workflow at `sdd-write-spec`. Describe your findings inline or point to a notes file — it interviews you to synthesize them into a scoped spec, then the standard plan → implement cycle runs.
+
+```text
+/sdd-write-spec      # Feature Spec Mode — findings as seed input (inline or --file path/to/notes.md)
+                     # Interviews you → sdd-specs/features/YYYY-MM-DD-{name}-spec.md
+/sdd-plan-feature    # Plan the fixes → plan.md, requirements.md, validation.md
+/sdd-implement-plan  # Implement with TDD
+```
+
+This keeps post-impl fixes inside the same spec/plan/implement discipline as new features — findings don't get patched ad-hoc, they go through the workflow.
 
 ### What each step produces
 
