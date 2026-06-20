@@ -15,7 +15,9 @@ Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superp
 ```
 /sdd-write-spec      → sdd-specs/mission.md, tech-stack.md, roadmap.md
 /sdd-plan-feature    → sdd-specs/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
-/sdd-implement-plan  → commits per slice; plan.md checkboxes ticked per-slice (inline) or batched at end (subagent); validation.md ticked at completion → agent-skills:code-review-and-quality
+/sdd-implement-plan  → commits per slice; plan.md ticked in Step 5e after all reviews pass (subagent-driven)
+                       or per-slice atomic with code (inline); validation.md ticked at Step 5b
+                       → agent-skills:code-review-and-quality → superpowers:finishing-a-development-branch
 ```
 
 ## Workflow
@@ -60,7 +62,7 @@ Read the task name and description from `plan.md`. Match against these keyword g
 Ambiguous slices default to no domain skill — bias toward fewer invocations.
 
 Mode-aware fork after classification:
-- **Inline mode**: invoke matching domain skills directly before coding (as step 2 if applicable)
+- **Inline mode**: invoke matching domain skills directly before coding
 - **Subagent-driven mode**: embed domain skill name(s) as text instructions in the implementer prompt — do not invoke directly. If an ADR is needed, write it at the controller level *before* dispatching the subagent, then pass the ADR path as context.
 
 **1. ANNOUNCE**
@@ -73,7 +75,9 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 
 #### Subagent-Driven Mode
 
-Follow `superpowers:subagent-driven-development` for this slice. The steps below specify only what sdd-implement-plan adds on top — the primitive owns the general dispatch process, file handoffs, progress ledger, and model selection.
+Follow `superpowers:subagent-driven-development` for this slice. The steps below specify only what sdd-implement-plan adds on top — the primitive owns the general dispatch process, file handoffs, and model selection.
+
+**Per-task reviewer note:** The primitive dispatches per-slice reviews using its own `task-reviewer-prompt.md` template, which checks both spec compliance and code quality — a richer check than `superpowers:requesting-code-review` alone (code quality only). The `agent-skills:code-reviewer` agent type being selected at runtime for these dispatches is expected and correct.
 
 **2. SDD ADDITIONS — implementer brief**
 
@@ -91,17 +95,13 @@ When the primitive dispatches the task reviewer, also include:
 
 **4. LEDGER UPDATE (controller)**
 
-After the task review passes, append one line to the progress ledger:
-
-```
-Task N: complete (commits <base7>..<head7>, review clean)
-```
-
-Do not touch `plan.md` here — checkboxes are updated in a single batch at Step 5 once all slices are complete.
+After the task review passes, update the progress ledger per the primitive's tracking protocol.
 
 **5. NEXT SLICE**
 
 Proceed immediately to the next unchecked/pending task. No checkpoint in subagent-driven mode.
+
+**When all slices are complete:** proceed directly to Step 5 below. Do not follow the primitive's own "finishing" sequence — this skill owns the post-execution sequence from here.
 
 ---
 
@@ -143,8 +143,7 @@ Using commands from `sdd-specs/mission.md` Quick Commands (if available), run in
 
 **6. TICK + COMMIT**
 
-If the task is represented with no checkbox, insert `- [ ]` as the first line under that heading before ticking.
-Update `plan.md`: mark the completed task `[ ]` → `[x]`
+Mark the completed task `[ ]` → `[x]` in `plan.md`.
 
 Commit slice code and updated `plan.md` together:
 
@@ -165,16 +164,17 @@ Autonomous mode: proceed immediately to the next slice.
 
 ### Step 5: All Slices Complete
 
-#### 5a: Tick plan.md (subagent-driven mode only)
+This sequence applies to both modes. In subagent-driven mode, the primitive's per-slice progress ledger tracks completion state throughout execution — plan.md ticking is deferred to Step 5e, after all reviews pass, so the checkbox state reflects work that is truly finished and verified.
 
-Tick all checkboxes in `plan.md` and commit. If any task has no checkbox, insert `- [ ]` before ticking:
+#### 5a: Whole-Branch Code Review
 
-```bash
-git add sdd-specs/[feature-dir]/plan.md
-git commit -m "✓ all slices complete"
-```
+Dispatch `superpowers:requesting-code-review` for a final whole-branch review covering all commits in this feature.
+
+Fix any Critical or Important findings before proceeding. Do not advance to 5b with open Critical or Important issues.
 
 #### 5b: Validation Gate
+
+> Note: `validation.md` may contain criteria that require manual verification — for those, Claude will pause and ask you to confirm they are met before ticking.
 
 Print `validation.md` in full. Walk through each group in order:
 
@@ -192,7 +192,7 @@ git commit -m "✓ validation complete"
 
 #### 5c: Documentation Check
 
-Before handing off, confirm:
+Before advancing, confirm:
 - ADRs written for any significant decisions made during this feature?
 - README updated if user-facing behaviour changed?
 - Changelog entry for user-facing changes?
@@ -200,7 +200,24 @@ Before handing off, confirm:
 
 #### 5d: Code Quality Review
 
-Invoke `agent-skills:code-review-and-quality` to review the full feature diff.
+Use the Skill tool to load `agent-skills:code-review-and-quality`. Follow its review checklist against the full feature diff.
+
+Fix any Critical or Important findings before proceeding.
+
+#### 5e: Tick plan.md (subagent-driven mode only)
+
+Tick all checkboxes in `plan.md` and commit. This step is the completion signal: plan.md checked off means all slices are done and all reviews are clean.
+
+```bash
+git add sdd-specs/[feature-dir]/plan.md
+git commit -m "✓ all slices complete"
+```
+
+#### 5f: Branch Integration
+
+Invoke `superpowers:finishing-a-development-branch` to handle merge, PR creation, or cleanup.
+
+---
 
 ## Key Rules
 
@@ -208,12 +225,10 @@ Invoke `agent-skills:code-review-and-quality` to review the full feature diff.
 - Always ask mode once — never mid-execution
 - Never skip a failing test regardless of mode
 - Never proceed past the validation gate (5b) if any criterion is unmet
-- `plan.md` checkboxes track implementation progress — ticked per-slice (inline) or batched at Step 5a (subagent-driven)
+- Never advance past 5a or 5d with open Critical or Important review findings
+- `plan.md` checkboxes track implementation progress — ticked per-slice atomic with code (inline) or at Step 5e after all reviews pass (subagent-driven)
 - `validation.md` checkboxes track spec compliance — ticked during the validation gate (5b), never before
-- Final code quality review is `agent-skills:code-review-and-quality`
-- **Inline mode**: orchestrator invokes domain skills directly and commits tick atomically with code
-- **Inline mode**: orchestrator invokes `superpowers:test-driven-development` directly — never delegate TDD to a subagent
-- **Subagent-driven mode**: `superpowers:subagent-driven-development` is the authority for the general dispatch process — this skill's subagent steps are additions only, never re-statements of the primitive's steps
-- **Subagent-driven mode**: CLASSIFY and any ADR decisions must complete before the implementer is dispatched
+- **Subagent-driven mode**: `superpowers:subagent-driven-development` owns per-slice dispatch and progress ledger; this skill owns the post-execution sequence (Step 5 onward)
+- **Subagent-driven mode**: when all slices are done, proceed directly to Step 5 — do not follow the primitive's own finishing sequence
 - **Subagent-driven mode**: never invoke `superpowers:test-driven-development` at the controller level — TDD is the subagent's responsibility
-- **Subagent-driven mode**: the implementer commits code only — the controller updates the progress ledger after each review; `plan.md` checkboxes are committed in a single batch at Step 5a
+- **Inline mode**: orchestrator invokes domain skills directly and commits tick atomically with code
