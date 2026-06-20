@@ -65,7 +65,7 @@ Assess whether enough information exists to plan, or whether a deep interview is
 **Assessment logic:**
 - Check seed input (Pre-Step 0) and project context (Step 1) against fields 1–4
 - Mark each field as: PRESENT (answered by seed or context) or MISSING
-- If all four core fields are PRESENT → skip Step 2b, proceed to Step 3
+- If all four core fields are PRESENT → skip Step 2b, probe Dependencies (line above) if not already clear from context, then proceed to Step 3
 - If any core field is MISSING → proceed to Step 2b (Deep Interview)
 - Dependencies: always probe if not already clear from context, even when the four core fields are present
 
@@ -205,7 +205,7 @@ Phase-structured implementation plan. No code blocks — interface contracts onl
 ### Task 1.2: [Task Name]
 - Scope: S/M/L
 - Files: ...
-- Interfaces: produces ...; consumes ... from Task 1.1
+- Interfaces: produces `anotherFn(input: InputType): OutputType`; consumes `functionName(param: Type): ReturnType` from Task 1.1
 - Acceptance criteria:
   - [ ] ...
 - Verification: ...
@@ -317,7 +317,7 @@ When you invoke `/sdd-plan-feature`:
 
 - Minimum viable fields check (Who/Why/Success/Constraint + Dependencies) gates interview-me — only invoke the deep interview when fields are genuinely missing
 - Single-pass planning: planning-and-task-breakdown output is formatted directly into plan.md — no intermediate files of any kind, no writing-plans pass
-- Plans contain interface contracts (function name + type per task), not code — TDD execution is sdd-implement-plan's job at implementation time
+- Plans contain interface contracts (function name + type per task), not code — TDD execution is sdd-implement-plan's job at implementation time. If you cannot name a function signature for a task, decompose that task further: inspect existing code for caller conventions, ask the user what the consuming task expects, or stub a name and type from the task description
 - Phase sections with checkpoint blocks enable phase-level verification gates during implementation
 - ADRs are project-level artifacts saved to `sdd-docs/decisions/` with sequential numbering — not in the feature directory
 - Pre-write review probes for gaps with a structured summary and a focused probe question before committing files to disk
