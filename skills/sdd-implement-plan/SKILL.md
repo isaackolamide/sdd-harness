@@ -39,7 +39,7 @@ Read all three files before any code is touched:
 Before starting any slice, ask once using AskUserQuestion:
 
 > "How should slices be executed?
->   - **Subagent-driven** *(recommended for ≥4 slices or production features)* — fresh subagent per slice + task review (spec + quality) per slice. Continuous only. Best for preserving context over long plans.
+>   - **Subagent-driven** *(recommended for ≥4 slices or production features)* — fresh subagent per slice + task review (spec + quality) per slice. Runs continuously without inter-slice pauses. Best for preserving context over long plans.
 >   - **Autonomous** — current session executes each slice inline, no pauses. Best for small plans or prototypes.
 >   - **Checkpoint** — current session executes each slice inline, pauses after each slice for confirmation."
 
@@ -60,6 +60,8 @@ Read the task name and description from `plan.md`. Match against these keyword g
 | anything else | no domain skill |
 
 Ambiguous slices default to no domain skill — bias toward fewer invocations.
+
+Match keywords against the task title, scope description, and file names only — not the `Interfaces:`, `Acceptance criteria:`, `Verification:`, or `Dependencies:` template fields.
 
 Mode-aware fork after classification:
 - **Inline mode**: invoke matching domain skills directly before coding (write ADR before coding if significant choice — framework, data model, auth strategy, API architecture, or any decision expensive to reverse)
@@ -86,7 +88,7 @@ When the primitive builds the implementer brief, also include:
 - Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures.
 - Relevant constraints from `requirements.md` (only what binds this slice)
 - If ADR written: ADR path as implementation context
-- Instruction: commit code changes only — do not touch `plan.md`
+- Instruction: commit implementation and test files only — do not touch `plan.md`
 
 **3. SDD ADDITIONS — task reviewer dispatch**
 
@@ -98,19 +100,25 @@ When the primitive dispatches the task reviewer, also include:
 
 After the task review passes, update the progress ledger per the primitive's tracking protocol.
 
-**5. PHASE CHECKPOINT (controller — before advancing to a new phase)**
+**5. PHASE CHECKPOINT (controller — at phase boundary)**
 
-After the last reviewed task in a `## Phase N` section completes, before dispatching the first task of Phase N+1:
+After the last reviewed task in a `## Phase N` section completes:
 
 1. Run the `Verification:` command from the `### Checkpoint — Phase N` block in `plan.md`. The controller may run this command directly — this is targeted shell execution to verify a phase gate, not a TDD invocation.
-2. If the checkpoint passes: tick the condition checkbox `[ ]` → `[x]` in `plan.md` (not the `Verification:` line — that line is never ticked), commit with message `"✓ Checkpoint — Phase N"`, then proceed to Phase N+1
+2. If the checkpoint passes: tick the condition checkbox `[ ]` → `[x]` in `plan.md` (not the `Verification:` line — that line is never ticked), then:
+   ```bash
+   git add sdd-specs/plans/[feature-dir]/plan.md
+   git commit -m "✓ Checkpoint — Phase N"  # substitute the actual phase number, e.g. "✓ Checkpoint — Phase 1"
+   ```
+   - If Phase N+1 exists: dispatch the first task of Phase N+1
+   - If no Phase N+1 exists: proceed directly to Step 5
 3. If the checkpoint fails: surface the failure to the user and stop — do not advance until resolved
 
 **6. NEXT SLICE**
 
 Proceed to the next unchecked/pending task.
 
-**When all slices are complete:** proceed directly to Step 5 below. If `superpowers:subagent-driven-development` prompts for a finishing action after the last slice, explicitly decline it and proceed to Step 5 of this skill instead — this skill owns the post-execution sequence from here.
+**When all slices are complete:** proceed directly to Step 5 below. If `superpowers:subagent-driven-development` prompts for a finishing action (typically offering code review or branch integration) after the last slice, explicitly decline by stating: "Skipping primitive finishing sequence — proceeding to sdd-implement-plan Step 5." This skill owns the post-execution sequence from here.
 
 ---
 
@@ -170,7 +178,7 @@ Never tick and commit separately — they must be atomic.
 If the completed task is the last in a `## Phase N` section:
 
 1. Run the `Verification:` command from the `### Checkpoint — Phase N` block in `plan.md`. The controller may run this command directly — this is targeted shell execution to verify a phase gate, not a TDD invocation.
-2. If it passes: tick the condition checkbox `[ ]` → `[x]` (not the `Verification:` line — that line is never ticked), commit with message `"✓ Checkpoint — Phase N"`
+2. If it passes: tick the condition checkbox `[ ]` → `[x]` (not the `Verification:` line — that line is never ticked), commit with message `"✓ Checkpoint — Phase N"` (substituting the actual phase number, e.g. `"✓ Checkpoint — Phase 1"`)
    - If Phase N+1 exists: advance to Phase N+1
    - If no next phase: proceed directly to Step 5
 3. If it fails: surface the failure to the user and stop
@@ -209,7 +217,7 @@ If any criterion is unmet: surface it and stop. Do not proceed until resolved.
 Once all criteria are ticked:
 
 ```bash
-git add sdd-specs/[feature-dir]/validation.md
+git add sdd-specs/plans/[feature-dir]/validation.md
 git commit -m "✓ validation complete"
 ```
 
@@ -221,15 +229,19 @@ Before advancing, confirm:
 - Changelog entry for user-facing changes?
 - API docs / type definitions current?
 
+If README, changelog, or API docs are missing and the change is user-facing, update them before proceeding to 5d.
+
 #### 5d: Code Quality Review
 
 Use the Skill tool to load `agent-skills:code-review-and-quality`. Follow its review checklist against the full feature diff.
 
 Fix any Critical or Important findings before proceeding.
 
+> Note: 5d findings are about code craft, not spec compliance — they do not invalidate 5b. Fix and re-run 5d only; do not re-open the validation gate unless a finding reveals an unmet spec requirement.
+
 #### 5e: Tick plan.md (subagent-driven mode only)
 
-The controller (not the subagent) is responsible for ticking plan.md in subagent-driven mode. Tick all remaining acceptance criteria checkboxes in `plan.md` and commit — phase checkpoint boxes were already ticked at phase boundaries (Step 4 item 5) and must not be re-ticked here. This step is the completion signal: plan.md fully checked means all slices are done, all phase checkpoints passed, and all reviews are clean.
+The controller (not the subagent) is responsible for ticking plan.md in subagent-driven mode. Re-read `plan.md` to confirm current checkbox state. Tick all acceptance criteria checkboxes — phase checkpoint boxes were already ticked at phase boundaries (Step 4 item 5) and must not be re-ticked here. If any acceptance criterion is already ticked, a subagent violated the no-touch instruction — investigate before committing. This step is the completion signal: plan.md fully checked means all slices are done, all phase checkpoints passed, and all reviews are clean.
 
 ```bash
 git add sdd-specs/plans/[feature-dir]/plan.md

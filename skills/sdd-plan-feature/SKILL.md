@@ -67,7 +67,7 @@ Assess whether enough information exists to plan, or whether a deep interview is
 - Mark each field as: PRESENT (answered by seed or context) or MISSING
 - If all four core fields are PRESENT → skip Step 2b, probe Dependencies (line above) if not already clear from context, then proceed to Step 3
 - If any core field is MISSING → proceed to Step 2b (Deep Interview)
-- Dependencies: always probe if not already clear from context, even when the four core fields are present
+- Dependencies: always probe if not already clear from context, even when the four core fields are present. Use a single direct question if project context doesn't answer it: "Does this feature depend on or modify any existing systems, services, or APIs?"
 
 ### Step 2b: Deep Interview (conditional)
 
@@ -160,6 +160,7 @@ validation.md:
 - Use interview-me's single-question follow-up style to clarify each concern
 - Adjust plan content and restate the adjustment
 - Confirm the adjustment before continuing
+- Once all concerns are resolved, return to the pre-write summary and ask the focused probe question again before proceeding to Step 6
 
 **To proceed to Step 6:** present the summary, ask the focused probe question, then wait for explicit confirmation ("yes", "looks good", or "write it") — do not skip the probe question even if the user has expressed urgency.
 
