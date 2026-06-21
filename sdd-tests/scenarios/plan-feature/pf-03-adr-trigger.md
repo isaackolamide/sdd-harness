@@ -8,7 +8,7 @@
 
 ## What this tests
 
-Step 4a includes an ADR trigger: when decomposition surfaces a significant architectural or technology choice (framework selection, data model, auth strategy, API architecture, or any decision expensive to reverse), the agent must invoke `agent-skills:documentation-and-adrs` and save to `docs/decisions/ADR-{NNN}-{title}.md`.
+Step 4a includes an ADR trigger: when decomposition surfaces a significant architectural or technology choice (framework selection, data model, auth strategy, API architecture, or any decision expensive to reverse), the agent must invoke `agent-skills:documentation-and-adrs` and save to `sdd-docs/decisions/ADR-{NNN}-{title}.md`.
 
 ---
 
@@ -43,7 +43,7 @@ The export/import feature will force a decision about the export format (JSON? C
 2. During decomposition, the export format choice surfaces as a significant decision
 3. Agent recognizes this as an ADR-trigger condition: "format selection is hard to reverse"
 4. Agent invokes `agent-skills:documentation-and-adrs`
-5. Saves ADR to `docs/decisions/ADR-001-export-format.md` (or similar sequential number)
+5. Saves ADR to `sdd-docs/decisions/ADR-001-export-format.md` (or similar sequential number)
 6. Cross-references the ADR path in the generated `requirements.md` under Decisions
 
 ---
@@ -52,7 +52,7 @@ The export/import feature will force a decision about the export format (JSON? C
 
 - Agent makes the format choice (e.g., "we'll use JSON") without writing an ADR
 - Agent mentions the format decision in passing but does not invoke documentation-and-adrs
-- ADR file is not created in `docs/decisions/`
+- ADR file is not created in `sdd-docs/decisions/`
 - `requirements.md` Decisions section does not reference the ADR
 
 ---
