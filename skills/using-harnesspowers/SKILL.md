@@ -50,7 +50,10 @@ Task arrives
     │
     ├── Writing or running tests?                → superpowers:test-driven-development
     ├── Something broke?                         → superpowers:systematic-debugging
-    │   └── Need structured doubt-first analysis? → agent-skills:doubt-driven-development
+    │   ├── Need structured doubt-first analysis? → agent-skills:doubt-driven-development
+    │   └── After fix lands:                      → harnesspowers:sdd-write-spec (Feature Spec mode)
+    │                                                seed = bug report / findings
+    │                                                updates roadmap.md + creates sdd-specs/features/YYYY-MM-DD-{fix}-spec.md
     │
     ├── Reviewing code (quality/correctness)?    → agent-skills:code-review-and-quality
     ├── Security-focused review?                 → agent-skills:security-and-hardening
