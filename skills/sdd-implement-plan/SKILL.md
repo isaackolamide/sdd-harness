@@ -121,11 +121,13 @@ Fix any Critical or Important findings before proceeding. Do not advance to 4.2 
 
 Print `validation.md` in full. Walk through each group in order.
 
-For each criterion in `validation.md`, you (the controller) must **actively execute verification commands, test scripts, or API requests** to prove the criterion is met.
-- Do **not** pause and ask the user for confirmation unless the criterion is strictly visual (e.g., "UI looks correct") or requires external system access you lack.
-- If a test fails or a criterion is unmet, stop. Fix the issue or dispatch a subagent to fix it, verify again, and only proceed when it passes.
+Instead of verifying the criteria yourself, **dispatch the `agent-skills:test-engineer` subagent**. 
+Provide the subagent with `validation.md` and instruct it to rigorously and adversarially verify each criterion. The test engineer should actively write and execute test scripts, queries, or API requests to definitively prove the implementation works as specified.
 
-For each criterion proven met: tick it `[ ]` → `[x]` in `validation.md`.
+- Instruct the test engineer **not** to ask the user for confirmation unless the criterion is strictly visual (e.g., "UI looks correct") or requires external system access you lack.
+- Wait for the test engineer's report. If any test fails or a criterion is unmet, stop. Dispatch an implementation subagent to fix the issue, then have the test engineer verify it again.
+
+For each criterion the test engineer proves is met: tick it `[ ]` → `[x]` in `validation.md`.
 
 Once all criteria are ticked:
 
