@@ -111,6 +111,9 @@ Proceed to the next unchecked/pending task.
 
 The primitive's per-slice progress ledger tracks completion state throughout execution — `plan.md` ticking is deferred to Step 4.5, after all reviews pass, so the checkbox state reflects work that is truly finished and verified.
 
+**CRITICAL ANTI-PATTERN: CHECKBOX CONFLATION**
+Do not group checkbox operations. Ticking `validation.md` (Step 4.2) and ticking `plan.md`/`roadmap.md` (Step 4.5) are separated by critical quality gates (4.3 and 4.4). Ticking them at the same time skips these gates. Steps 4.1 through 4.5 MUST be executed in strict sequence.
+
 #### 4.1. Whole-Branch Code Review
 
 Dispatch `superpowers:requesting-code-review` for a final whole-branch review covering all commits in this feature. Explicitly pass `requirements.md` to the reviewer so they can check for architectural and spec compliance, not just code quality.
@@ -135,6 +138,8 @@ Once all criteria are ticked:
 git add sdd-specs/plans/[feature-dir]/validation.md
 git commit -m "✓ validation complete"
 ```
+
+**STOP.** Do not proceed to tick `plan.md` or `roadmap.md` yet. You must complete Step 4.3 and 4.4 first.
 
 #### 4.3. Documentation Check
 
@@ -170,6 +175,8 @@ git commit -m "✓ feature complete: plan and roadmap updated"
 
 Precondition: 4.1 and 4.4 findings resolved, 4.2 validation fully ticked, plan.md fully ticked (4.5). Invoke `superpowers:finishing-a-development-branch` to handle merge, PR creation, or cleanup.
 
+**CRITICAL**: When invoking the skill, you must explicitly state the correct target base branch (e.g., `main`, or the parent feature branch like `feat-a` if this branch is `feat-a/code`). The primitive defaults to checking `main`/`master`, so you must override this behavior by explicitly passing the actual base branch in your invocation.
+
 ---
 
 ## Key Rules
@@ -180,6 +187,7 @@ Precondition: 4.1 and 4.4 findings resolved, 4.2 validation fully ticked, plan.m
 - Never advance past 4.1 or 4.4 with open Critical or Important review findings
 - `plan.md` checkboxes track implementation progress — acceptance criteria ticked at Step 4.5; phase checkpoint boxes ticked by the controller at phase boundaries (Step 3.6) and not re-ticked at Step 4.5
 - `validation.md` checkboxes track spec compliance — ticked during the validation gate (4.2), never before
+- **No Checkbox Conflation**: Do not tick `plan.md` or `roadmap.md` immediately after ticking `validation.md`. Steps 4.1 through 4.5 must be executed in strict order.
 - `superpowers:subagent-driven-development` owns per-slice dispatch and progress ledger; this skill owns the post-execution sequence (Step 4 onward)
 - When all slices are done, proceed directly to Step 4 (Finalization). **CRITICAL**: Ignore the finishing sequence described in `subagent-driven-development`. Do not execute its final reviewer dispatch or branch finishing; follow Step 4 below instead.
 
