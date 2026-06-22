@@ -1,6 +1,6 @@
 ---
 name: sdd-implement-plan
-description: Execute a feature plan — domain-aware subagent dispatch, TDD enforced, plan.md progress tracking, validation gate, hands off to agent-skills:code-review-and-quality
+description: Execute a feature plan — slice execution loop, TDD, checkpoints, ending with developer whole-branch code review (Step 4.1)
 metadata:
   type: implementation
   composesWith: [superpowers:subagent-driven-development]
@@ -13,11 +13,10 @@ Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superp
 ## Position in the SDD Trilogy
 
 ```
-/sdd-write-spec      → sdd-specs/mission.md, tech-stack.md, roadmap.md
-/sdd-plan-feature    → sdd-specs/plans/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
-/sdd-implement-plan  → commits per slice via subagents; plan.md ticked in Step 4.5 after all reviews pass
-                       validation.md ticked at Step 4b
-                       → agent-skills:code-review-and-quality → superpowers:finishing-a-development-branch
+/sdd-write-spec        → sdd-specs/mission.md, tech-stack.md, roadmap.md
+/sdd-plan-feature      → sdd-specs/plans/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
+/sdd-implement-plan    → commits per slice via subagents; developer self-review (4.1)
+                         → hands off to /sdd-verify-feature
 ```
 
 ## Workflow
@@ -105,77 +104,27 @@ After the last reviewed task in a `## Phase N` section completes:
 
 Proceed to the next unchecked/pending task.
 
-**When all slices are complete:** proceed directly to Step 4 (Finalization) below. **CRITICAL:** Do NOT execute the finishing sequence described in `superpowers:subagent-driven-development`. You must explicitly ignore its instructions to dispatch a final code reviewer or use `finishing-a-development-branch` here. This skill owns the post-execution sequence, so follow Step 4 (Finalization) below instead.
+**When all slices are complete:** proceed directly to Step 4 (Developer Review) below. **CRITICAL:** Do NOT execute the finishing sequence described in `superpowers:subagent-driven-development`. You must explicitly ignore its instructions to dispatch a final code reviewer or use `finishing-a-development-branch` here. This skill ends after Step 4.1 (Developer Review), so follow the steps below instead.
 
-### Step 4: Finalization (All Slices Complete)
+### Step 4: Developer Review (All Slices Complete)
 
-The primitive's per-slice progress ledger tracks completion state throughout execution — `plan.md` ticking is deferred to Step 4.5, after all reviews pass, so the checkbox state reflects work that is truly finished and verified.
-
-**CRITICAL ANTI-PATTERN: CHECKBOX CONFLATION**
-Do not group checkbox operations. Ticking `validation.md` (Step 4.2) and ticking `plan.md`/`roadmap.md` (Step 4.5) are separated by critical quality gates (4.3 and 4.4). Ticking them at the same time skips these gates. Steps 4.1 through 4.5 MUST be executed in strict sequence.
+The implementation phase closes with developer self-review to ensure that all changes are integrated, compiled, and clean before handover to formal QA.
 
 #### 4.1. Whole-Branch Code Review
 
 Dispatch `superpowers:requesting-code-review` for a final whole-branch review covering all commits in this feature. Explicitly pass `requirements.md` to the reviewer so they can check for architectural and spec compliance, not just code quality.
 
-Fix any Critical or Important findings before proceeding. Do not advance to 4.2 with open Critical or Important issues.
+Fix any Critical or Important findings before proceeding. Do not advance with open Critical or Important issues.
 
-#### 4.2. Validation Gate
+#### 4.2. Hand-off
 
-Print `validation.md` in full. Walk through each group in order.
+Once the whole-branch review passes and all findings are resolved, print this hand-off message:
 
-Instead of verifying the criteria yourself, **dispatch the `agent-skills:test-engineer` subagent**. 
-Provide the subagent with `validation.md` and instruct it to rigorously and adversarially verify each criterion. The test engineer should actively write and execute test scripts, queries, or API requests to definitively prove the implementation works as specified.
-
-- Instruct the test engineer **not** to ask the user for confirmation unless the criterion is strictly visual (e.g., "UI looks correct") or requires external system access you lack.
-- Wait for the test engineer's report. If any test fails or a criterion is unmet, stop. Dispatch an implementation subagent to fix the issue, then have the test engineer verify it again.
-
-For each criterion the test engineer proves is met: tick it `[ ]` → `[x]` in `validation.md`.
-
-Once all criteria are ticked:
-
-```bash
-git add sdd-specs/plans/[feature-dir]/validation.md
-git commit -m "✓ validation complete"
-```
-
-**STOP.** Do not proceed to tick `plan.md` or `roadmap.md` yet. You must complete Step 4.3 and 4.4 first.
-
-#### 4.3. Documentation Check
-
-Before advancing, confirm:
-- ADRs written for any significant decisions made during this feature?
-- README updated if user-facing behaviour changed?
-- Changelog entry for user-facing changes?
-- API docs / type definitions current?
-
-If README, changelog, or API docs are missing and the change is user-facing, update them before proceeding to 4.4.
-
-#### 4.4. Code Quality Review
-
-Read the `agent-skills:code-review-and-quality` skill instructions and follow its review checklist against the full feature diff.
-
-If there are any Critical or Important findings, you (the controller) must append them to the bottom of `plan.md` as new tasks under a `## Review Fixes` section. Execute these fixes, verify them, and tick them off in `plan.md` before proceeding.
-
-> Note: 4.4 findings are about code craft, not spec compliance — they do not invalidate 4.2. Fix and re-run 4.4 only; do not re-open the validation gate unless a finding reveals an unmet spec requirement.
-
-#### 4.5. Tick plan.md and roadmap.md
-
-The controller is responsible for ticking `plan.md` and updating the project roadmap.
-
-1. **Tick `plan.md`**: Re-read `plan.md` to confirm current checkbox state. Tick all acceptance criteria checkboxes — phase checkpoint boxes were already ticked at phase boundaries (Step 3.6) and must not be re-ticked here. By this point, all criteria have been verified via automated tests in Step 4.2. This is strictly an administrative completion signal. If any acceptance criterion was already ticked by a subagent, they violated the no-touch instruction — investigate before committing.
-2. **Tick `roadmap.md`**: Open `sdd-specs/roadmap.md` and locate the feature or phase you just completed. Change its checkbox from `[ ]` to `[x]`.
-
-```bash
-git add sdd-specs/plans/[feature-dir]/plan.md sdd-specs/roadmap.md
-git commit -m "✓ feature complete: plan and roadmap updated"
-```
-
-#### 4.6. Branch Integration
-
-Precondition: 4.1 and 4.4 findings resolved, 4.2 validation fully ticked, plan.md fully ticked (4.5). Invoke `superpowers:finishing-a-development-branch` to handle merge, PR creation, or cleanup.
-
-**CRITICAL**: When invoking the skill, you must explicitly state the correct target base branch (e.g., `main`, or the parent feature branch like `feat-a` if this branch is `feat-a/code`). The primitive defaults to checking `main`/`master`, so you must override this behavior by explicitly passing the actual base branch in your invocation.
+> "✓ Implementation and initial developer review complete.
+> To verify the feature against spec requirements, document changes, and check quality, run:
+> 
+> /sdd-verify-feature
+> "
 
 ---
 
@@ -183,11 +132,8 @@ Precondition: 4.1 and 4.4 findings resolved, 4.2 validation fully ticked, plan.m
 
 - Always read all three spec files before touching code
 - Never skip a failing test
-- Never proceed past the validation gate (4.2) if any criterion is unmet
-- Never advance past 4.1 or 4.4 with open Critical or Important review findings
-- `plan.md` checkboxes track implementation progress — acceptance criteria ticked at Step 4.5; phase checkpoint boxes ticked by the controller at phase boundaries (Step 3.6) and not re-ticked at Step 4.5
-- `validation.md` checkboxes track spec compliance — ticked during the validation gate (4.2), never before
-- **No Checkbox Conflation**: Do not tick `plan.md` or `roadmap.md` immediately after ticking `validation.md`. Steps 4.1 through 4.5 must be executed in strict order.
-- `superpowers:subagent-driven-development` owns per-slice dispatch and progress ledger; this skill owns the post-execution sequence (Step 4 onward)
-- When all slices are done, proceed directly to Step 4 (Finalization). **CRITICAL**: Ignore the finishing sequence described in `subagent-driven-development`. Do not execute its final reviewer dispatch or branch finishing; follow Step 4 below instead.
+- Never advance past 4.1 with open Critical or Important review findings
+- `plan.md` checkboxes track implementation progress — phase checkpoint boxes are ticked by the controller at phase boundaries (Step 3.6) and must not be re-ticked; acceptance criteria checkboxes are left unchecked for `/sdd-verify-feature` to administrative-tick at the end of verification
+- `superpowers:subagent-driven-development` owns per-slice dispatch and progress ledger; this skill owns the developer review
+- When all slices are done, proceed directly to Step 4 (Developer Review). **CRITICAL**: Ignore the finishing sequence described in `subagent-driven-development`. Do not execute its final reviewer dispatch or branch finishing; follow Step 4 and 4.2 above instead.
 

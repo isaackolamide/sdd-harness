@@ -3,7 +3,7 @@ name: sdd-plan-feature
 description: Plan a feature within an SDD project — wraps agent-skills:planning-and-task-breakdown and outputs plan.md/requirements.md/validation.md in a dated sdd-specs/ subdirectory
 metadata:
   type: implementation
-  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:interview-me]
+  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:interview-me, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
 ---
 
 # SDD Feature Planner
@@ -105,6 +105,18 @@ Establish the feature name for the output directory.
 This is a single question — not an interview. Branch strategy is **not** asked here; it belongs to implementation time and is handled by `sdd-implement-plan` or `agent-skills:git-workflow-and-versioning`.
 
 Create the feature directory `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` immediately after the name is confirmed.
+
+### Step 3.5: Conditional Planning Classification
+
+Identify whether this feature requires specialized planning gates by matching the feature description, intent restatement, and seed files against these keyword groups:
+
+| Classification | Trigger Keywords | Required Planning Action |
+|----------------|------------------|--------------------------|
+| **Security Sensitive** | `auth`, `password`, `login`, `sign-in`, `payment`, `credit-card`, `crypto`, `PII`, `credentials`, `upload` | Invoke `agent-skills:security-and-hardening` to write a dedicated `## Security Constraints` section in `requirements.md` and security criteria in `validation.md`. |
+| **Telemetry Required** | `API`, `endpoint`, `cron`, `background`, `job`, `worker`, `event`, `analytics`, `log`, `metric`, `network` | Invoke `agent-skills:observability-and-instrumentation` to write a dedicated `## Telemetry & Observability` section in `requirements.md` detailing logging specs, metrics tracking, and error alerting rules. |
+| **Migration Risk** | `refactor`, `rewrite`, `replace`, `deprecated`, `remove`, `delete`, `rename`, `schema`, `database migration` | Invoke `agent-skills:deprecation-and-migration` to write a dedicated `## Migration & Deprecation Plan` in `requirements.md` and inject corresponding tasks in `plan.md`. |
+
+If no keywords match a group, omit the corresponding planning action and section to keep the output minimal and avoid planning bloat.
 
 ### Step 4: Run Planning-and-Task-Breakdown, Then Format plan.md
 
@@ -258,10 +270,26 @@ Key technical decisions made:
 Why this feature is being built:
 -
 
+## Security Constraints [Conditional]
+
+*(Only include if feature is classified as Security Sensitive. Detail encryption, access controls, input sanitization, or authentication rules here)*
+-
+
+## Telemetry & Observability [Conditional]
+
+*(Only include if feature is classified as Telemetry Required. Detail required log events, metrics tracking, and alerting specifications)*
+-
+
+## Migration & Deprecation Plan [Conditional]
+
+*(Only include if feature is classified as Migration Risk. Detail backward compatibility, API deprecation strategies, or schema migrations)*
+-
+
 ## References
 - sdd-specs/mission.md — Project objective and boundaries
 - sdd-specs/tech-stack.md — Technical constraints and code style
 - sdd-specs/roadmap.md — Phase this feature belongs to
+- sdd-specs/features/feature-{YYYY-MM-DD-name}.md — [feature name] (include only if a feature spec was written)
 - sdd-docs/decisions/ADR-{NNN}-{title}.md — [decision title] (include only if an ADR was written)
 ```
 
@@ -285,7 +313,7 @@ For non-functional or structural criteria, a plain statement is fine:
 - [ ] Integration tests pass
 - [ ] E2E covers critical path (if applicable)
 
-## Manual Checks
+## Automation Checks
 - [ ] Check 1
 - [ ] Check 2
 
@@ -308,6 +336,7 @@ When you invoke `/sdd-plan-feature`:
 5. If any core field is missing: invoke `agent-skills:interview-me` — one question at a time, informed by project context; require explicit "yes" before continuing
 6. Probe Dependencies if not already clear from context
 7. Confirm feature name (propose if inferrable; otherwise ask a single question) — create `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` directory immediately after confirmation
+7.5. Run Conditional Planning Classification (Step 3.5) — check keywords for Security, Telemetry, and Migration risk. Prepare corresponding requirements/validation/plan additions.
 8. Trigger `agent-skills:planning-and-task-breakdown` — dependency graph, vertical slices, task sizing, checkpoints
 9. If a significant architectural decision surfaces: invoke `agent-skills:documentation-and-adrs` → save to `sdd-docs/decisions/ADR-{NNN}-{title}.md`; cross-reference in requirements.md
 10. Confirm task order and sizing with user before continuing — then format output directly into `plan.md` using the template above (no breakdown.md intermediate file)
@@ -323,4 +352,5 @@ When you invoke `/sdd-plan-feature`:
 - ADRs are project-level artifacts saved to `sdd-docs/decisions/` with sequential numbering — not in the feature directory
 - Pre-write review probes for gaps with a structured summary and a focused probe question before committing files to disk
 - requirements.md makes out-of-scope explicit, not just in-scope
+- requirements.md contains conditional sections (Security, Telemetry, Migrations) which are omitted by default unless triggered by keyword classification to avoid planning bloat
 - validation.md defines "done" before implementation starts — not after

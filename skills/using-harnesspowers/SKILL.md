@@ -33,7 +33,15 @@ Task arrives
     │
     ├── Executing a feature plan?                → harnesspowers:sdd-implement-plan
     │                                               (wraps TDD + subagent-driven-development;
-    │                                                3-way mode: subagent-driven, autonomous, or checkpoint)
+    │                                                slice loop, checkpoints, and whole-branch developer review)
+    │
+    ├── Verifying plan & validation status?      → harnesspowers:sdd-verify-feature
+    │                                               (wraps agent-skills:test-engineer + code-review-and-quality;
+    │                                                runs QA, audits docs, and checks quality checklist)
+    │
+    ├── Merging and closing development branch?  → harnesspowers:sdd-integrate-feature
+    │                                               (wraps superpowers:finishing-a-development-branch;
+    │                                                verifies plan completeness and clean git tree before merge)
     │
     ├── Found bugs/missing features after        → harnesspowers:sdd-write-spec (feature spec mode)
     │   manual testing post-implementation?         seed input: inline notes or path to findings file
@@ -122,7 +130,7 @@ Every skill includes a verification step. A task is not complete until verificat
 
 1. **Check for an applicable skill before starting work.**
 2. **Skills are workflows, not suggestions.** Follow the steps in order.
-3. **Multiple skills can apply in sequence.** Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `agent-skills:code-review-and-quality` → *(post-impl findings)* → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan`.
+3. Multiple skills can apply in sequence. Example: `agent-skills:interview-me` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `harnesspowers:sdd-verify-feature` → `harnesspowers:sdd-integrate-feature`.
 
 ## Plugin Stack Overview
 
