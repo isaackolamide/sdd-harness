@@ -84,14 +84,26 @@ ln -sf <path-to-harnesspowers> ~/.gemini/config/plugins/harnesspowers
 Restart your Antigravity session to discover and enable the skills.
 
 #### 3. GitHub Copilot
-Copilot automatically reads repository-level rules and instructions from `.github/copilot-instructions.md`.
+Copilot automatically reads user-level (global) rules and instructions from your home directory.
 
-**To enforce harnesspowers rules in your workspace:**
+**To enforce harnesspowers rules globally across all your projects:**
+
+For macOS/Linux:
 ```bash
-# Copy the Copilot instructions to your workspace root
-mkdir -p <your-project-root>/.github
-cp <path-to-harnesspowers>/.github/copilot-instructions.md <your-project-root>/.github/copilot-instructions.md
+# Copy the Copilot instructions to your home directory
+cp <path-to-harnesspowers>/.github/copilot-instructions.md ~/.copilot-instructions.md
 ```
+
+For Windows:
+```cmd
+:: Copy the Copilot instructions to your user profile directory
+copy <path-to-harnesspowers>\.github\copilot-instructions.md %USERPROFILE%\copilot-instructions.md
+```
+
+Alternatively, in Visual Studio Code:
+1. Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`).
+2. Search and select **Copilot: Open Custom Instructions**.
+3. Paste the content of `<path-to-harnesspowers>/.github/copilot-instructions.md` into the editor.
 
 **To load skills/plugins locally into Copilot CLI/Codex:**
 ```bash
