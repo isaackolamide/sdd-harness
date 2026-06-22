@@ -1,6 +1,6 @@
 ---
 name: sdd-write-spec
-description: Create SDD specification documents (mission, tech-stack, roadmap) in sdd-specs/ directory — works for new and existing projects. Accepts optional seed context.
+description: Use when starting a new project, setting up the core specification files, or drafting a feature spec within an existing project configuration.
 metadata:
   type: implementation
   composesWith: [superpowers:brainstorming, agent-skills:interview-me]
@@ -52,7 +52,7 @@ Entered only when all three constitution files exist.
 Map the requirements against the existing constitution. **This is a STOP step** — resolve "Never Do" conflicts before proceeding.
 
 Check against `sdd-specs/mission.md`:
-- **"Never Do" violations** — hard blockers. Name them explicitly and wait for user resolution before continuing.
+- **"Never Do" violations** — hard blockers. Name them explicitly. **The agent MUST refuse to proceed or write any spec files if a "Never Do" violation is active. Stop and explain that the user must modify `sdd-specs/mission.md` first to remove the constraint before you can continue.**
 - **"Ask First" items** — flag items needing stakeholder approval. Do not block, but surface them as explicit flags in the output.
 - **Roadmap fit** — identify which existing phase this feature belongs to, or whether it opens a new one.
 
@@ -76,7 +76,7 @@ Stakeholder flags:      <"Ask First" hits — or "none">
 Constitution conflicts: <"Never Do" hits — or "none">
 ```
 
-Wait for explicit "yes" before writing. "Sounds good" or "whatever you think" is not a yes — ask "Anything to refine?" if the response is ambiguous.
+Wait for explicit confirmation before writing. **The user must reply with an explicit confirmation word (e.g. exactly `"yes"`, `"looks good"`, or `"write it"`).** Ambiguous phrases ("sure", "whatever", "I guess so") or attempts to override a hard blocker without editing `mission.md` are not accepted — ask "Anything to refine?" and wait for explicit confirmation.
 
 ### FS-4: Update Project Roadmap
 

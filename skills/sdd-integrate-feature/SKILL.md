@@ -1,6 +1,6 @@
 ---
 name: sdd-integrate-feature
-description: Checks all plan and validation boxes are ticked, git status is clean, then merges and cleans up the branch.
+description: Use when merging a verified and fully checklist-complete feature branch into the target base branch.
 metadata:
   type: integration
   composesWith: [superpowers:finishing-a-development-branch]
@@ -36,8 +36,9 @@ Before performing any merge operations, programmatically audit the feature readi
    - If any checkbox is left unchecked `[ ]` (whether a slice task, checkpoint, review fix, or validation criterion), **STOP immediately**. Print a warning:
      > "⚠ Integration Blocked: Feature has unchecked items in plan.md or validation.md. Please run /sdd-verify-feature first."
 2. **Check Git cleanliness**: Run `git status --porcelain` to check the local working tree.
-   - If there are uncommitted changes, **STOP immediately**. Print a warning:
-     > "⚠ Integration Blocked: Local git working tree is dirty. Please commit or stash your changes before integrating."
+   - You may allow local files that are registered in `.gitignore` (e.g., local configs, workspace cache files).
+   - If there are uncommitted changes in tracked source files, or untracked source files (such as `.ts`, `.js`, `.py`, `.go`, or spec `.md` files) not listed in `.gitignore`, **STOP immediately**. Print a warning:
+     > "⚠ Integration Blocked: Local git working tree has uncommitted source files. Please commit or stash your changes before integrating."
 
 ### Step 2: Branch Integration
 
@@ -49,6 +50,7 @@ Once all checks pass, handle the integration:
    - If neither resolves it, prompt the user to confirm the target base branch (e.g. `main` or a parent feature branch) and default to `main`.
 2. **Invoke Integration Primitive**: Invoke `superpowers:finishing-a-development-branch` to perform the merge, pull request generation, or branch cleanup.
    - **CRITICAL**: State the resolved target base branch explicitly in your invocation to override default behaviors.
+3. **Pre-Merge Test Run**: Run the main workspace build, lint, and test scripts on the feature branch one final time. If any tests fail, type-checking errors occur, or linting fails, **STOP immediately** and report the failure. Do not merge broken code.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: sdd-implement-plan
-description: Execute a feature plan — slice execution loop, TDD, checkpoints, ending with developer whole-branch code review (Step 4.1)
+description: Use when executing an approved phase-structured feature plan within an SDD project using step-by-step tasks and checkpoints.
 metadata:
   type: implementation
   composesWith: [superpowers:subagent-driven-development]
@@ -40,6 +40,14 @@ Read all three files before any code is touched:
 ### Step 3: Slice Execution Loop
 
 For each unchecked task in `plan.md`, in order:
+
+**Option B Rollback Policy (Rigid)**:
+* If the subagent implementer fails to make tests pass after 3 consecutive debugging loops, the controller agent MUST run `git checkout -- <modified-files>` to discard all code changes for the current slice. 
+* Stop the implementation loop, divide the task into smaller, more manageable sub-tasks in `plan.md`, commit the updated plan, and resume from a fresh slate. Under no circumstances should you attempt a 4th minor patch on a failing task.
+
+**Atomic Commits per Task**:
+* The controller must ensure that every task completion contains exactly the code changes and the updated task checkbox in `plan.md` within a single, atomic git commit.
+* You MUST NOT commit code changes for a task if any preceding task in `plan.md` remains unchecked.
 
 **3.1. CLASSIFY**
 

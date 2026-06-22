@@ -1,6 +1,6 @@
 ---
 name: sdd-plan-feature
-description: Plan a feature within an SDD project — wraps agent-skills:planning-and-task-breakdown and outputs plan.md/requirements.md/validation.md in a dated sdd-specs/ subdirectory
+description: Use when planning a validated feature spec or roadmap milestone within an active SDD project to generate structured implementation files.
 metadata:
   type: implementation
   composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:interview-me, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
@@ -132,6 +132,7 @@ After user confirms the breakdown, format the output directly into `plan.md` usi
 
 **Key formatting rules:**
 - Each task gets a lightweight `Interfaces` line — declare what the task produces (function name + type) and what it consumes from prior tasks. This is NOT pre-written code; it is a contract declaration so subagent implementers know what signatures to implement and what is available from earlier slices. Full signatures are required for both produced and consumed functions — prose descriptions ("produces email sending functionality") are not acceptable; if you cannot name a function signature, the task decomposition is not done yet.
+- **Typing constraints**: Every interface contract MUST specify fully typed inputs and outputs. The use of `any`, `unknown`, or generic `Record<string, any>` is strictly forbidden unless there is no technical alternative. If returning or accepting a complex structure, define its key properties inline (e.g., `{id: string, name: string}`) rather than using a loose dictionary escape.
 - Each phase ends with a `### Checkpoint — Phase N` block with a checkbox. `sdd-implement-plan` runs this verification before advancing to the next phase.
 - No code blocks, no TDD steps, no bash commands — those are `sdd-implement-plan`'s responsibility at execution time.
 
@@ -174,7 +175,7 @@ validation.md:
 - Confirm the adjustment before continuing
 - Once all concerns are resolved, return to the pre-write summary and ask the focused probe question again before proceeding to Step 6
 
-**To proceed to Step 6:** present the summary, ask the focused probe question, then wait for explicit confirmation ("yes", "looks good", or "write it") — do not skip the probe question even if the user has expressed urgency.
+**To proceed to Step 6:** present the summary, ask the focused probe question, then wait for explicit confirmation. **The user must reply with a lowercase confirmation keyword (e.g. exactly `"yes"`, `"looks good"`, or `"write it"`).** General or ambiguous confirmation phrases ("sure", "whatever", "okay", or "just do it") must not be accepted — hold the gate and re-ask the probe question until explicit confirmation is given. Do not skip the probe question even if the user has expressed urgency.
 
 ### Step 6: Output
 
@@ -190,140 +191,10 @@ sdd-specs/plans/
 
 ## File Templates
 
-### plan.md
-
-Phase-structured implementation plan. No code blocks — interface contracts only. Checkboxes on acceptance criteria (ticked by `sdd-implement-plan` at execution time) and checkpoint blocks (run at phase boundaries).
-
-```markdown
-# [Feature Name] Implementation Plan
-
-**Goal:** [one sentence describing what this builds]
-**Architecture:** [2-3 sentences about approach]
-**Tech Stack:** [key technologies]
-
----
-
-## Phase 1: [Phase Name]
-
-### Task 1.1: [Task Name]
-- Scope: S/M/L
-- Files: `exact/path/to/file.ts` (create), `exact/path/to/existing.ts` (modify)
-- Interfaces: produces `functionName(param: Type): ReturnType`; consumes `otherFn(param: Type): ReturnType` from Task 1.X
-- Acceptance criteria:
-  - [ ] Given [context], When [action], Then [outcome]
-  - [ ] [Additional criterion]
-- Verification: `npm test path/to/test.ts`
-- Dependencies: none
-
-### Task 1.2: [Task Name]
-- Scope: S/M/L
-- Files: ...
-- Interfaces: produces `anotherFn(input: InputType): OutputType`; consumes `functionName(param: Type): ReturnType` from Task 1.1
-- Acceptance criteria:
-  - [ ] ...
-- Verification: ...
-- Dependencies: Task 1.1
-
-### Checkpoint — Phase 1
-- [ ] [Integration condition — be specific, not "all tasks complete"; e.g., "all Phase 1 tests pass end-to-end", "API contract validated against consumer"]
-- Verification: `[command that proves the condition — e.g., "npm test src/phase1/" or "npm run build"]`
-
----
-
-## Phase 2: [Phase Name]
-
-### Task 2.1: [Task Name]
-...
-
-### Checkpoint — Phase 2
-- [ ] [Integration condition for final phase — e.g., "all tests pass and build is clean, no TypeScript errors"]
-- Verification: `[command]`
-```
-
-**Scope sizing reference:**
-- S = 1 file, 1-2 hours
-- M = 2-3 files, half day
-- L = 4-5 files, full day (consider breaking down further)
-
-### requirements.md
-
-Scope and context to guide implementation:
-
-```markdown
-# Feature Requirements: {feature-name}
-
-## Scope
-
-In scope:
--
-
-Out of scope:
--
-
-## Decisions
-
-Key technical decisions made:
--
-
-## Context
-
-Why this feature is being built:
--
-
-## Security Constraints [Conditional]
-
-*(Only include if feature is classified as Security Sensitive. Detail encryption, access controls, input sanitization, or authentication rules here)*
--
-
-## Telemetry & Observability [Conditional]
-
-*(Only include if feature is classified as Telemetry Required. Detail required log events, metrics tracking, and alerting specifications)*
--
-
-## Migration & Deprecation Plan [Conditional]
-
-*(Only include if feature is classified as Migration Risk. Detail backward compatibility, API deprecation strategies, or schema migrations)*
--
-
-## References
-- sdd-specs/mission.md — Project objective and boundaries
-- sdd-specs/tech-stack.md — Technical constraints and code style
-- sdd-specs/roadmap.md — Phase this feature belongs to
-- sdd-specs/features/feature-{YYYY-MM-DD-name}.md — [feature name] (include only if a feature spec was written)
-- sdd-docs/decisions/ADR-{NNN}-{title}.md — [decision title] (include only if an ADR was written)
-```
-
-### validation.md
-
-Definition of "done" — how to confirm implementation is mergeable:
-
-```markdown
-# Validation: {feature-name}
-
-## Acceptance Criteria
-
-For behavioral criteria, prefer Given/When/Then:
-- [ ] Given [context], When [action], Then [outcome]
-
-For non-functional or structural criteria, a plain statement is fine:
-- [ ] Criterion
-
-## Test Coverage
-- [ ] Unit tests pass for new logic
-- [ ] Integration tests pass
-- [ ] E2E covers critical path (if applicable)
-
-## Automation Checks
-- [ ] Check 1
-- [ ] Check 2
-
-## Definition of Done
-
-This feature is mergeable when:
-- All acceptance criteria above are checked
-- No regressions in existing tests
-- Code review approved
-```
+Read the templates located in the `templates/` directory to format the generated planning files:
+- **plan.md**: [templates/plan.md](templates/plan.md) — Phase-structured implementation plan containing checkboxes for acceptance criteria and checkpoints.
+- **requirements.md**: [templates/requirements.md](templates/requirements.md) — Scope, decisions, context, and conditional constraints.
+- **validation.md**: [templates/validation.md](templates/validation.md) — Acceptance criteria checklist, test coverage requirements, and definition of done.
 
 ## Implementation
 
@@ -339,7 +210,7 @@ When you invoke `/sdd-plan-feature`:
 7.5. Run Conditional Planning Classification (Step 3.5) — check keywords for Security, Telemetry, and Migration risk. Prepare corresponding requirements/validation/plan additions.
 8. Trigger `agent-skills:planning-and-task-breakdown` — dependency graph, vertical slices, task sizing, checkpoints
 9. If a significant architectural decision surfaces: invoke `agent-skills:documentation-and-adrs` → save to `sdd-docs/decisions/ADR-{NNN}-{title}.md`; cross-reference in requirements.md
-10. Confirm task order and sizing with user before continuing — then format output directly into `plan.md` using the template above (no breakdown.md intermediate file)
+10. Confirm task order and sizing with user before continuing — then format output directly into `plan.md` using the templates (no breakdown.md intermediate file)
 11. Present pre-write summary of all three files — ask focused probe; resolve concerns before writing
 12. Write plan.md, requirements.md, and validation.md to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/`
 
