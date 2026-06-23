@@ -82,6 +82,8 @@ When the primitive builds the implementer brief, also include:
 - Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures.
 - Relevant constraints from `requirements.md` (only what binds this slice)
 - If ADR written: ADR path as implementation context
+- Instruction to follow `agent-skills:references/testing-patterns.md` for test structures and mocking boundaries.
+- Instruction to follow `harnesspowers:references/clean-architecture-ddd-reference.md` (mapped conceptually if a non-TypeScript project) for layering and dependency flow rules.
 - Instruction: commit implementation and test files only — do not touch `plan.md`
 
 **3.4. SDD ADDITIONS — task reviewer dispatch**

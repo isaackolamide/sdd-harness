@@ -115,8 +115,9 @@ Identify whether this feature requires specialized planning gates by matching th
 | **Security Sensitive** | `auth`, `password`, `login`, `sign-in`, `payment`, `credit-card`, `crypto`, `PII`, `credentials`, `upload` | Invoke `agent-skills:security-and-hardening` to write a dedicated `## Security Constraints` section in `requirements.md` and security criteria in `validation.md`. |
 | **Telemetry Required** | `API`, `endpoint`, `cron`, `background`, `job`, `worker`, `event`, `analytics`, `log`, `metric`, `network` | Invoke `agent-skills:observability-and-instrumentation` to write a dedicated `## Telemetry & Observability` section in `requirements.md` detailing logging specs, metrics tracking, and error alerting rules. |
 | **Migration Risk** | `refactor`, `rewrite`, `replace`, `deprecated`, `remove`, `delete`, `rename`, `schema`, `database migration` | Invoke `agent-skills:deprecation-and-migration` to write a dedicated `## Migration & Deprecation Plan` in `requirements.md` and inject corresponding tasks in `plan.md`. |
+| **Clean Architecture** | `controller`, `route`, `dto`, `use-case`, `repository`, `entity`, `domain`, `adapter`, `composition root` | Reference `harnesspowers:references/clean-architecture-ddd-reference.md` in `requirements.md`'s `## References` section. If it is a non-TypeScript project (like Python), add a note instructing agents to map the architectural concepts (layers, interfaces, dependency flow) conceptually to the target language rather than syntactically. |
 
-If no keywords match a group, omit the corresponding planning action and section to keep the output minimal and avoid planning bloat.
+If no keywords match a group, omit the corresponding planning action and section to keep the output minimal and avoid planning bloat. Always include a reference to `agent-skills:references/testing-patterns.md` under references to guide test strategy.
 
 ### Step 4: Run Planning-and-Task-Breakdown, Then Format plan.md
 
@@ -207,7 +208,7 @@ When you invoke `/sdd-plan-feature`:
 5. If any core field is missing: invoke `agent-skills:interview-me` — one question at a time, informed by project context; require explicit "yes" before continuing
 6. Probe Dependencies if not already clear from context
 7. Confirm feature name (propose if inferrable; otherwise ask a single question) — create `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` directory immediately after confirmation
-7.5. Run Conditional Planning Classification (Step 3.5) — check keywords for Security, Telemetry, and Migration risk. Prepare corresponding requirements/validation/plan additions.
+7.5. Run Conditional Planning Classification (Step 3.5) — check keywords for Security, Telemetry, Migration risk, and Clean Architecture. Prepare corresponding requirements/validation/plan additions. Always include the testing patterns reference.
 8. Trigger `agent-skills:planning-and-task-breakdown` — dependency graph, vertical slices, task sizing, checkpoints
 9. If a significant architectural decision surfaces: invoke `agent-skills:documentation-and-adrs` → save to `sdd-docs/decisions/ADR-{NNN}-{title}.md`; cross-reference in requirements.md
 10. Confirm task order and sizing with user before continuing — then format output directly into `plan.md` using the templates (no breakdown.md intermediate file)
