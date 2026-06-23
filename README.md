@@ -113,94 +113,95 @@ ln -sf <path-to-harnesspowers> ~/.copilot/plugins/harnesspowers
 
 ## How to Use
 
-Three commands, run in order. Pick the entry point that fits your situation.
+The SDD (Spec-Driven Development) workflow is structured into four main phases, executed in sequence.
 
-### Starting fresh — no constitution yet
 
+![alt text](image.png)
+
+> [!TIP]
+> Unsure which skill to run for a specific task? Run `/using-harnesspowers` at the start of your session to view the authoritative routing tree across all plugins in the stack.
+
+### Choose Your Entry Point
+
+Pick the starting command that matches your current project state:
+
+#### 1. Starting Fresh (New Project or Greenfield Initiative)
+You do not have a project constitution yet. You need to bootstrap the core scope, guidelines, and roadmap.
 ```text
-/sdd-write-spec        # Interviews you → sdd-specs/mission.md, tech-stack.md, roadmap.md
-/sdd-plan-feature      # "Add user authentication" → plan.md, requirements.md, validation.md
-/sdd-implement-plan    # Builds slice by slice with TDD, ends with initial whole-branch review
-/sdd-verify-feature    # Formally validates criteria, audits quality, ticks roadmap, and merges/cleans up branch
+/sdd-write-spec        # Interactive interview → generates mission.md, tech-stack.md, roadmap.md
+/sdd-plan-feature      # Choose feature/milestone → plan.md, requirements.md, validation.md
+/sdd-implement-plan    # TDD slice-by-slice implementation loop
+/sdd-verify-feature    # Formal validation, quality audits, ticks roadmap, merges branch
+```
+*Note: For an existing codebase, `/sdd-write-spec` will automatically read your folder structure and commit history to pre-fill context before asking any questions.*
+
+#### 2. Constitution Exists (Adding a New Feature)
+The project constitution already exists. You are starting a new feature from the roadmap.
+```text
+/sdd-write-spec        # Runs in Feature Spec Mode → sdd-specs/features/YYYY-MM-DD-{feature}-spec.md
+/sdd-plan-feature      # Reads feature spec → plan.md, requirements.md, validation.md
+/sdd-implement-plan    # Runs implementation slices & developer review
+/sdd-verify-feature    # Formally validates criteria & integrates branch
 ```
 
-For an existing codebase, `sdd-write-spec` reads your file structure and 50 commits of git history before asking anything.
-
-### Constitution exists — adding a new feature
-
+#### 3. Scope is Clear (Skip Feature Spec)
+You already know exactly what to build, and the codebase is highly familiar.
 ```text
-/sdd-write-spec        # Feature Spec Mode → sdd-specs/features/YYYY-MM-DD-{name}-spec.md
-/sdd-plan-feature      # Reads feature spec → plan.md, requirements.md, validation.md
-/sdd-implement-plan    # Code & developer review
+/sdd-plan-feature      # Describe feature directly → plan.md, requirements.md, validation.md
+/sdd-implement-plan    # TDD execution loop
 /sdd-verify-feature    # Validate, audit, and merge
 ```
 
-Once `sdd-specs/mission.md`, `tech-stack.md`, and `roadmap.md` exist, `sdd-write-spec` switches to Feature Spec Mode: it maps your requirements against `mission.md` boundaries, checks for "never do" conflicts, and creates a scoped spec file instead of rewriting the constitution.
-
-### Feature is clear — skip the spec
-
+#### 4. Post-Implementation Findings (Bugs & Feedback)
+Manual testing or review revealed issues or adjustments after running `/sdd-implement-plan`. Feed findings back into the spec/plan loop to handle them with discipline:
 ```text
-You already know what to build and the codebase is familiar.
-/sdd-plan-feature      # Describe the feature directly → plan.md, requirements.md, validation.md
-/sdd-implement-plan
-/sdd-verify-feature
-```
-
-### Found bugs or missing features after testing
-
-After manual testing reveals issues post-implementation, re-enter the workflow at `sdd-write-spec`. Describe your findings inline or point to a notes file — it interviews you to synthesize them into a scoped spec, then the standard plan → implement cycle runs.
-
-```text
-/sdd-write-spec        # Feature Spec Mode — findings as seed input (inline or --file path/to/notes.md)
-                       # Interviews you → sdd-specs/features/YYYY-MM-DD-{name}-spec.md
+/sdd-write-spec        # Feature Spec Mode — provides findings as seed (inline or --file path/to/notes.md)
 /sdd-plan-feature      # Plan the fixes → plan.md, requirements.md, validation.md
-/sdd-implement-plan    # Implement with TDD
-/sdd-verify-feature    # Verify, audit, and merge
+/sdd-implement-plan    # Implement fixes with TDD
+/sdd-verify-feature    # Validate fixes and complete integration
 ```
 
-This keeps post-impl fixes inside the same spec/plan/implement discipline as new features — findings don't get patched ad-hoc, they go through the workflow.
+---
 
-### What each step produces
+### Command Deep Dive & Outputs
 
-**`/sdd-write-spec`** — no constitution yet:
+#### Phase 1: `/sdd-write-spec`
+Sets project-wide boundaries and standardizes context.
+* **Constitution Mode (No existing specs):**
+  * `sdd-specs/mission.md` — Core objective, user persona, and "never do" list boundaries.
+  * `sdd-specs/tech-stack.md` — Directory structure, code style rules (with code snippet), and test runner configurations.
+  * `sdd-specs/roadmap.md` — Project milestones and release phases.
+* **Feature Spec Mode (Constitution exists):**
+  * `sdd-specs/features/YYYY-MM-DD-{name}-spec.md` — Scoped feature specification.
+  * `sdd-specs/roadmap.md` — Appends the feature to the active roadmap phase.
 
-- `sdd-specs/mission.md` — objective, boundaries, "never do" list
-- `sdd-specs/tech-stack.md` — folder layout, code style, test strategy
-- `sdd-specs/roadmap.md` — phases and milestones
+#### Phase 2: `/sdd-plan-feature`
+Breaks the feature spec into structured, implementable tasks.
+* **Outputs:**
+  * `sdd-specs/plans/YYYY-MM-DD-{name}/plan.md` — Task breakdown with strict interface contracts and phase checkpoints.
+  * `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — Project scope, out-of-scope items, and design constraints (e.g. security, telemetry, migration risk).
+  * `sdd-specs/plans/YYYY-MM-DD-{name}/validation.md` — Acceptance criteria checklist and definition of done.
+  * `sdd-docs/decisions/ADR-{NNN}.md` — Generated automatically if significant architectural choices surface.
 
-**`/sdd-write-spec`** — constitution exists (Feature Spec Mode):
+#### Phase 3: `/sdd-implement-plan`
+Executes the plan slice by slice using Test-Driven Development (TDD) on an isolated feature branch.
+* **Execution Modes (selected on start):**
+  * **Subagent-driven** (Recommended for $\ge$ 4 slices): Spawns an isolated subagent per task; maintains context cleanliness.
+  * **Autonomous**: Executes the entire plan in a single run without pausing.
+  * **Checkpoint**: Pauses for user confirmation after completing each slice.
+* **Outputs:**
+  * Commits corresponding to each task slice.
+  * Phase checkpoints verified, ticked, and committed at phase boundaries.
+  * Whole-branch code review results.
 
-- `sdd-specs/features/YYYY-MM-DD-{name}-spec.md` — scoped feature spec, direct input to `sdd-plan-feature`
-- `sdd-specs/roadmap.md` — updated with the new feature milestone
-
-**`/sdd-plan-feature`**:
-
-- `sdd-specs/plans/YYYY-MM-DD-{name}/plan.md` — phase-structured task list with interface contracts and checkpoint blocks
-- `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — scope, decisions, out-of-scope
-- `sdd-specs/plans/YYYY-MM-DD-{name}/validation.md` — acceptance criteria, definition of done
-- `sdd-docs/decisions/ADR-{NNN}.md` — written automatically when a significant architectural choice surfaces
-
-**`/sdd-implement-plan`**:
-
-- Commits per slice; phase checkpoint blocks run and ticked at each phase boundary; ends with whole-branch code review.
-
-**`/sdd-verify-feature`**:
-
-- Automated verification gate (validation.md ticked); code quality audit; ticks plan.md/roadmap.md; runs pre-merge audits, and handles branch merge and cleanup.
-
-### Inside each command
-
-**`/sdd-plan-feature`** runs `agent-skills:planning-and-task-breakdown` and formats the output directly into a phase-structured `plan.md` — phases with tasks, lightweight interface contracts per task (what each slice produces and consumes), and a checkpoint block at the end of each phase. No code is pre-written in the plan; TDD execution happens at implementation time. A structured summary of all three output files is shown *before writing them*, with a focused probe question. When a significant architectural decision surfaces, it writes an ADR to `sdd-docs/decisions/ADR-{NNN}.md` — outside the feature directory so it outlives the feature.
-
-**`/sdd-implement-plan`** asks once how slices should run:
-
-- **Subagent-driven** *(recommended for ≥4 slices)* — fresh subagent per slice; spec compliance + code quality review between each. Best for long plans where context preservation matters.
-- **Autonomous** — single session, no pauses. Best for small plans or prototypes.
-- **Checkpoint** — single session, pauses after each slice for your confirmation.
-
-Inline modes enforce Red-Green-Refactor strictly: one failing test written before any code, minimal code to pass it, refactor only after green. At each phase boundary, the `### Checkpoint — Phase N` block from `plan.md` is verified before the next phase begins — a phase gate that catches integration issues early. The skill ends with Step 4.1 Whole-Branch Review (`superpowers:requesting-code-review`) to verify code compliance. It does not perform validation, quality audits, or branch merge.
-
-**`/sdd-verify-feature`** dispatches `agent-skills:test-engineer` to verify each criterion in `validation.md`. It then performs the `agent-skills:code-review-and-quality` checklist, writing any Critical/Important findings to `plan.md` as `## Review Fixes` (handing back to `/sdd-implement-plan`). Once clean, it ticks `plan.md` and `roadmap.md`, performs programmatic pre-merge checks (git cleanliness, build/lint/test runs), and merges/cleans up the branch using `superpowers:finishing-a-development-branch`.
+#### Phase 4: `/sdd-verify-feature`
+Validates code compliance and merges the feature branch.
+* **Workflow:**
+  * Dispatches the `test-engineer` subagent to verify all criteria in `validation.md` and audits raw execution logs.
+  * Runs a rigorous code quality audit. Any issues found are added to `plan.md` as `## Review Fixes` to be resolved via `/sdd-implement-plan`.
+  * Ticks off progress in `plan.md` and `roadmap.md` upon completion.
+  * Runs a pre-merge programmatic verification gate (checks git cleanliness, runs main build, lint, and test scripts).
+  * Integrates the branch and cleans up using `superpowers:finishing-a-development-branch`.
 
 ## What's NOT in This Plugin
 
