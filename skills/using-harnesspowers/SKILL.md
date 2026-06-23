@@ -32,7 +32,7 @@ Task arrives
     │                                                outputs phase-structured plan.md with interface contracts + checkpoint blocks per phase)
     │
     ├── Executing a feature plan?                → harnesspowers:sdd-implement-plan
-    │                                               (wraps TDD + subagent-driven-development;
+    │                                               (wraps TDD, subagent-driven-development, and code-review-and-quality;
     │                                                slice loop, checkpoints, and whole-branch developer review)
     │
     ├── Verifying, ticking progress, and         → harnesspowers:sdd-verify-feature
