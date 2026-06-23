@@ -36,20 +36,37 @@ Read all three files before touching code:
 ### Step 3: Slice Execution Loop
 Loop through each unchecked task in `plan.md` in order:
 
-1. **CLASSIFY**: Match the task title, scope description, and filenames against keywords to identify required instructions:
-   - `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`
-   - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
-   - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
-2. **ANNOUNCE**: Print `"Starting slice N of M: [task name]"`. Highlight any relevant constraints from `requirements.md`.
-3. **DISPATCH**: Activate and run `superpowers:subagent-driven-development` for the task (load its `SKILL.md` using `view_file` with `IsSkillFile: true`).
-   - **Implementer Brief**: Embed the classification domain skill, the task's `Interfaces` line contract, relevant constraints from `requirements.md`, any ADR path, and instructions to follow `harnesspowers:references/testing-patterns.md` and commit implementation/test files only (do not touch `plan.md`).
-   - **Reviewer Brief**: Pass the full `requirements.md` and slice constraints. (The primitive will run review using `agent-skills:code-reviewer`).
-4. **LEDGER & COMMIT**: Once the task review passes, update the progress ledger. Tick the task header checkbox `[ ]` → `[x]` in `plan.md`. Stage and commit `plan.md` atomically with the task's code changes (one git commit per task).
-5. **CHECKPOINT**: At the end of a `## Phase N` section:
-   - Run the `Verification:` command from the `### Checkpoint — Phase N` block in `plan.md`.
-   - If it passes: tick the checkpoint checkbox in `plan.md`, then run:
-     `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — Phase N"`
-   - If it fails: halt implementation and ask the user. Do not proceed until resolved.
+3.1. **CLASSIFY**: Match the task title, scope description, and filenames against keywords to identify required instructions:
+- `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`
+- `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
+- *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
+
+3.2. **ANNOUNCE**: Print:
+`Starting slice N of M: [task name from plan.md]`
+Show any scope constraints from `requirements.md` relevant to this slice.
+
+Follow `superpowers:subagent-driven-development` for this slice (activate it by loading its `SKILL.md` via `view_file` with `IsSkillFile: true`). The steps below specify only what `sdd-implement-plan` adds on top — the primitive owns the general dispatch process, file handoffs, and model selection.
+
+Per-task reviewer note: The primitive dispatches per-slice reviews using `task-reviewer-prompt.md`. It is expected and correct that the `agent-skills:code-reviewer` agent type is selected here, as it is highly specialized for this review task. Do not override this.
+
+3.3. **SDD ADDITIONS — implementer brief**: When the primitive builds the implementer brief, also include:
+- CLASSIFY result: `"This is a [frontend/API/general] slice. Invoke [domain skill names] before coding."`
+- Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures.
+- Relevant constraints from `requirements.md` (only what binds this slice)
+- If ADR written: ADR path as implementation context
+- Instruction: commit implementation and test files only — do not touch `plan.md`
+
+3.4. **SDD ADDITIONS — task reviewer dispatch**: When the primitive dispatches the task reviewer, also include:
+- Full `requirements.md` — the spec compliance verdict requires the actual spec
+- Relevant constraints from `requirements.md` for this slice
+
+3.5. **LEDGER & COMMIT**: Once the task review passes, update the progress ledger. Tick the task header checkbox `[ ]` → `[x]` in `plan.md`. Stage and commit `plan.md` atomically with the task's code changes (one git commit per task).
+
+3.6. **CHECKPOINT**: At the end of a `## Phase N` section:
+- Run the `Verification:` command from the `### Checkpoint — Phase N` block in `plan.md`.
+- If it passes: tick the checkpoint checkbox in `plan.md`, then run:
+  `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — Phase N"`
+- If it fails: halt implementation and ask the user. Do not proceed until resolved.
 
 ---
 
