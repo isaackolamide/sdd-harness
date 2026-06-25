@@ -1,15 +1,15 @@
 # sdd-harness
 
-> SDD workflow orchestrator for Claude Code — thin layer that composes `agent-skills` and `superpowers` into end-to-end development workflows.
+> SDD workflow orchestrator — thin layer that composes `agent-skills` and `superpowers` into end-to-end development workflows.
 
 ## What This Is
 
-sdd-harness is a Claude Code plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature, with a built-in iteration loop for post-implementation findings:
+sdd-harness is a plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature, with a built-in iteration loop for post-implementation findings:
 
 ```
-spec → plan → implement → review
-                              ↓
-                findings → spec → plan → implement
+constitution → spec → plan → implement → verify-feature
+                                               ↓
+                               findings → spec → plan → implement
 ```
 
 It wraps skills from two major plugins -> `superpowers` and `agent-skills`

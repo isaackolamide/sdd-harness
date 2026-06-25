@@ -1,6 +1,6 @@
 # Sdd-harness
 
-SDD workflow orchestrator for Claude Code. Thin orchestration layer that wraps skills from two major plugins -> `superpowers` and `agent-skills`
+SDD workflow orchestrator. Thin orchestration layer that wraps skills from two major plugins -> `superpowers` and `agent-skills`
 
 ## Architecture
 
