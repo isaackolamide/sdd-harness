@@ -1,30 +1,31 @@
-# Harnesspowers v2
+# sdd-harness
 
-SDD workflow orchestrator plugin. Composes `agent-skills`, `superpowers`, `frontend-design`, and `claude-md-management` into end-to-end development workflows.
+SDD workflow orchestrator plugin. Composes `agent-skills` and `superpowers` into end-to-end development workflows.
 
 ## Architecture
 
-Four-plugin dependency stack:
-- **harnesspowers** (this plugin) — 6 SDD workflow skills + unified routing tree
+Three-plugin dependency stack:
+
+- **sdd-harness** (this plugin) — 7 SDD workflow skills + unified routing tree
 - **agent-skills** — 24 engineering primitive skills
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming
-- **frontend-design** — Design direction + frontend UI engineering
-- **claude-md-management** — CLAUDE.md audit and improvement
 
-harnesspowers delegates to the other four. It owns no copies of their skills.
+sdd-harness delegates to the other two. It owns no copies of their skills.
 
 ## Skills
 
-- `using-harnesspowers` — Authoritative routing tree across all plugins
-- `sdd-write-spec` — Creates specs: mission.md, tech-stack.md, roadmap.md
-- `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md (phase-structured: interface contracts + checkpoint blocks per phase), requirements.md, validation.md
-- `sdd-implement-plan` — Executes feature plan: subagent-driven (per-slice review) or inline (autonomous/checkpoint), domain-aware dispatch, TDD enforced, phase checkpoint gates, validation gate, hands off to agent-skills:code-review-and-quality
+- `using-sdd-harness` — Authoritative routing tree across all plugins
+- `sdd-constitution` — Constitution: mission.md, tech-stack.md, roadmap.md — new and existing projects
+- `sdd-write-spec` — Feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md
+- `sdd-plan-feature` — Feature plan: phase-structured plan.md (interface contracts + checkpoint blocks per phase), requirements.md, validation.md — triggers ADR for significant arch decisions
+- `sdd-implement-plan` — Executes feature plan — slice execution loop, TDD, checkpoints, ending with developer whole-branch code review (Step 4.1)
+- `sdd-verify-feature` — Performs formal validation via test-engineer, code quality review, ticks progress files, runs pre-merge audits, and integrates the branch
 - `optimise-claude-md` — CLAUDE.md / AGENTS.md audit with discoverability lens
-- `suggest-skills` — Cross-plugin skill discovery
 
 ## References
 
 - `references/clean-architecture-ddd-reference.md` — Clean Architecture & DDD patterns
+- `references/testing-patterns.md` — Testing patterns
 
 ## Behaviour
 
