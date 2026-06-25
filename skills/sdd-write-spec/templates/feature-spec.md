@@ -7,7 +7,7 @@ What this feature does and why it exists now.
 Who benefits; who requested it.
 
 ## Acceptance Criteria
-- [ ] Given [context], When [action], Then [outcome]
+- Given [context], When [action], Then [outcome]
 
 ## Technical Constraints
 (derived from sdd-specs/mission.md boundaries and sdd-specs/tech-stack.md)
