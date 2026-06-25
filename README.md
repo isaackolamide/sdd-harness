@@ -92,11 +92,26 @@ claude plugin update sdd-harness@sdd-harness
 #### 2. Antigravity CLI / IDE
 Antigravity automatically discovers and loads plugins from the `~/.gemini/config/plugins` directory.
 
+**Method A: Native Install (Recommended)**
 ```bash
-# Clone the repo
-git clone https://github.com/isaackolamide/sdd-harness <path-to-sdd-harness>
+# Install dependencies
+agy plugin install https://github.com/addyosmani/agent-skills.git
+agy plugin install https://github.com/obra/superpowers.git
+
+# Install sdd-harness
+agy plugin install https://github.com/isaackolamide/sdd-harness.git
+```
+
+**Method B: Manual Git Clone & Symlink**
+```bash
+# Clone the repositories
+git clone https://github.com/addyosmani/agent-skills.git <path-to-agent-skills>
+git clone https://github.com/obra/superpowers.git <path-to-superpowers>
+git clone https://github.com/isaackolamide/sdd-harness.git <path-to-sdd-harness>
 
 # Symlink into Antigravity plugins directory
+ln -sf <path-to-agent-skills> ~/.gemini/config/plugins/agent-skills
+ln -sf <path-to-superpowers> ~/.gemini/config/plugins/superpowers
 ln -sf <path-to-sdd-harness> ~/.gemini/config/plugins/sdd-harness
 ```
 
@@ -125,8 +140,24 @@ Alternatively, in Visual Studio Code:
 3. Paste the content of `<path-to-sdd-harness>/.github/copilot-instructions.md` into the editor.
 
 **To load skills/plugins locally into Copilot CLI/Codex:**
+
+**Method A: Marketplace (Superpowers only)**
 ```bash
+# Register the marketplace and install superpowers
+copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin install superpowers@superpowers-marketplace
+```
+
+**Method B: Manual Git Clone & Symlink**
+```bash
+# Clone the repositories if you haven't already
+git clone https://github.com/addyosmani/agent-skills.git <path-to-agent-skills>
+git clone https://github.com/obra/superpowers.git <path-to-superpowers>
+git clone https://github.com/isaackolamide/sdd-harness.git <path-to-sdd-harness>
+
 # Symlink into Copilot plugins directory
+ln -sf <path-to-agent-skills> ~/.copilot/plugins/agent-skills
+ln -sf <path-to-superpowers> ~/.copilot/plugins/superpowers
 ln -sf <path-to-sdd-harness> ~/.copilot/plugins/sdd-harness
 ```
 
