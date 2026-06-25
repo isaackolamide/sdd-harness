@@ -1,10 +1,10 @@
-# harnesspowers
+# sdd-harness
 
 > SDD workflow orchestrator for Claude Code — thin layer that composes `agent-skills` and `superpowers` into end-to-end development workflows.
 
 ## What This Is
 
-harnesspowers is a Claude Code plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature, with a built-in iteration loop for post-implementation findings:
+sdd-harness is a Claude Code plugin that provides the **SDD (Spec-Driven Development) workflow** — a structured path from blank slate to shipped feature, with a built-in iteration loop for post-implementation findings:
 
 ```
 spec → plan → implement → review
@@ -17,7 +17,7 @@ It wraps skills from two major plugins -> `superpowers` and `agent-skills`
 ## Plugin Stack
 
 ```
-harnesspowers (orchestrator)      — 7 SDD workflow skills
+sdd-harness (orchestrator)      — 7 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
@@ -29,13 +29,31 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 
 | Skill | What It Does |
 |-------|-------------|
-| `/using-harnesspowers` | Routing tree — which skill for which task, across all plugins |
+| `/using-sdd-harness` | Routing tree — which skill for which task, across all plugins |
 | `/sdd-constitution` | Create or extract SDD constitution — works for new and existing projects |
 | `/sdd-write-spec` | Create feature spec for a new feature — updates project roadmap and generates feature spec |
 | `/sdd-plan-feature` | Plan a feature from a feature spec file — outputs plan.md/requirements.md/validation.md; triggers ADR for significant arch decisions |
 | `/sdd-implement-plan` | Execute a feature plan — 3-way mode (subagent-driven / autonomous / checkpoint), domain-aware dispatch, TDD enforced, phase checkpoints, developer whole-branch review |
 | `/sdd-verify-feature` | Validate spec compliance, audit code quality, update progress files, run pre-merge audits, and integrate/merge the branch |
 | `/optimise-claude-md` | Audit and improve any project's CLAUDE.md |
+
+## Migrating from `harnesspowers` to `sdd-harness`
+
+If you previously installed this plugin under the name `harnesspowers`, perform the following steps to upgrade:
+
+1. **Uninstall the old plugin** (if installed via Claude Code):
+   ```bash
+   claude plugin uninstall harnesspowers
+   ```
+2. **Remove old symlinks** (if installed via symlink):
+   ```bash
+   rm ~/.gemini/config/plugins/harnesspowers
+   rm ~/.copilot/plugins/harnesspowers
+   ```
+3. **Install the new plugin**:
+   Follow the [Installation](#installation) instructions below.
+4. **Update config file references**:
+   Update any occurrences of `harnesspowers` to `sdd-harness` in your global `AGENTS.md` (`~/.gemini/config/AGENTS.md`) or project-specific `.agents/AGENTS.md` or `CLAUDE.md` files (e.g., update `harnesspowers:sdd-constitution` to `sdd-harness:sdd-constitution`).
 
 ## Installation
 
@@ -50,8 +68,8 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 #### 1. Claude Code
 
 ```bash
-# Register marketplaces for harnesspowers and its agent-skills dependency
-claude plugin marketplace add https://github.com/isaackolamide/harnesspowers.git
+# Register marketplaces for sdd-harness and its agent-skills dependency
+claude plugin marketplace add https://github.com/isaackolamide/sdd-harness.git
 claude plugin marketplace add https://github.com/addyosmani/agent-skills.git
 
 # Install companion plugins
@@ -60,15 +78,15 @@ claude plugin install frontend-design@claude-plugins-official
 claude plugin install claude-md-management@claude-plugins-official
 claude plugin install agent-skills@addy-agent-skills
 
-# Install harnesspowers
-claude plugin install harnesspowers@harnesspowers
+# Install sdd-harness
+claude plugin install sdd-harness@sdd-harness
 ```
 
 Restart Claude Code after installation to apply changes.
 
-**Updating harnesspowers:**
+**Updating sdd-harness:**
 ```bash
-claude plugin update harnesspowers@harnesspowers
+claude plugin update sdd-harness@sdd-harness
 ```
 
 #### 2. Antigravity CLI / IDE
@@ -76,10 +94,10 @@ Antigravity automatically discovers and loads plugins from the `~/.gemini/config
 
 ```bash
 # Clone the repo
-git clone https://github.com/isaackolamide/harnesspowers <path-to-harnesspowers>
+git clone https://github.com/isaackolamide/sdd-harness <path-to-sdd-harness>
 
 # Symlink into Antigravity plugins directory
-ln -sf <path-to-harnesspowers> ~/.gemini/config/plugins/harnesspowers
+ln -sf <path-to-sdd-harness> ~/.gemini/config/plugins/sdd-harness
 ```
 
 Restart your Antigravity session to discover and enable the skills.
@@ -87,29 +105,29 @@ Restart your Antigravity session to discover and enable the skills.
 #### 3. GitHub Copilot
 Copilot automatically reads user-level (global) rules and instructions from your home directory.
 
-**To enforce harnesspowers rules globally across all your projects:**
+**To enforce sdd-harness rules globally across all your projects:**
 
 For macOS/Linux:
 ```bash
 # Copy the Copilot instructions to your home directory
-cp <path-to-harnesspowers>/.github/copilot-instructions.md ~/.copilot-instructions.md
+cp <path-to-sdd-harness>/.github/copilot-instructions.md ~/.copilot-instructions.md
 ```
 
 For Windows:
 ```cmd
 :: Copy the Copilot instructions to your user profile directory
-copy <path-to-harnesspowers>\.github\copilot-instructions.md %USERPROFILE%\copilot-instructions.md
+copy <path-to-sdd-harness>\.github\copilot-instructions.md %USERPROFILE%\copilot-instructions.md
 ```
 
 Alternatively, in Visual Studio Code:
 1. Open the Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`).
 2. Search and select **Copilot: Open Custom Instructions**.
-3. Paste the content of `<path-to-harnesspowers>/.github/copilot-instructions.md` into the editor.
+3. Paste the content of `<path-to-sdd-harness>/.github/copilot-instructions.md` into the editor.
 
 **To load skills/plugins locally into Copilot CLI/Codex:**
 ```bash
 # Symlink into Copilot plugins directory
-ln -sf <path-to-harnesspowers> ~/.copilot/plugins/harnesspowers
+ln -sf <path-to-sdd-harness> ~/.copilot/plugins/sdd-harness
 ```
 
 ## How to Use
@@ -119,7 +137,7 @@ The SDD (Spec-Driven Development) workflow is structured into four main phases, 
 ![alt text](image.png)
 
 > [!TIP]
-> Unsure which skill to run for a specific task? Run `/using-harnesspowers` at the start of your session to view the authoritative routing tree across all plugins in the stack.
+> Unsure which skill to run for a specific task? Run `/using-sdd-harness` at the start of your session to view the authoritative routing tree across all plugins in the stack.
 
 ### Choose Your Entry Point
 

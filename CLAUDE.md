@@ -1,23 +1,23 @@
-# Harnesspowers
+# Sdd-harness
 
 SDD workflow orchestrator for Claude Code. Thin orchestration layer that wraps skills from two major plugins -> `superpowers` and `agent-skills`
 
 ## Architecture
 
 Four-plugin dependency stack:
-- **harnesspowers** — 7 SDD workflow skills + unified routing tree (this plugin)
+- **sdd-harness** — 7 SDD workflow skills + unified routing tree (this plugin)
 - **agent-skills** — 24 engineering primitive skills (from `addyosmani/agent-skills`)
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming (from `claude-plugins-official`)
 - **frontend-design** — Design direction + frontend UI engineering (from `claude-plugins-official`)
 - **claude-md-management** — CLAUDE.md audit and improvement (from `claude-plugins-official`)
 
-harnesspowers delegates to the other four. It owns no copies of their skills.
+sdd-harness delegates to the other four. It owns no copies of their skills.
 
 ## Skills
 
 | Skill | Purpose |
 |-------|---------|
-| `using-harnesspowers` | Authoritative routing tree across all plugins |
+| `using-sdd-harness` | Authoritative routing tree across all plugins |
 | `sdd-constitution` | Constitution: mission.md, tech-stack.md, roadmap.md — new and existing projects |
 | `sdd-write-spec` | Feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md |
 | `sdd-plan-feature` | Feature plan: phase-structured plan.md (interface contracts + checkpoint blocks per phase), requirements.md, validation.md — triggers ADR for significant arch decisions |

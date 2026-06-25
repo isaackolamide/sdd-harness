@@ -1,9 +1,9 @@
 ---
-name: using-harnesspowers
-description: Unified skill router across harnesspowers, agent-skills, superpowers, frontend-design, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
+name: using-sdd-harness
+description: Unified skill router across sdd-harness, agent-skills, superpowers, frontend-design, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
 ---
 
-# Using Harnesspowers — Unified Skill Router
+# Using Sdd-harness — Unified Skill Router
 
 ## Authority
 
@@ -20,26 +20,26 @@ Task arrives
     ├── Rough concept, need to explore variants? → agent-skills:idea-refine
     │
     ├── Need a spec?
-    │   ├── No constitution yet                  → harnesspowers:sdd-constitution
+    │   ├── No constitution yet                  → sdd-harness:sdd-constitution
     │   │                                           (wraps superpowers:brainstorming + agent-skills:interview-me + codebase analysis)
     │   │                                           outputs: sdd-specs/mission.md, sdd-specs/tech-stack.md, sdd-specs/roadmap.md
-    │   ├── Constitution exists + feature reqs   → harnesspowers:sdd-write-spec
+    │   ├── Constitution exists + feature reqs   → sdd-harness:sdd-write-spec
     │   │                                           updates sdd-specs/roadmap.md, creates sdd-specs/features/YYYY-MM-DD-<name>-spec.md
-    │   └── Have a feature spec, want a plan     → harnesspowers:sdd-plan-feature
+    │   └── Have a feature spec, want a plan     → sdd-harness:sdd-plan-feature
     │
-    ├── Planning a feature?                      → harnesspowers:sdd-plan-feature
+    ├── Planning a feature?                      → sdd-harness:sdd-plan-feature
     │                                               (wraps agent-skills:planning-and-task-breakdown;
     │                                                outputs phase-structured plan.md with interface contracts + checkpoint blocks per phase)
     │
-    ├── Executing a feature plan?                → harnesspowers:sdd-implement-plan
+    ├── Executing a feature plan?                → sdd-harness:sdd-implement-plan
     │                                               (wraps superpowers:subagent-driven-development;
     │                                                slice loop, checkpoints, and whole-branch developer review)
     │
-    ├── Verifying, ticking progress, and         → harnesspowers:sdd-verify-feature
+    ├── Verifying, ticking progress, and         → sdd-harness:sdd-verify-feature
     │   integrating/merging the branch?             (wraps agent-skills:code-review-and-quality + test-engineer persona
     │                                                + superpowers:finishing-a-development-branch)
     │
-    ├── Found bugs/missing features after        → harnesspowers:sdd-write-spec
+    ├── Found bugs/missing features after        → sdd-harness:sdd-write-spec
     │   manual testing post-implementation?         seed input: inline notes or path to findings file
     │                                               then: sdd-plan-feature → sdd-implement-plan
     │
@@ -55,7 +55,7 @@ Task arrives
     ├── Writing or running tests?                → superpowers:test-driven-development
     ├── Something broke?                         → superpowers:systematic-debugging
     │   ├── Need structured doubt-first analysis? → agent-skills:doubt-driven-development
-    │   └── After fix lands:                      → harnesspowers:sdd-write-spec
+    │   └── After fix lands:                      → sdd-harness:sdd-write-spec
     │                                                seed = bug report / findings
     │                                                updates roadmap.md + creates sdd-specs/features/YYYY-MM-DD-{fix}-spec.md
     │
@@ -75,7 +75,7 @@ Task arrives
     ├── Git workflow (branching, commits, PRs)?  → agent-skills:git-workflow-and-versioning
     ├── Context engineering (system prompts)?    → agent-skills:context-engineering
     │
-    └── Optimising a CLAUDE.md file?             → harnesspowers:optimise-claude-md
+    └── Optimising a CLAUDE.md file?             → sdd-harness:optimise-claude-md
         └── (also: claude-md-management:claude-md-improver for base audit)
 ```
 
@@ -124,16 +124,16 @@ Every skill includes a verification step. A task is not complete until verificat
 
 1. **Check for an applicable skill before starting work.**
 2. **Skills are workflows, not suggestions.** Follow the steps in order.
-3. Multiple skills can apply in sequence. Example: `harnesspowers:sdd-constitution` → `harnesspowers:sdd-write-spec` → `harnesspowers:sdd-plan-feature` → `harnesspowers:sdd-implement-plan` → `harnesspowers:sdd-verify-feature`.
+3. Multiple skills can apply in sequence. Example: `sdd-harness:sdd-constitution` → `sdd-harness:sdd-write-spec` → `sdd-harness:sdd-plan-feature` → `sdd-harness:sdd-implement-plan` → `sdd-harness:sdd-verify-feature`.
 
 ## Plugin Stack Overview
 
 | Plugin | Role |
 |--------|------|
-| **harnesspowers** | SDD workflow orchestration — wraps primitives into opinionated workflows |
+| **sdd-harness** | SDD workflow orchestration — wraps primitives into opinionated workflows |
 | **agent-skills** | Engineering primitives — implementation, review, CI/CD, observability, etc. |
 | **superpowers** | Core disciplines — brainstorming, TDD, systematic debugging, writing plans |
 | **frontend-design** | Design direction and frontend UI engineering quality |
 | **claude-md-management** | CLAUDE.md audit and improvement tooling |
 
-Use harnesspowers wrapper skills (sdd-constitution, sdd-write-spec, sdd-plan-feature, sdd-implement-plan) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.
+Use sdd-harness wrapper skills (sdd-constitution, sdd-write-spec, sdd-plan-feature, sdd-implement-plan) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.

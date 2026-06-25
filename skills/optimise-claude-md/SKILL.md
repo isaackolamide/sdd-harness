@@ -73,7 +73,7 @@ Flag any block longer than 5 lines that reads as an essay or reference doc rathe
 Flag content that belongs in another layer of the harness:
 - "Always do X before Y" procedural rules → should be a hook
 - Long how-to workflows → should be a skill
-- Repeated patterns that appear project-wide → should be a skill invoked by `using-harnesspowers`
+- Repeated patterns that appear project-wide → should be a skill invoked by `using-sdd-harness`
 
 ### Check 5: Router vs Monolith
 

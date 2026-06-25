@@ -39,5 +39,5 @@ Why this feature is being built:
 - sdd-specs/roadmap.md — Phase this feature belongs to
 - sdd-specs/features/feature-{YYYY-MM-DD-name}.md — [feature name] (include only if a feature spec was written)
 - sdd-docs/decisions/ADR-{NNN}-{title}.md — [decision title] (include only if an ADR was written)
-- harnesspowers:references/testing-patterns.md — Testing patterns reference for TDD, assertions, and mocking boundaries
-- harnesspowers:references/clean-architecture-ddd-reference.md — [Conditional] Clean Architecture and DDD structural/layer rules (if non-TypeScript, map concepts conceptually)
+- sdd-harness:references/testing-patterns.md — Testing patterns reference for TDD, assertions, and mocking boundaries
+- sdd-harness:references/clean-architecture-ddd-reference.md — [Conditional] Clean Architecture and DDD structural/layer rules (if non-TypeScript, map concepts conceptually)

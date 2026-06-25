@@ -1,12 +1,12 @@
 {
-  "name": "harnesspowers",
+  "name": "sdd-harness",
   "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
   "version": "2.4.0",
   "author": {
     "name": "Isaac"
   },
-  "homepage": "https://github.com/isaackolamide/harnesspowers",
-  "repository": "https://github.com/isaackolamide/harnesspowers",
+  "homepage": "https://github.com/isaackolamide/sdd-harness",
+  "repository": "https://github.com/isaackolamide/sdd-harness",
   "license": "GPL-3.0",
   "skills": "./skills",
   "dependencies": [

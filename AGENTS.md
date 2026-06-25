@@ -1,19 +1,19 @@
-# Harnesspowers
+# Sdd-harness
 
 SDD workflow orchestrator plugin. Composes `agent-skills`, `superpowers` into end-to-end development workflows.
 
 ## Architecture
 
 Four-plugin dependency stack:
-- **harnesspowers** (this plugin) — 7 SDD workflow skills + unified routing tree
+- **sdd-harness** (this plugin) — 7 SDD workflow skills + unified routing tree
 - **agent-skills** — 24 engineering primitive skills
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming
 
-harnesspowers delegates to the other two. It owns no copies of their skills.
+sdd-harness delegates to the other two. It owns no copies of their skills.
 
 ## Skills
 
-- `using-harnesspowers` — Authoritative routing tree across all plugins
+- `using-sdd-harness` — Authoritative routing tree across all plugins
 - `sdd-constitution` — Creates constitution docs: mission.md, tech-stack.md, roadmap.md
 - `sdd-write-spec` — Creates feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md
 - `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md (phase-structured: interface contracts + checkpoint blocks per phase), requirements.md, validation.md

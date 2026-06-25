@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SessionStart hook for harnesspowers plugin
+# SessionStart hook for sdd-harness plugin
 # Injects the unified routing tree into every session as authoritative context.
 
 set -euo pipefail
@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-ROUTER_CONTENT=$(cat "${PLUGIN_ROOT}/skills/using-harnesspowers/SKILL.md" 2>/dev/null || echo "")
+ROUTER_CONTENT=$(cat "${PLUGIN_ROOT}/skills/using-sdd-harness/SKILL.md" 2>/dev/null || echo "")
 if [ -z "$ROUTER_CONTENT" ]; then
   exit 0
 fi
@@ -23,7 +23,7 @@ escape_for_json() {
 }
 
 escaped=$(escape_for_json "$ROUTER_CONTENT")
-context="<HARNESSPOWERS_ROUTING>\\n${escaped}\\n</HARNESSPOWERS_ROUTING>"
+context="<SDD_HARNESS_ROUTING>\\n${escaped}\\n</SDD_HARNESS_ROUTING>"
 
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
   printf '{\n  "additional_context": "%s"\n}\n' "$context"
