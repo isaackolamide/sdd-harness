@@ -41,7 +41,7 @@ function getuserdata(id) {
 
 ## Testing Strategy
 
-For detailed implementation guidelines (AAA structure, mocks, and builders), refer to the shared `harnesspowers:references/testing-patterns.md` reference.
+For detailed implementation guidelines (AAA structure, mocks, and builders), refer to the shared `sdd-harness:references/testing-patterns.md` reference.
 
 ### Framework & Tools
 - Test Runner: [framework]
