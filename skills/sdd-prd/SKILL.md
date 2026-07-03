@@ -78,6 +78,8 @@ Please reply with "yes" or "looks good" to confirm, or suggest refinements.
 
 Create `sdd-specs/prds/YYYY-MM-DD-<feature-name>-prd.md` using the template below.
 
+**Figma URL (conditional):** If a `figma.com` URL was present in the seed input, record it verbatim under `## Design Reference` in the generated PRD. Do not paraphrase or describe the design — the URL is the reference.
+
 ### Step 6: Handoff to Specification
 
 Provide the exact command to transition the generated PRD into the feature spec generation phase:
@@ -128,6 +130,9 @@ Next Step: Run `/sdd-write-spec sdd-specs/prds/YYYY-MM-DD-<feature-name>-prd.md`
 
 ## Success Metrics
 * How we measure the feature's business or user value.
+
+## Design Reference
+<!-- figma.com URL — or omit section if none -->
 ```
 
 ---

@@ -32,6 +32,7 @@ Before reading any project files or starting the plan, verify that a valid featu
      - **Constraint**: mapped from `Technical Constraints` section.
      - **Dependencies**: mapped from the `Dependencies` section.
      - **Stakeholder Flags**: mapped from the `Stakeholder Flags` section.
+     - **Design Reference**: if a `figma.com` URL is present in `Design Reference`, carry it verbatim into `requirements.md` under a `## Design Reference` section. Do not paraphrase it.
 
 ---
 

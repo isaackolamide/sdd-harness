@@ -22,6 +22,7 @@ sdd-harness (orchestrator)      — 8 SDD workflow skills
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
 frontend-design (UI/design)       — design direction, frontend quality
+figma (design bridge)             — design → code bridge (read Figma designs into implementation context)
 claude-md-management (tooling)    — CLAUDE.md audit and improvement
 ```
 
@@ -160,16 +161,16 @@ Sets product requirements, project-wide boundaries, and creates feature specific
   * `sdd-specs/tech-stack.md` — Directory structure, code style rules (with code snippet), and test runner configurations.
   * `sdd-specs/roadmap.md` — Project milestones and release phases.
 * **`/sdd-prd` (Rough product/feature idea):**
-  * `sdd-specs/prds/YYYY-MM-DD-{name}-prd.md` — Comprehensive Product Requirements Document (PRD) detailing user journeys, MoSCoW priorities, and constraints.
+  * `sdd-specs/prds/YYYY-MM-DD-{name}-prd.md` — Comprehensive Product Requirements Document (PRD) detailing user journeys, MoSCoW priorities, and constraints. If a `figma.com` URL is present in the seed input, it is recorded verbatim under `## Design Reference`.
 * **`/sdd-write-spec` (PRD or idea exists):**
-  * `sdd-specs/features/YYYY-MM-DD-{name}-spec.md` — Scoped feature specification (can translate a PRD into a technical spec).
+  * `sdd-specs/features/YYYY-MM-DD-{name}-spec.md` — Scoped feature specification (can translate a PRD into a technical spec). Carries a `Design Reference` field if a Figma URL was supplied.
   * `sdd-specs/roadmap.md` — Appends the feature to the active roadmap phase.
 
 #### Phase 2: `/sdd-plan-feature`
 Breaks the feature spec into structured, implementable tasks.
 * **Outputs:**
   * `sdd-specs/plans/YYYY-MM-DD-{name}/plan.md` — Task breakdown with strict interface contracts and phase checkpoints.
-  * `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — Project scope, out-of-scope items, and design constraints (e.g. security, telemetry, migration risk).
+  * `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — Project scope, out-of-scope items, and design constraints (e.g. security, telemetry, migration risk). If the spec contained a `Design Reference` Figma URL, it is propagated verbatim into a `## Design Reference` section here.
   * `sdd-specs/plans/YYYY-MM-DD-{name}/validation.md` — Acceptance criteria checklist and definition of done.
   * `sdd-specs/docs/decisions/ADR-{NNN}.md` — Generated automatically if significant architectural choices surface.
 
@@ -179,6 +180,8 @@ Executes the plan slice by slice using Test-Driven Development (TDD) on an isola
   * **Subagent-driven** (Recommended for $\ge$ 4 slices): Spawns an isolated subagent per task; maintains context cleanliness.
   * **Autonomous**: Executes the entire plan in a single run without pausing.
   * **Checkpoint**: Pauses for user confirmation after completing each slice.
+* **Figma design context:** If `requirements.md` contains a `## Design Reference` Figma URL and a slice touches a screen or UI component, `figma:get_design_context` is called before building that slice's implementer brief (requires `figma:*` tools available in the session).
+* **Branch isolation:** A new feature branch is always created at the start of execution — regardless of the current branch state.
 * **Outputs:**
   * Commits corresponding to each task slice.
   * Phase checkpoints verified, ticked, and committed at phase boundaries.

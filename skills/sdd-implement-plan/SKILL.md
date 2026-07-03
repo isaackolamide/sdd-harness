@@ -25,7 +25,7 @@ Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superp
 Confirm the target feature path with the user (infer from context or prompt to select from `sdd-specs/`).
 
 ### Step 1: Branch Creation
-Ensure execution is on an isolated feature branch. If on `main` or a shared branch, prompt for a name and run `git checkout -b <branch-name>` before editing files.
+**Always** create a new isolated feature branch before touching any files — regardless of the current branch. Even if you are already on a feature branch, create a new one scoped to this plan. Prompt the user for a branch name (or infer one from the plan directory name), then run `git checkout -b <branch-name>` before any edits.
 
 ### Step 2: Read Input Files
 Read all three files before touching code:
@@ -40,6 +40,8 @@ Loop through each unchecked task in `plan.md` in order:
 - `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`
 - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
 - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
+
+**Figma design context (conditional):** If `requirements.md` contains a `## Design Reference` section with a `figma.com` URL, AND this slice touches a screen or UI component, AND `figma:*` tools are available in this session — call `figma:get_design_context` with that URL before building the implementer brief for this slice. If Figma tools are not available, include the URL as a plain reference in the implementer brief.
 
 3.2. **ANNOUNCE**: Print:
 `Starting slice N of M: [task name from plan.md]`
@@ -82,7 +84,7 @@ Once all tasks and phases are complete:
 
 ## Key Rules
 
-* **Branch Isolation**: Never implement code directly on `main` or a shared branch.
+* **Branch Isolation**: Always create a new branch at Step 1. Never implement on any existing branch — including `main`, shared branches, or prior feature branches.
 * **Spec First**: Always read `plan.md`, `requirements.md`, and `validation.md` before touching code.
 * **Contract Adherence**: Implement signatures exactly as specified in the task's `Interfaces` line.
 * **Checkpoints**: Never skip verification commands or phase checkpoints.
@@ -98,6 +100,7 @@ Once all tasks and phases are complete:
 - You are committing code changes without also ticking the task checkbox in `plan.md` in the same commit.
 - You are writing code before writing or updating tests.
 - You are modifying files on `main` or another shared branch.
+- You skipped `git checkout -b` because you thought the current branch was already suitable.
 
 ### Common Rationalizations
 
@@ -106,3 +109,4 @@ Once all tasks and phases are complete:
 | "The 4th patch will definitely fix it, it's just a small typo." | **Option B Rollback applies.** Run `git checkout -- <modified-files>` to discard changes. Break the task down in `plan.md`, commit the plan, and restart from a fresh slate. |
 | "I'll commit the code changes now and update `plan.md` in a later commit." | **Atomic commit rule violated.** Both code changes and the `[x]` tick in `plan.md` must be in a single, atomic commit. |
 | "I don't need to read `requirements.md` because I already know the task scope." | **Context loss risk.** Requirements contain critical design constraints. Read all 3 spec files before coding. |
+| "I'm already on a feature branch, so I don't need to create a new one." | **Step 1 is unconditional.** Always run `git checkout -b <branch-name>`. The current branch is irrelevant. |
