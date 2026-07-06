@@ -18,6 +18,11 @@ Key technical decisions made:
 Why this feature is being built:
 -
 
+## Design Reference [Conditional]
+
+*(Only include if a figma.com URL is present in the feature spec. This is the feature-level design file — the source that per-task `Design:` lines in plan.md are drawn from, and the fallback reference. Carry the URL verbatim. Do not paraphrase.)*
+-
+
 ## Security Constraints [Conditional]
 
 *(Only include if feature is classified as Security Sensitive. Detail encryption, access controls, input sanitization, or authentication rules here)*

@@ -22,6 +22,10 @@ Who benefits; who requested it.
 ## Dependencies
 - [Existing system component or in-progress feature this touches]
 
+## Design Reference [Conditional]
+(Only include if a figma.com URL was provided. Record the URL verbatim — it is the design reference; do not paraphrase or describe the design.)
+- [figma.com URL]
+
 ## Stakeholder Flags
 (mission.md "Ask First" items this feature touches — require explicit approval before implementation)
 - [Flag — or "none"]

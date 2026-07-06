@@ -39,7 +39,7 @@ sdd-specs/roadmap.md
    - **Acceptance Criteria** — what does "done" look like?
    - **Constraints** — time, scope, compatibility limits
    - **Dependencies** — which existing system components or in-progress features does this touch?
-   - **Figma URL** — if a `figma.com` URL is present in the seed, record it verbatim under a `Design Reference` field. Do not paraphrase or describe the design — the URL is the reference.
+   - **Figma URL** — if a `figma.com` URL is present in the seed, record it verbatim under the `## Design Reference` section. Do not paraphrase or describe the design — the URL is the reference.
 
    If no seed was provided, ask: "What feature are you building?" and proceed from the answer.
 

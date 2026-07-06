@@ -41,7 +41,7 @@ Loop through each unchecked task in `plan.md` in order:
 - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
 - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
 
-**Figma design context (conditional):** If `requirements.md` contains a `## Design Reference` section with a `figma.com` URL, AND this slice touches a screen or UI component, AND `figma:*` tools are available in this session — call `figma:get_design_context` with that URL before building the implementer brief for this slice. If Figma tools are not available, include the URL as a plain reference in the implementer brief.
+**Figma design context (conditional):** If `requirements.md` has a `## Design Reference` section with a `figma.com` URL, that URL is the design pointer for all UI slices in this feature. Record it as `[figma_url]` for the implementer brief (step 3.3). **Do not fetch here** — the implementer subagent fetches the design itself, so the returned reference code and screenshot land in the session that writes the UI. Note whether `figma:*` tools are available and pass that flag into the brief. If no `## Design Reference` exists, or the current task is not a UI task, no Figma action is needed for this slice.
 
 3.2. **ANNOUNCE**: Print:
 `Starting slice N of M: [task name from plan.md]`
@@ -51,12 +51,16 @@ Follow `superpowers:subagent-driven-development` for this slice (activate it by 
 
 Per-task reviewer note: The primitive dispatches per-slice reviews using `task-reviewer-prompt.md`. It is expected and correct that the `agent-skills:code-reviewer` agent type is selected here, as it is highly specialized for this review task. Do not override this.
 
-3.3. **SDD ADDITIONS — implementer brief**: When the primitive builds the implementer brief, also include:
-- CLASSIFY result: `"This is a [frontend/API/general] slice. Invoke [domain skill names] before coding."`
-- Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures.
-- Relevant constraints from `requirements.md` (only what binds this slice)
-- If ADR written: ADR path as implementation context
-- Instruction: commit implementation and test files only — do not touch `plan.md`
+3.3. **SDD ADDITIONS — implementer brief**: When the primitive builds the implementer brief, also include the following fields. Every field is required; use `N/A` only where the instruction explicitly permits it.
+
+| Field | Content |
+|---|---|
+| Slice type | `"This is a [frontend/API/general] slice. Invoke [domain skill names] before coding."` |
+| Interface contract | Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures. |
+| Spec constraints | Relevant constraints from `requirements.md` scoped to this slice only |
+| ADR reference | ADR path if written for this slice; else `N/A` |
+| **Figma design** | If `[figma_url]` recorded (requirements.md has `## Design Reference`) AND this is a UI task AND `figma:*` available: `"REQUIRED: This feature has a Figma design reference at [figma_url]. Before writing any UI code you MUST call figma:get_design_context with this URL, then implement from the returned reference code and screenshot."` — If URL recorded but `figma:*` unavailable: `"Figma reference (tools unavailable — visual reference only): [figma_url]"` — If no Design Reference or not a UI task: `N/A` |
+| Commit scope | `"Commit implementation and test files only — do not touch plan.md"` |
 
 3.4. **SDD ADDITIONS — task reviewer dispatch**: When the primitive dispatches the task reviewer, also include:
 - Full `requirements.md` — the spec compliance verdict requires the actual spec
@@ -110,3 +114,4 @@ Once all tasks and phases are complete:
 | "I'll commit the code changes now and update `plan.md` in a later commit." | **Atomic commit rule violated.** Both code changes and the `[x]` tick in `plan.md` must be in a single, atomic commit. |
 | "I don't need to read `requirements.md` because I already know the task scope." | **Context loss risk.** Requirements contain critical design constraints. Read all 3 spec files before coding. |
 | "I'm already on a feature branch, so I don't need to create a new one." | **Step 1 is unconditional.** Always run `git checkout -b <branch-name>`. The current branch is irrelevant. |
+| "There's a Figma URL in requirements.md but I'll just infer the UI from the task description." | **Design-to-code skipped.** When `requirements.md` has a `## Design Reference` and the slice is a UI task, the brief's **Figma design** field is REQUIRED — the subagent must call `figma:get_design_context` before writing UI code. Inferring from prose defeats the design reference. |
