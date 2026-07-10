@@ -36,7 +36,7 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 | `/sdd-write-spec` | Create feature spec for a new feature — updates project roadmap and generates feature spec |
 | `/sdd-plan-feature` | Plan a feature from a feature spec file — outputs plan.md/requirements.md/validation.md; triggers ADR for significant arch decisions |
 | `/sdd-implement-plan` | Execute a feature plan — 3-way mode (subagent-driven / autonomous / checkpoint), domain-aware dispatch, TDD enforced, phase checkpoints, developer whole-branch review |
-| `/sdd-verify-feature` | Validate spec compliance, audit code quality, update progress files, run pre-merge audits, and integrate/merge the branch |
+| `/sdd-verify-feature` | Run parallel verification gate (test engineer & code quality reviewer), update progress files, run pre-merge audits, and integrate the branch |
 | `/optimise-claude-md` | Audit and improve any project's CLAUDE.md |
 
 
@@ -190,8 +190,8 @@ Executes the plan slice by slice using Test-Driven Development (TDD) on an isola
 #### Phase 4: `/sdd-verify-feature`
 Validates code compliance and merges the feature branch.
 * **Workflow:**
-  * Dispatches the `test-engineer` subagent to verify all criteria in `validation.md` and audits raw execution logs.
-  * Runs a rigorous code quality audit. Any issues found are added to `plan.md` as `## Review Fixes` to be resolved via `/sdd-implement-plan`.
+  * Runs a **Parallel Verification Gate**: dispatches the `test-engineer` subagent to verify validation criteria and a `code-quality-reviewer` subagent to audit code quality simultaneously.
+  * Audits raw execution logs and quality reports. Any issues found are added to `plan.md` under `## Validation Fixes` and `## Code Quality Review` to be resolved via `/sdd-implement-plan`.
   * Ticks off progress in `plan.md` and `roadmap.md` upon completion.
   * Runs a pre-merge programmatic verification gate (checks git cleanliness, runs main build, lint, and test scripts).
   * Integrates the branch and cleans up using `superpowers:finishing-a-development-branch`.

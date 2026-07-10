@@ -19,7 +19,7 @@ sdd-harness delegates to the other two. It owns no copies of their skills.
 - `sdd-write-spec` — Creates feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md
 - `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md (phase-structured: interface contracts + checkpoint blocks per phase), requirements.md, validation.md
 - `sdd-implement-plan` — Executes feature plan: slice execution loop, TDD, checkpoints, ending with whole-branch code review (Step 4.1).
-- `sdd-verify-feature` — Performs formal validation via test-engineer, code quality review, ticks progress files, runs pre-merge audits, and integrates the branch.
+- `sdd-verify-feature` — Runs parallel verification gate (test engineer & code quality reviewer), appends fixes to plan.md, ticks progress files, runs pre-merge audits, and integrates the branch.
 
 ## References
 

@@ -49,3 +49,12 @@
 
 ## Plan Code Review
 - [ ] Feature plan code review passed
+
+---
+
+## Validation Fixes
+<!-- Validation fixes will be appended here as checklist tasks if validation fails -->
+
+## Code Quality Review
+<!-- Code quality review issues will be appended here as checklist tasks if findings are identified -->
+
