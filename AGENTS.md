@@ -5,7 +5,7 @@ SDD workflow orchestrator plugin. Composes `agent-skills`, `superpowers` into en
 ## Architecture
 
 Four-plugin dependency stack:
-- **sdd-harness** (this plugin) — 8 SDD workflow skills + unified routing tree
+- **sdd-harness** (this plugin) — 9 SDD workflow skills + unified routing tree
 - **agent-skills** — 24 engineering primitive skills
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming
 
@@ -19,6 +19,7 @@ sdd-harness delegates to the other two. It owns no copies of their skills.
 - `sdd-write-spec` — Creates feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md
 - `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md (phase-structured: interface contracts + checkpoint blocks per phase), requirements.md, validation.md
 - `sdd-implement-plan` — Executes feature plan: slice execution loop, TDD, checkpoints, ending with whole-branch code review (Step 4.1).
+- `sdd-implement-parallel-plans` — Executes multiple independent feature plans concurrently using isolated git worktrees.
 - `sdd-verify-feature` — Runs parallel verification gate (test engineer & code quality reviewer), appends fixes to plan.md, ticks progress files, runs pre-merge audits, and integrates the branch.
 
 ## References

@@ -5,7 +5,7 @@ SDD workflow orchestrator. Thin orchestration layer that wraps skills from two m
 ## Architecture
 
 Four-plugin dependency stack:
-- **sdd-harness** — 8 SDD workflow skills + unified routing tree (this plugin)
+- **sdd-harness** — 9 SDD workflow skills + unified routing tree (this plugin)
 - **agent-skills** — 24 engineering primitive skills (from `addyosmani/agent-skills`)
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming (from `claude-plugins-official`)
 - **frontend-design** — Design direction + frontend UI engineering (from `claude-plugins-official`)
@@ -23,6 +23,7 @@ sdd-harness delegates to the other four. It owns no copies of their skills.
 | `sdd-write-spec` | Feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md |
 | `sdd-plan-feature` | Feature plan: phase-structured plan.md (interface contracts + checkpoint blocks per phase), requirements.md, validation.md — triggers ADR for significant arch decisions |
 | `sdd-implement-plan` | Executes feature plan — slice execution loop, TDD, checkpoints, ending with developer whole-branch code review (Step 4.1) |
+| `sdd-implement-parallel-plans` | Executes multiple independent feature plans concurrently using isolated git worktrees |
 | `sdd-verify-feature` | Runs parallel verification gate (test engineer & code quality reviewer), appends fixes to plan, ticks progress files, runs pre-merge audits, and integrates the branch |
 | `optimise-claude-md` | CLAUDE.md audit with discoverability lens |
 

@@ -17,7 +17,7 @@ It wraps skills from two major plugins -> `superpowers` and `agent-skills`
 ## Plugin Stack
 
 ```
-sdd-harness (orchestrator)      — 8 SDD workflow skills
+sdd-harness (orchestrator)      — 9 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
@@ -36,6 +36,7 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 | `/sdd-write-spec` | Create feature spec for a new feature — updates project roadmap and generates feature spec |
 | `/sdd-plan-feature` | Plan a feature from a feature spec file — outputs plan.md/requirements.md/validation.md; triggers ADR for significant arch decisions |
 | `/sdd-implement-plan` | Execute a feature plan — 3-way mode (subagent-driven / autonomous / checkpoint), domain-aware dispatch, TDD enforced, phase checkpoints, developer whole-branch review |
+| `/sdd-implement-parallel-plans` | Execute multiple independent feature plans concurrently using isolated git worktrees |
 | `/sdd-verify-feature` | Run parallel verification gate (test engineer & code quality reviewer), update progress files, run pre-merge audits, and integrate the branch |
 | `/optimise-claude-md` | Audit and improve any project's CLAUDE.md |
 
@@ -127,6 +128,7 @@ You do not have a project constitution yet. You need to bootstrap the core scope
 /sdd-write-spec        # Propose new feature spec (can read PRD) → features/YYYY-MM-DD-{feature}-spec.md
 /sdd-plan-feature      # Choose feature/milestone → plan.md, requirements.md, validation.md
 /sdd-implement-plan    # TDD slice-by-slice implementation loop
+/sdd-implement-parallel-plans # Implement multiple independent plans concurrently
 /sdd-verify-feature    # Formal validation, quality audits, ticks roadmap, merges branch
 ```
 *Note: For an existing codebase, `/sdd-constitution` will automatically read your folder structure and commit history to pre-fill context before asking any questions.*
@@ -138,6 +140,7 @@ The project constitution already exists. You are starting a new feature from the
 /sdd-write-spec        # Creates feature spec (can consume PRD) → sdd-specs/features/YYYY-MM-DD-{feature}-spec.md
 /sdd-plan-feature      # Reads feature spec → plan.md, requirements.md, validation.md
 /sdd-implement-plan    # Runs implementation slices & developer review
+/sdd-implement-parallel-plans # Implements multiple independent feature plans concurrently
 /sdd-verify-feature    # Formally validates criteria & integrates branch
 ```
 
