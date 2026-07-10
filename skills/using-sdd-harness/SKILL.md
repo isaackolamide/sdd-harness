@@ -40,6 +40,10 @@ Task arrives
     │                                               (wraps superpowers:subagent-driven-development;
     │                                                slice loop, checkpoints, and whole-branch developer review)
     │
+    ├── Executing multiple independent plans?    → sdd-harness:sdd-implement-parallel-plans
+    │                                               (wraps superpowers:dispatching-parallel-agents with git worktrees
+    │                                                to safely implement plans concurrently)
+    │
     ├── Verifying, ticking progress, and         → sdd-harness:sdd-verify-feature
     │   integrating/merging the branch?             (wraps agent-skills:code-review-and-quality + test-engineer persona
     │                                                + superpowers:finishing-a-development-branch)
