@@ -1,7 +1,7 @@
 {
   "name": "sdd-harness",
   "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
-  "version": "2.4.9",
+  "version": "2.4.10",
   "author": {
     "name": "Isaac"
   },
@@ -12,7 +12,6 @@
   "dependencies": [
     "agent-skills@addy-agent-skills",
     "superpowers@claude-plugins-official",
-    "claude-md-management@claude-plugins-official",
-    "frontend-design@claude-plugins-official"
+    "claude-md-management@claude-plugins-official"
   ]
 }
