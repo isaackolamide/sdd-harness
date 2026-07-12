@@ -1,23 +1,25 @@
 # Feature Spec: {feature-name}
 
-## Objective
-What this feature does and why it exists now.
+**PRD Reference:** [Link or Path to PRD, if provided]
 
-## User & Stakeholder
-Who benefits; who requested it.
+## Objective & User
+[From distilled intent: Outcome / Why now / User]
 
-## Acceptance Criteria
-- Given [context], When [action], Then [outcome]
+## Acceptance Criteria & Success Metrics
+[From distilled intent: Success criteria — MUST follow Given, When, Then, Outcome pattern]
 
-## Technical Constraints
-(derived from sdd-specs/mission.md boundaries and sdd-specs/tech-stack.md)
-- [Boundary or constraint]
+## Scope
 
-## In Scope
-- [Item]
+### In Scope
+- [Items derived from distilled intent]
 
-## Out of Scope
-- [Item]
+### Out of Scope
+- [From distilled intent: Out of scope explicitly stated]
+
+## Technical Constraints & Stakeholder Flags
+- **Binding Constraint:** [From distilled intent]
+
+- **Stakeholder Flags:** [From sdd-specs/mission.md "Ask First" items]
 
 ## Dependencies
 - [Existing system component or in-progress feature this touches]
@@ -26,9 +28,7 @@ Who benefits; who requested it.
 (Only include if a figma.com URL was provided. Record the URL verbatim — it is the UI design reference; do not paraphrase or describe the design.)
 - [figma.com URL]
 
-## Stakeholder Flags
-(mission.md "Ask First" items this feature touches — require explicit approval before implementation)
-- [Flag — or "none"]
+---
 
-## Success Metrics
-How we know this feature worked.
+## Architecture & Implementation Design
+[INJECT RAW BRAINSTORMING SUBAGENT OUTPUT HERE (Exclude its `# Title` and metadata block)]
