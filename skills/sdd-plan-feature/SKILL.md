@@ -108,9 +108,9 @@ digraph conditional_classification {
 
 ### 5. Pre-Write Review (GATE)
 Present summary of `plan.md`, `requirements.md`, and `validation.md`.
-**Ask focused probe:** "Anything in the plan surprise you, missing from scope, or acceptance criterion feels wrong?"
+**Ask focused probe:** "Does anything in the plan surprise you, or does any acceptance criterion feel wrong? If it looks correct, please confirm we are ready to write the files."
 - Adjust and re-confirm if concerns raised.
-- **STOP**: Wait for explicit "yes" before writing files.
+- **STOP**: Wait for explicit approval before writing files.
 
 ### 6. Output
 Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/`. (Refer to `templates/`).
