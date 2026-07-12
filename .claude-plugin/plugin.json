@@ -1,7 +1,7 @@
 {
   "name": "sdd-harness",
   "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
-  "version": "2.4.19",
+  "version": "2.4.20",
   "author": {
     "name": "Isaac"
   },

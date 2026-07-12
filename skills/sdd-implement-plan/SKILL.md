@@ -30,10 +30,11 @@ Confirm the target feature path with the user (infer from context or prompt to s
 **(Replaces primitive's use of superpowers:using-git-worktrees)** **Always** create a new isolated feature branch before touching any files — regardless of the current branch. Even if you are already on a feature branch, create a new one scoped to this plan. Prompt the user for a branch name (or infer one from the plan directory name), then run `git checkout -b <branch-name>` before any edits.
 
 ### Step 2: Read Input Files
-Read all three files before touching code:
+Read the following two files before touching code:
 - `plan.md` (task list & checkboxes)
 - `requirements.md` (scope & design constraints)
-- `validation.md` (definition of done)
+
+*(Do not read or pass `validation.md` or `roadmap.md` — they are strictly reserved for the verification phase.)*
 
 ### Step 2.5: Load Sub-Skill (MANDATORY GATE)
 
@@ -65,7 +66,7 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 | Spec constraints | Relevant constraints from `requirements.md` scoped to this slice only |
 | ADR reference | ADR path if written for this slice; else `N/A` |
 | **Figma design** | If this is a UI task and `[figma_url]` was recorded: `"REQUIRED: Figma design at [figma_url]. (Call figma:get_design_context if available)."` Else: `N/A` |
-| Commit scope | `"Commit implementation and test files only — do not touch plan.md"` |
+| Commit scope | `"Commit implementation and test files only — do not touch plan.md, validation.md, or roadmap.md"` |
 
 3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with two items: the path to `requirements.md`, AND the exact **Acceptance Criteria** and **Verification** text copied from the current task slice.
 
@@ -97,7 +98,8 @@ Once all tasks and phases are complete:
 * **Branch Isolation**: Always create a new branch at Step 1. Never implement on any existing branch — including `main`, shared branches, or prior feature branches.
 * **Subagent Isolation**: Never write implementation code in the controller session. Always dispatch a subagent for each slice as required by `superpowers:subagent-driven-development`.
 * **Full Subagent Lifecycle**: You MUST execute the complete `superpowers:subagent-driven-development` lifecycle for every task. This includes the task reviewer phase, and if a bug is found, you MUST dispatch a fixer subagent. Never bypass the fixer subagent by fixing issues directly in the controller.
-* **Spec First**: Always read `plan.md`, `requirements.md`, and `validation.md` before touching code.
+* **Spec First**: Always read `plan.md` and `requirements.md` before touching code.
+* **Strict Boundary**: Never read or modify `validation.md` or `roadmap.md` during implementation. Those files belong to the verification phase.
 * **Contract Adherence**: Implement signatures exactly as specified in the task's `Interfaces` line.
 * **Checkpoints**: Never skip verification commands or checkpoints.
 * **Task Ordering**: Do not commit code for a task if any preceding task in `plan.md` remains unchecked.
@@ -107,6 +109,7 @@ Once all tasks and phases are complete:
 ## Bulletproofing
 
 ### Red Flags (STOP and Start Over)
+- You modified or checked off items in `validation.md` or `roadmap.md`.
 - You are writing implementation code directly in the controller session instead of dispatching a subagent.
 - You rationalized that text, config, or Bazel files don't require a subagent.
 - You are fixing a bug found by the task reviewer directly in the controller session instead of dispatching a fixer subagent.
@@ -126,6 +129,8 @@ Once all tasks and phases are complete:
 | "The task reviewer found a tiny issue, I'll just fix it in the controller session instead of dispatching a fixer subagent." | **Controller pollution.** The controller cannot write or fix code. You MUST dispatch a fixer subagent as mandated by `superpowers:subagent-driven-development`. |
 | "The 4th patch will definitely fix it, it's just a small typo." | **Option B Rollback applies.** Run `git reset --hard <BASE_COMMIT>` (the commit before the task started) to discard the subagent's commits and changes. Break the task down in `plan.md`, commit the plan, and restart from a fresh slate. |
 | "I'll tick the checkbox in `plan.md` but wait until the end of the phase to commit it." | **Progress loss risk.** You MUST commit `plan.md` immediately after ticking the checkbox to ensure durable progress tracking. |
-| "I don't need to read `requirements.md` because I already know the task scope." | **Context loss risk.** Requirements contain critical design constraints. Read all 3 spec files before coding. |
+| "I don't need to read `requirements.md` because I already know the task scope." | **Context loss risk.** Requirements contain critical design constraints. Read both spec files before coding. |
+| "I completed the validation step for this task, so I'll check it off in `validation.md`." | **Process violation.** `validation.md` is exclusively for the verification phase. Do not touch it during implementation. |
+| "I finished the feature, I'll update `roadmap.md`." | **Process violation.** `roadmap.md` is exclusively updated by `/sdd-verify-feature`. |
 | "I'm already on a feature branch, so I don't need to create a new one." | **Step 1 is unconditional.** Always run `git checkout -b <branch-name>`. The current branch is irrelevant. |
 | "There's a Figma URL in requirements.md but I'll just infer the UI from the task description." | **Design-to-code skipped.** When `requirements.md` has a `## UI Design Reference` and the slice is a UI task, the brief's **Figma design** field is REQUIRED — the subagent must call `figma:get_design_context` before writing UI code. Inferring from prose defeats the design reference. |
