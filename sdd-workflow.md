@@ -41,6 +41,8 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 **Process:**
 * **Constitution Check:** Verifies that the project's [mission.md](sdd-specs/mission.md), [tech-stack.md](sdd-specs/tech-stack.md), and [roadmap.md](sdd-specs/roadmap.md) exist.
 * **Alignment & Gates:** Checks the feature against "Never Do" constraints in the mission. If it violates a constraint, the agent refuses to proceed until the mission document is updated.
+* **Design Brainstorming:** Dispatches a subagent using `superpowers:brainstorming` to explore the architectural design and injects the output into the specification template.
+* **Confirmation Gate:** Presents a final restate of the distilled intent, constitution flags, and the readiness to write the approved design, requiring explicit user approval before writing.
 * **Roadmap Integration:** Adds the feature as a milestone/sub-item in the master [roadmap.md](sdd-specs/roadmap.md).
 
 **Artifact Output:**
@@ -53,8 +55,8 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 **Goal:** Break down the feature spec into concrete, typed tasks and validation criteria.
 
 **Process:**
-* **Context & Classification:** Analyzes keywords to apply specialized gates (e.g., Security, Telemetry, Migrations) and references architectural/testing patterns.
-* **Decomposition:** Breaks implementation into chronological phases and tasks. Each task defines strict Interface Contracts (fully typed inputs and outputs) rather than prose descriptions.
+* **Context & Classification:** Analyzes keywords to apply specialized gates (e.g., Security, Telemetry, Migrations) triggering corresponding sub-skills (`agent-skills:security-and-hardening`, etc.) and references architectural/testing patterns.
+* **Decomposition:** Uses `agent-skills:planning-and-task-breakdown` to break implementation into chronological phases and tasks. Each task defines strict Interface Contracts (fully typed inputs and outputs) rather than prose descriptions. Injects `targetBaseBranch` into the plan's frontmatter.
 * **Pre-Write Review Gate:** Presents a summary of the plan, requirements, and validation checklist, prompting the user for feedback before writing files.
 
 **Artifact Outputs** (stored in a dedicated directory: `sdd-specs/plans/YYYY-MM-DD-{feature-name}/`):
