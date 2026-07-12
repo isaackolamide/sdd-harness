@@ -56,7 +56,7 @@ Per-task reviewer note: The primitive dispatches per-slice reviews using `task-r
 | Field | Content |
 |---|---|
 | Slice type | `"This is a [frontend/API/general] slice. Invoke [domain skill names] before coding."` |
-| Interface contract | Task's `Interfaces` line from `plan.md` — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures. |
+| Interface contract | Task's `Interfaces` line from `plan.md` (or `"N/A"` if the task has no interfaces line or is a validation/quality review task) — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures. |
 | Spec constraints | Relevant constraints from `requirements.md` scoped to this slice only |
 | ADR reference | ADR path if written for this slice; else `N/A` |
 | **Figma design** | If `[figma_url]` recorded (requirements.md has `## UI Design Reference`) AND this is a UI task AND `figma:*` available: `"REQUIRED: This feature has a Figma design reference at [figma_url]. Before writing any UI code you MUST call figma:get_design_context with this URL, then implement from the returned reference code and screenshot."` — If URL recorded but `figma:*` unavailable: `"Figma reference (tools unavailable — visual reference only): [figma_url]"` — If no UI Design Reference or not a UI task: `N/A` |
@@ -68,10 +68,10 @@ Per-task reviewer note: The primitive dispatches per-slice reviews using `task-r
 
 3.5. **LEDGER & COMMIT**: Once the task review passes, update the progress ledger. Tick the task's checklist checkbox `- [ ] Task Completed` → `- [x] Task Completed` in `plan.md`. Stage and commit `plan.md` atomically with the task's code changes (one git commit per task).
 
-3.6. **CHECKPOINT**: At the end of a `## Phase N` section:
-- Run the `Verification:` command from the `### Checkpoint — Phase N` block in `plan.md`.
+3.6. **CHECKPOINT**: At the end of a phase or review section (e.g. `## Phase N`, `## Validation Fixes`, `## Code Quality Review`):
+- Run the `Verification:` command from the corresponding checkpoint block (e.g. `### Checkpoint — Phase N`, `### Checkpoint — Validation Fixes`, `### Checkpoint — Code Quality Review`) in `plan.md`.
 - If it passes: tick the checkpoint checkbox in `plan.md`, then run:
-  `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — Phase N"`
+  `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — [Section Name]"`
 - If it fails: halt implementation and ask the user. Do not proceed until resolved.
 
 ---
@@ -91,7 +91,7 @@ Once all tasks and phases are complete:
 * **Branch Isolation**: Always create a new branch at Step 1. Never implement on any existing branch — including `main`, shared branches, or prior feature branches.
 * **Spec First**: Always read `plan.md`, `requirements.md`, and `validation.md` before touching code.
 * **Contract Adherence**: Implement signatures exactly as specified in the task's `Interfaces` line.
-* **Checkpoints**: Never skip verification commands or phase checkpoints.
+* **Checkpoints**: Never skip verification commands or checkpoints.
 * **Task Ordering**: Do not commit code for a task if any preceding task in `plan.md` remains unchecked.
 * **No Unreviewed Code**: Never advance past Step 4 with open Critical or Important review findings.
 

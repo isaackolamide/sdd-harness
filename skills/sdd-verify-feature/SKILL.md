@@ -45,11 +45,38 @@ To minimize execution time and collect all feedback in a single run, perform the
 3. **Audit & Collect Findings**:
    - Wait for both subagents to return their reports.
    - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if a criterion is unmet:
-     - For each failed or unchecked criterion, you (the controller) must append a new task to the bottom of `plan.md` under the pre-existing `## Validation Fixes` section.
-     - Each task must have a `### Task V.Y: [Validation Failure Name]` header, a `- [ ] Task Completed` checkbox list item, and include the test engineer's failure report and stdout/stderr log snippets in the task description.
+     - For each failed or unchecked criterion, you (the controller) must append a new structured task to `plan.md` under the pre-existing `## Validation Fixes` section.
+     - Each task must follow the standard task structure:
+       - `### Task V.Y: [Validation Failure Name]`
+       - `- [ ] Task Completed`
+       - `Scope: S/M/L`
+       - `Files: [comma-separated paths or N/A]`
+       - `Interfaces: N/A`
+       - `Acceptance criteria:`
+         - [Specific description of what must pass, including raw failure snippets and logs]
+       - `Verification: [specific command to rerun/verify the failure, e.g. npm test path/to/failing_test.ts]`
+       - `Dependencies: [none, or previous task V.X]`
+     - After appending all validation tasks, append a validation fixes checkpoint block at the end of the `## Validation Fixes` section:
+       - `### Checkpoint — Validation Fixes`
+       - `- [ ] All validation fixes pass`
+       - `Verification: [command to run validation suite, e.g., npm test]`
    - **Code Quality Audit**: Review the code quality report.
      - Any findings categorized as **Required** (no prefix) or **Critical** by the `code-reviewer` must be addressed. Do not downgrade these findings.
-     - For any Required or Critical findings, you (the controller) must append them to the bottom of `plan.md` as new tasks under the pre-existing `## Code Quality Review` section. Each task must have a `### Task Q.Y: [Fix Name]` header and a `- [ ] Task Completed` checkbox list item.
+     - For any Required or Critical findings, you (the controller) must append them to `plan.md` as new structured tasks under the pre-existing `## Code Quality Review` section.
+     - Each task must follow the standard task structure:
+       - `### Task Q.Y: [Fix Name]`
+       - `- [ ] Task Completed`
+       - `Scope: S/M/L`
+       - `Files: [comma-separated paths or N/A]`
+       - `Interfaces: N/A`
+       - `Acceptance criteria:`
+         - [Detailed report of the required/critical design or quality issue to fix]
+       - `Verification: [command to verify code quality, e.g. npm run lint]`
+       - `Dependencies: [none, or previous task Q.X]`
+     - After appending all code quality tasks, append a code quality checkpoint block at the end of the `## Code Quality Review` section:
+       - `### Checkpoint — Code Quality Review`
+       - `- [ ] All code quality fixes pass`
+       - `Verification: [command to run quality suite, e.g. npm run lint && npm run build]`
 4. **Determine Exit or Completion**:
    - If there are any failed validation criteria OR critical/required quality review findings:
      1. Exit and hand back: Stop execution of this skill. Instruct the user to run `/sdd-implement-plan` to execute and verify these fixes before re-running `/sdd-verify-feature`.
