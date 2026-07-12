@@ -10,6 +10,8 @@ metadata:
 
 Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superpowers:subagent-driven-development` to guarantee invocation of the right primitives.
 
+**REQUIRED SUB-SKILL:** Use `superpowers:subagent-driven-development` to execute the implementation slices.
+
 ## Position in the SDD Trilogy
 
 ```
@@ -33,10 +35,18 @@ Read all three files before touching code:
 - `requirements.md` (scope & design constraints)
 - `validation.md` (definition of done)
 
+### Step 2.5: Load Sub-Skill (MANDATORY GATE)
+
+**MANDATORY:** Invoke `superpowers:subagent-driven-development` before starting the slice loop.
+
+Do not proceed to Step 3 until you have used the Skill tool to invoke it.
+
+> **Red flag:** If you are about to skip this step because the plan contains "only config" or "only text" or "no TypeScript" — stop. That is the exact rationalization the skill is designed to prevent. See Common Rationalizations below.
+
 ### Step 3: Slice Execution Loop
 Loop through each unchecked task in `plan.md` in order:
 
-3.1. **CLASSIFY**: Match the task title, scope description, and filenames against keywords to identify required instructions:
+3.1. **CLASSIFY**: Match the task title, scope description, and filenames against keywords to identify required **domain** skill instructions. Classification determines *which* domain skill to pass to the subagent — it does NOT determine *whether* to use a subagent. All tasks require a subagent regardless of classification outcome.
 - `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`
 - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
 - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
@@ -47,11 +57,10 @@ Loop through each unchecked task in `plan.md` in order:
 `Starting slice N of M: [task name from plan.md]`
 Show any scope constraints from `requirements.md` relevant to this slice.
 
-**REQUIRED SUB-SKILL:** You MUST use `superpowers:subagent-driven-development` for this slice and follow its complete lifecycle (implementer dispatch, task reviewer dispatch, and if bugs are found, fixer subagent dispatch). The steps below specify only what `sdd-implement-plan` adds on top — the primitive owns the general dispatch process, file handoffs, and model selection.
+3.3. **DISPATCH IMPLEMENTER**:
+**REQUIREMENT:** You MUST use `superpowers:subagent-driven-development` for this slice and follow its complete lifecycle (implementer dispatch, task reviewer dispatch, and if bugs are found, fixer subagent dispatch). The steps below specify only what `sdd-implement-plan` adds on top — the primitive owns the general dispatch process, file handoffs, and model selection.
 
-
-
-3.3. **SDD ADDITIONS — implementer dispatch prompt**: When the primitive constructs the dispatch prompt (alongside the generated brief file), also include the following fields. Every field is required; use `N/A` only where the instruction explicitly permits it.
+When the primitive constructs the dispatch prompt (alongside the generated brief file), also include the following fields. Every field is required; use `N/A` only where the instruction explicitly permits it.
 
 | Field | Content |
 |---|---|
@@ -103,6 +112,7 @@ Once all tasks and phases are complete:
 
 ### Red Flags (STOP and Start Over)
 - You are writing implementation code directly in the controller session instead of dispatching a subagent.
+- You rationalized that text, config, or Bazel files don't require a subagent.
 - You are fixing a bug found by the task reviewer directly in the controller session instead of dispatching a fixer subagent.
 - You skipped invoking `superpowers:subagent-driven-development` for a task because you assumed you remembered the flow.
 - You have made 3 consecutive debugging loops on a task and are about to attempt a 4th minor patch.
@@ -115,6 +125,7 @@ Once all tasks and phases are complete:
 | Excuse | Reality / Action |
 |--------|------------------|
 | "It's a small change, I can just write the code here instead of dispatching a subagent." | **Controller pollution.** The controller session must remain isolated to orchestrate the plan. Always dispatch a subagent for implementation. |
+| "It's just a config change / pure text / no TypeScript code." | **Controller pollution.** Subagents must be used for ALL implementation tasks, including config files, Bazel BUILD files, JSON, markdown, or tiny text changes. |
 | "I've already used `subagent-driven-development` for previous tasks, I don't need to invoke it again." | **Process drift.** You MUST use the skill for EVERY task to ensure all steps (including reviewer and fixer loops) are strictly executed. |
 | "The task reviewer found a tiny issue, I'll just fix it in the controller session instead of dispatching a fixer subagent." | **Controller pollution.** The controller cannot write or fix code. You MUST dispatch a fixer subagent as mandated by `superpowers:subagent-driven-development`. |
 | "The 4th patch will definitely fix it, it's just a small typo." | **Option B Rollback applies.** Run `git reset --hard <BASE_COMMIT>` (the commit before the task started) to discard the subagent's commits and changes. Break the task down in `plan.md`, commit the plan, and restart from a fresh slate. |
