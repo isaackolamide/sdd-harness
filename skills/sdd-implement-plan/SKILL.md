@@ -37,9 +37,7 @@ Read all three files before touching code:
 
 ### Step 2.5: Load Sub-Skill (MANDATORY GATE)
 
-**MANDATORY:** Invoke `superpowers:subagent-driven-development` before starting the slice loop.
-
-Do not proceed to Step 3 until you have used your file reading tools (e.g., `view_file`) to read the skill.
+**MANDATORY:** Invoke `superpowers:subagent-driven-development` via the Skill tool before starting the slice loop. Do not proceed to Step 3 until the skill is loaded.
 
 ### Step 3: Slice Execution Loop
 Loop through each unchecked task in `plan.md` in order:
