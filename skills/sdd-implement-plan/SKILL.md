@@ -39,9 +39,7 @@ Read all three files before touching code:
 
 **MANDATORY:** Invoke `superpowers:subagent-driven-development` before starting the slice loop.
 
-Do not proceed to Step 3 until you have used the Skill tool to invoke it.
-
-> **Red flag:** If you are about to skip this step because the plan contains "only config" or "only text" or "no TypeScript" — stop. That is the exact rationalization the skill is designed to prevent. See Common Rationalizations below.
+Do not proceed to Step 3 until you have used your file reading tools (e.g., `view_file`) to read the skill.
 
 ### Step 3: Slice Execution Loop
 Loop through each unchecked task in `plan.md` in order:
@@ -58,9 +56,9 @@ Loop through each unchecked task in `plan.md` in order:
 Show any scope constraints from `requirements.md` relevant to this slice.
 
 3.3. **DISPATCH IMPLEMENTER**:
-**REQUIREMENT:** You MUST use `superpowers:subagent-driven-development` for this slice and follow its complete lifecycle (implementer dispatch, task reviewer dispatch, and if bugs are found, fixer subagent dispatch). The steps below specify only what `sdd-implement-plan` adds on top — the primitive owns the general dispatch process, file handoffs, and model selection.
+**REQUIREMENT:** You are the controller. You must NOT write implementation code. You must output a dispatch prompt for the implementer subagent, following the lifecycle defined in `superpowers:subagent-driven-development`.
 
-When the primitive constructs the dispatch prompt (alongside the generated brief file), also include the following fields. Every field is required; use `N/A` only where the instruction explicitly permits it.
+**OUTPUT RECIPE:** For every task, you MUST output a dispatch prompt formatted exactly with these required fields (alongside the generated brief file). Every field is required; use `N/A` only where the instruction explicitly permits it.
 
 | Field | Content |
 |---|---|
