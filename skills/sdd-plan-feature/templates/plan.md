@@ -1,3 +1,6 @@
+---
+targetBaseBranch: [Current branch at time of planning, e.g. main or feature/parent-epic]
+---
 # [Feature Name] Implementation Plan
 
 **Goal:** [one sentence describing what this builds]
