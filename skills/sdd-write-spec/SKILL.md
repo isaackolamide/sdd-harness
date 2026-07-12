@@ -80,7 +80,7 @@ Dependencies:
 UI Design Reference:    <figma.com URL — or "none">
 Stakeholder flags:      <"Ask First" hits — or "none">
 Constitution conflicts: <"Never Do" hits — or "none">
-Brainstormed Design:    <"Approved and ready">
+Brainstormed Design:    <"Approved and ready to merge">
 ```
 
 Wait for explicit confirmation before writing. **The user must reply with an explicit confirmation word (e.g. exactly `"yes"`, `"looks good"`, or `"write it"`).** Ambiguous phrases are not accepted — ask "Anything to refine?" and wait for explicit confirmation.
