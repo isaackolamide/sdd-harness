@@ -60,9 +60,9 @@ claude plugin marketplace add https://github.com/isaackolamide/sdd-harness.git
 
 # Install plugins
 claude plugin install superpowers@claude-plugins-official
-claude plugin install frontend-design@claude-plugins-official
-claude plugin install claude-md-management@claude-plugins-official
 claude plugin install agent-skills@addy-agent-skills
+claude plugin install figma@claude-plugins-official
+claude plugin install claude-md-management@claude-plugins-official
 claude plugin install sdd-harness@sdd-harness
 ```
 

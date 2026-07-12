@@ -45,8 +45,8 @@ Task arrives
     │                                                to safely implement plans concurrently)
     │
     ├── Verifying, ticking progress, and         → sdd-harness:sdd-verify-feature
-    │   integrating/merging the branch?             (wraps agent-skills:code-review-and-quality + test-engineer persona
-    │                                                + superpowers:finishing-a-development-branch)
+    │   integrating/merging the branch?             (wraps superpowers:dispatching-parallel-agents + agent-skills:code-review-and-quality
+    │                                                + test-engineer persona + superpowers:finishing-a-development-branch)
     │
     ├── Found bugs/missing features after        → sdd-harness:sdd-write-spec
     │   manual testing post-implementation?         seed input: inline notes or path to findings file
@@ -153,8 +153,7 @@ Every skill includes a verification step. A task is not complete until verificat
 | **sdd-harness** | SDD workflow orchestration — wraps primitives into opinionated workflows |
 | **agent-skills** | Engineering primitives — implementation, review, CI/CD, observability, etc. |
 | **superpowers** | Core disciplines — brainstorming, TDD, systematic debugging, writing plans |
-| **frontend-design** | Design direction and frontend UI engineering quality |
 | **figma** | Design → code bridge — read Figma designs into implementation context |
 | **claude-md-management** | CLAUDE.md audit and improvement tooling |
 
-Use sdd-harness wrapper skills (sdd-constitution, sdd-write-spec, sdd-plan-feature, sdd-implement-plan) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.
+Use sdd-harness wrapper skills (sdd-constitution, sdd-prd, sdd-write-spec, sdd-plan-feature, sdd-implement-plan, sdd-implement-parallel-plans, sdd-verify-feature) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.
