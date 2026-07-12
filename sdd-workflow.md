@@ -89,7 +89,7 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 * **Parallel Verification Gate:** Dispatches a validation subagent (persona: `test-engineer`) and a code quality subagent (persona: `code-reviewer`) concurrently using `superpowers:dispatching-parallel-agents` to minimize execution time.
 * **Audit & Collect Findings:**
   * **Validation:** Controller reviews raw stdout logs from the `test-engineer` to verify functional tests passed. Appends any failures to `plan.md` under `## Validation Fixes`.
-  * **Code Quality:** Appends any Required or Critical code quality findings to `plan.md` under `## Code Quality Review`.
+  * **Code Quality:** Appends any Required or Critical code quality findings to `plan.md` under `## Code Quality Review Fixes`.
   * **Gate Exit:** If any issues exist, exits immediately to let the user resolve them via `/sdd-implement-plan`. Otherwise, ticks and commits `validation.md`.
 * **Administrative Ticking:** Verifies all checkboxes in `plan.md` are checked, marks the feature complete in the master `roadmap.md`, and commits.
 * **Programmatic Verification:** Checks that all checklist items in `plan.md` and `validation.md` are marked complete `[x]`, verifies that the Git working tree has no uncommitted source changes, and runs the main build, lint, and test scripts to prevent merging broken code.

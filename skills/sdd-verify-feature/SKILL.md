@@ -45,9 +45,11 @@ To minimize execution time and collect all feedback in a single run, perform the
 3. **Audit & Collect Findings**:
    - Wait for both subagents to return their reports.
    - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if a criterion is unmet:
-     - For each failed or unchecked criterion, you (the controller) must append a new structured task to `plan.md` under the pre-existing `## Validation Fixes` section.
+     - First, scan `plan.md` to find the highest phase number `N` currently defined (e.g. `## Phase N: [Phase Name]`).
+     - Append a new `## Phase <N+1>: Validation Fixes` header directly under the pre-existing `## Validation Fixes` header in `plan.md` (where `<N+1>` is the next phase number).
+     - For each failed or unchecked criterion, append a new structured task to `plan.md` under this new phase section.
      - Each task must follow the standard task structure:
-       - `### Task V.Y: [Validation Failure Name]`
+       - `### Task <N+1>.Y: [Validation Failure Name]`
        - `- [ ] Task Completed`
        - `Scope: S/M/L`
        - `Files: [comma-separated paths or N/A]`
@@ -55,16 +57,18 @@ To minimize execution time and collect all feedback in a single run, perform the
        - `Acceptance criteria:`
          - [Specific description of what must pass, including raw failure snippets and logs]
        - `Verification: [specific command to rerun/verify the failure, e.g. npm test path/to/failing_test.ts]`
-       - `Dependencies: [none, or previous task V.X]`
-     - After appending all validation tasks, append a validation fixes checkpoint block at the end of the `## Validation Fixes` section:
-       - `### Checkpoint — Validation Fixes`
+       - `Dependencies: [none, or previous task <N+1>.X]`
+     - After appending all validation tasks, append a validation fixes checkpoint block at the end of the section:
+       - `### Checkpoint — Phase <N+1>`
        - `- [ ] All validation fixes pass`
        - `Verification: [command to run validation suite, e.g., npm test]`
    - **Code Quality Audit**: Review the code quality report.
      - Any findings categorized as **Required** (no prefix) or **Critical** by the `code-reviewer` must be addressed. Do not downgrade these findings.
-     - For any Required or Critical findings, you (the controller) must append them to `plan.md` as new structured tasks under the pre-existing `## Code Quality Review` section.
+     - For any Required or Critical findings, append them to `plan.md` under the pre-existing `## Code Quality Review Fixes` section.
+     - First, determine the target phase number `Q` for the code quality review (e.g., `N + 2` if validation fixes were appended; `N + 1` if no validation fixes were appended).
+     - Append a new `## Phase <Q>: Code Quality Review Fixes` header directly under the pre-existing `## Code Quality Review Fixes` header in `plan.md`.
      - Each task must follow the standard task structure:
-       - `### Task Q.Y: [Fix Name]`
+       - `### Task <Q>.Y: [Fix Name]`
        - `- [ ] Task Completed`
        - `Scope: S/M/L`
        - `Files: [comma-separated paths or N/A]`
@@ -72,9 +76,9 @@ To minimize execution time and collect all feedback in a single run, perform the
        - `Acceptance criteria:`
          - [Detailed report of the required/critical design or quality issue to fix]
        - `Verification: [command to verify code quality, e.g. npm run lint]`
-       - `Dependencies: [none, or previous task Q.X]`
-     - After appending all code quality tasks, append a code quality checkpoint block at the end of the `## Code Quality Review` section:
-       - `### Checkpoint — Code Quality Review`
+       - `Dependencies: [none, or previous task <Q>.X]`
+     - After appending all code quality tasks, append a code quality checkpoint block at the end of the section:
+       - `### Checkpoint — Phase <Q>`
        - `- [ ] All code quality fixes pass`
        - `Verification: [command to run quality suite, e.g. npm run lint && npm run build]`
 4. **Determine Exit or Completion**:

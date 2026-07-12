@@ -68,8 +68,8 @@ Per-task reviewer note: The primitive dispatches per-slice reviews using `task-r
 
 3.5. **LEDGER & COMMIT**: Once the task review passes, update the progress ledger. Tick the task's checklist checkbox `- [ ] Task Completed` → `- [x] Task Completed` in `plan.md`. Stage and commit `plan.md` atomically with the task's code changes (one git commit per task).
 
-3.6. **CHECKPOINT**: At the end of a phase or review section (e.g. `## Phase N`, `## Validation Fixes`, `## Code Quality Review`):
-- Run the `Verification:` command from the corresponding checkpoint block (e.g. `### Checkpoint — Phase N`, `### Checkpoint — Validation Fixes`, `### Checkpoint — Code Quality Review`) in `plan.md`.
+3.6. **CHECKPOINT**: At the end of a phase or review section (e.g. `## Phase N`, `## Validation Fixes`, `## Code Quality Review Fixes`):
+- Run the `Verification:` command from the corresponding checkpoint block (e.g. `### Checkpoint — Phase N`, `### Checkpoint — Validation Fixes`, `### Checkpoint — Code Quality Review Fixes`) in `plan.md`.
 - If it passes: tick the checkpoint checkbox in `plan.md`, then run:
   `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — [Section Name]"`
 - If it fails: halt implementation and ask the user. Do not proceed until resolved.

@@ -194,7 +194,7 @@ Executes the plan slice by slice using Test-Driven Development (TDD) on an isola
 Validates code compliance and merges the feature branch.
 * **Workflow:**
   * Runs a **Parallel Verification Gate**: dispatches the `test-engineer` subagent to verify validation criteria and a `code-quality-reviewer` subagent to audit code quality simultaneously.
-  * Audits raw execution logs and quality reports. Any issues found are added to `plan.md` under `## Validation Fixes` and `## Code Quality Review` to be resolved via `/sdd-implement-plan`.
+  * Audits raw execution logs and quality reports. Any issues found are added to `plan.md` under `## Validation Fixes` and `## Code Quality Review Fixes` to be resolved via `/sdd-implement-plan`.
   * Ticks off progress in `plan.md` and `roadmap.md` upon completion.
   * Runs a pre-merge programmatic verification gate (checks git cleanliness, runs main build, lint, and test scripts).
   * Integrates the branch and cleans up using `superpowers:finishing-a-development-branch`.
