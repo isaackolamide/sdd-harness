@@ -98,12 +98,12 @@ digraph conditional_classification {
 ### 4. Planning & Decomposition
 **REQUIRED SUB-SKILL:** Use `agent-skills:planning-and-task-breakdown`.
 - **Confirm order and sizing** with user before formatting.
-- **Format directly into `plan.md`** (use `templates/plan.md`). No intermediate files.
+- **Format directly into `plan.md`** (MUST follow structure of `skills/sdd-plan-feature/templates/plan.md`). No intermediate files.
 - **Constraints**: 
   - Each task needs `Interfaces` (function signature + strict types). NO `any`/`unknown`.
   - Task headers: `### Task X.Y: [Name]`
   - End phases with `### Checkpoint — Phase N` with a checkbox.
-  - Inject `targetBaseBranch: <current-branch>` in YAML frontmatter.
+  - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
 - **ADR Trigger**: For significant architectural choices, **REQUIRED SUB-SKILL:** `agent-skills:documentation-and-adrs` → save to `sdd-specs/docs/decisions/` and cross-reference.
 
 ### 5. Pre-Write Review (GATE)
@@ -113,7 +113,15 @@ Present summary of `plan.md`, `requirements.md`, and `validation.md`.
 - **STOP**: Wait for explicit approval before writing files.
 
 ### 6. Output
-Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/`. (Refer to `templates/`).
+
+**REQUIRED ACTION:** You MUST use your file reading tools to read the template files before generating the output. Your output MUST exactly match the headings, sections, and structure of these templates.
+
+Read the templates located in the `skills/sdd-plan-feature/templates/` directory to format the generated planning files:
+- **plan.md**: [templates/plan.md](templates/plan.md)
+- **requirements.md**: [templates/requirements.md](templates/requirements.md)
+- **validation.md**: [templates/validation.md](templates/validation.md)
+
+Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` using the exact structure of the templates you just read.
 
 ## Anti-Rationalization
 
@@ -123,10 +131,14 @@ Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY
 | "I don't need to ask for feature name." | Dictates future tooling. Confirm the name. |
 | "I'll assume missing fields." | Guessing builds the wrong feature. Use interview-me. |
 | "I'll skip the pre-write review." | Causes churn if plan is wrong. Final safety net. |
+| "I know how to write a plan." | Templates define mandatory SDD structural contracts. Read and follow them exactly. |
+| "I'll just add prose notes instead of the checklist." | Structural templates are mandatory. Do not negotiate the format or omit sections. |
 
 ## Red Flags - STOP
 - Combining Steps 2, 3, and 4 into a single prompt.
 - Proceeding past Step 5 without explicit affirmative response.
 - Skipping `**REQUIRED SUB-SKILL**` invocations.
+- Generating output files without reading the templates first.
+- Modifying the template structure or omitting required sections/checklists.
 - Using absolute file paths (use `sdd-specs/...` paths).
 - Outputting code instead of strict interface contracts.

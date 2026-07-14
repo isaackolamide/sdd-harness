@@ -13,6 +13,11 @@ Out of scope:
 Key technical decisions made:
 -
 
+## Binding Constraints (Must-Haves)
+
+Critical constraints that must be met regardless of implementation details:
+-
+
 ## Context
 
 Why this feature is being built:

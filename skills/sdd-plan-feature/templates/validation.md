@@ -8,6 +8,11 @@ For behavioral criteria, prefer Given/When/Then:
 For non-functional or structural criteria, a plain statement is fine:
 - [ ] Criterion
 
+## Binding Constraints Checklist
+
+Verify critical constraints from requirements.md are met:
+- [ ] Constraint 1
+
 ## Test Coverage
 - [ ] Unit tests pass for new logic
 - [ ] Integration tests pass
@@ -17,9 +22,14 @@ For non-functional or structural criteria, a plain statement is fine:
 - [ ] Check 1
 - [ ] Check 2
 
+## PR Checklist
+- [ ] Code is formatted and linted
+- [ ] PR description includes testing evidence
+- [ ] Relevant documentation/artifacts updated
+
 ## Definition of Done
 
 This feature is mergeable when:
-- All acceptance criteria above are checked
+- All acceptance criteria and binding constraints above are checked
 - No regressions in existing tests
-- Code review approved
+- PR Checklist is complete and Code review approved

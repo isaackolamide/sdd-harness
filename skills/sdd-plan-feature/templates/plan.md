@@ -1,7 +1,12 @@
 ---
+feature: [Feature Name or ID]
+specFile: [Path to the feature spec in sdd-specs/features/ e.g. sdd-specs/features/YYYY-MM-DD-feature.md]
 targetBaseBranch: [Current branch at time of planning, e.g. main or feature/parent-epic]
+created: [YYYY-MM-DD]
 ---
 # [Feature Name] Implementation Plan
+
+**Feature Spec:** [Link to the feature spec in sdd-specs/features/ e.g. sdd-specs/features/YYYY-MM-DD-feature.md]
 
 **Goal:** [one sentence describing what this builds]
 **Architecture:** [2-3 sentences about approach]
