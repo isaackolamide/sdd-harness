@@ -2,11 +2,18 @@
 name: sdd-plan-feature
 description: Use when planning a validated feature spec file within an active SDD project.
 metadata:
-  type: implementation
+  type: planning
   composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:interview-me, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
 ---
 
 # SDD Feature Planner
+
+**REQUIRED SUB-SKILL:** Use `agent-skills:interview-me` to clarify missing intent fields.
+**REQUIRED SUB-SKILL:** Use `agent-skills:planning-and-task-breakdown` to structure the implementation plan.
+**REQUIRED SUB-SKILL:** Use `agent-skills:security-and-hardening` if the feature involves security.
+**REQUIRED SUB-SKILL:** Use `agent-skills:observability-and-instrumentation` if the feature involves telemetry.
+**REQUIRED SUB-SKILL:** Use `agent-skills:deprecation-and-migration` if the feature involves migrations.
+**REQUIRED SUB-SKILL:** Use `agent-skills:documentation-and-adrs` if the feature requires an ADR.
 
 ## When to Use
 - **Use when** a feature spec exists in `sdd-specs/features/` and you need to plan it.
@@ -15,7 +22,7 @@ metadata:
 
 ## Workflow
 
-### 0. Feature Spec Verification
+### Step 1: Feature Spec Verification
 
 ```dot
 digraph feature_spec_discovery {
@@ -47,16 +54,17 @@ digraph feature_spec_discovery {
 5. Parse the spec for: Objective (Why/Outcome), User (Who), Acceptance Criteria (Success), Technical Constraints (Constraint), Dependencies. 
 6. Carry any `figma.com` UI Design References verbatim into `requirements.md`.
 
-### 1. Gather Project Context
-Read `sdd-specs/mission.md`, `tech-stack.md`, and `roadmap.md`. Note missing files but do not block.
+### Step 2: Gather Project Context
+1. Read `sdd-specs/mission.md`, `tech-stack.md`, and `roadmap.md`. 
+2. Note missing files but do not block.
 
-### 2. Minimum Viable Fields Check
-Assess 5 core fields: Who, Why/Outcome, Success, Constraint, Dependencies.
-- Propose finalized intent restatement to user.
-- **Wait for explicit confirmation.**
-- If fields are missing: **REQUIRED SUB-SKILL:** Use `agent-skills:interview-me`.
+### Step 3: Minimum Viable Fields Check
+1. Assess 5 core fields: Who, Why/Outcome, Success, Constraint, Dependencies.
+2. If fields are missing: invoke `agent-skills:interview-me` to clarify intent.
+3. Propose finalized intent restatement to the user.
+4. **Wait for explicit confirmation.**
 
-### 3. Feature Naming & Classification
+### Step 4: Feature Naming & Classification
 1. Propose `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` and ask single confirmation question.
 2. Check spec against conditional triggers:
 
@@ -89,43 +97,43 @@ digraph conditional_classification {
 }
 ```
 
-   - **Security** (`auth`, `login`, `payment`): **REQUIRED SUB-SKILL:** `agent-skills:security-and-hardening` (inject Security Constraints).
-   - **Telemetry** (`API`, `cron`, `metric`): **REQUIRED SUB-SKILL:** `agent-skills:observability-and-instrumentation` (inject Telemetry sections).
-   - **Migration** (`refactor`, `schema`): **REQUIRED SUB-SKILL:** `agent-skills:deprecation-and-migration` (inject Migration Plan).
+3. Apply required sub-skills based on triggers:
+   - **Security** (`auth`, `login`, `payment`): invoke `agent-skills:security-and-hardening` (inject Security Constraints).
+   - **Telemetry** (`API`, `cron`, `metric`): invoke `agent-skills:observability-and-instrumentation` (inject Telemetry sections).
+   - **Migration** (`refactor`, `schema`): invoke `agent-skills:deprecation-and-migration` (inject Migration Plan).
+4. Gather references:
    - **Architecture** (`controller`, `dto`): Add `clean-architecture-ddd-reference.md` to references.
    - Always include `testing-patterns.md` in references.
 
-### 4. Planning & Decomposition
-**REQUIRED SUB-SKILL:** Use `agent-skills:planning-and-task-breakdown`.
-- **Confirm order and sizing** with user before formatting.
-- **Format directly into `plan.md`** (MUST follow structure of `skills/sdd-plan-feature/templates/plan.md`). No intermediate files.
-- **Constraints**: 
-  - Each task needs `Interfaces` (function signature + strict types). NO `any`/`unknown`.
-  - Task headers: `### Task X.Y: [Name]`
-  - End phases with `### Checkpoint — Phase N` with a checkbox.
-  - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
-- **ADR Trigger**: For significant architectural choices, **REQUIRED SUB-SKILL:** `agent-skills:documentation-and-adrs` → save to `sdd-specs/docs/decisions/` and cross-reference.
+### Step 5: Planning & Decomposition
+1. Invoke `agent-skills:planning-and-task-breakdown`.
+2. Confirm order and sizing with user before formatting.
+3. Format directly into `plan.md` (MUST follow structure of `skills/sdd-plan-feature/templates/plan.md`). No intermediate files.
+4. Apply the following constraints to `plan.md`:
+   - Each task needs `Interfaces` (function signature + strict types). NO `any`/`unknown`.
+   - Task headers: `### Task X.Y: [Name]`
+   - End phases with `### Checkpoint — Phase N` with a checkbox.
+   - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
+5. Apply ADR Trigger: For significant architectural choices, invoke `agent-skills:documentation-and-adrs` to save a decision record to `sdd-specs/docs/decisions/` and cross-reference it.
 
-### 5. Pre-Write Review (GATE)
-Present summary of `plan.md`, `requirements.md`, and `validation.md`.
-**Ask focused probe:** "Does anything in the plan surprise you, or does any acceptance criterion feel wrong? If it looks correct, please confirm we are ready to write the files."
-- Adjust and re-confirm if concerns raised.
-- **STOP**: Wait for explicit approval before writing files.
+### Step 6: Pre-Write Review (GATE)
+1. Present summary of `plan.md`, `requirements.md`, and `validation.md`.
+2. Ask focused probe: "Does anything in the plan surprise you, or does any acceptance criterion feel wrong? If it looks correct, please confirm we are ready to write the files."
+3. Adjust and re-confirm if concerns raised.
+4. **STOP**: Wait for explicit approval before writing files.
 
-### 6. Output
+### Step 7: Output
 
-**REQUIRED ACTION:** You MUST use your file reading tools to read the template files before generating the output. Your output MUST exactly match the headings, sections, and structure of these templates.
+1. **REQUIRED ACTION:** You MUST use your file reading tools to read the template files before generating the output. Your output MUST exactly match the headings, sections, and structure of these templates.
+2. Read the templates located in the `skills/sdd-plan-feature/templates/` directory to format the generated planning files:
+   - **plan.md**: [templates/plan.md](templates/plan.md)
+   - **requirements.md**: [templates/requirements.md](templates/requirements.md)
+   - **validation.md**: [templates/validation.md](templates/validation.md)
+3. Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` using the exact structure of the templates you just read.
 
-Read the templates located in the `skills/sdd-plan-feature/templates/` directory to format the generated planning files:
-- **plan.md**: [templates/plan.md](templates/plan.md)
-- **requirements.md**: [templates/requirements.md](templates/requirements.md)
-- **validation.md**: [templates/validation.md](templates/validation.md)
+## Common Rationalizations & Red Flags
 
-Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` using the exact structure of the templates you just read.
-
-## Anti-Rationalization
-
-| Excuse | Reality |
+| Excuse / Red Flag | Reality |
 |--------|---------|
 | "I'll batch confirmations at the end." | Batching bypasses user guidance. Stop at each gate. |
 | "I don't need to ask for feature name." | Dictates future tooling. Confirm the name. |
@@ -134,7 +142,7 @@ Write `plan.md`, `requirements.md`, and `validation.md` to `sdd-specs/plans/YYYY
 | "I know how to write a plan." | Templates define mandatory SDD structural contracts. Read and follow them exactly. |
 | "I'll just add prose notes instead of the checklist." | Structural templates are mandatory. Do not negotiate the format or omit sections. |
 
-## Red Flags - STOP
+## Red Flags - STOP and Correct
 - Combining Steps 2, 3, and 4 into a single prompt.
 - Proceeding past Step 5 without explicit affirmative response.
 - Skipping `**REQUIRED SUB-SKILL**` invocations.
