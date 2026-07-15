@@ -31,7 +31,7 @@ To minimize execution time and collect all feedback in a single run, perform the
    - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
 2. **Dispatch Parallel Subagents**:
    - In a single response block, dispatch the following two subagents to run concurrently:
-     - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, Automation Checks, and PR Checklist) against the implementation. It must provide raw stdout logs of the passing tests to prove each item is met. It must not ask the user for confirmation unless the item is strictly visual or requires external system access you lack.
+     - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, and Automation Checks) against the implementation. It must provide raw stdout logs of the passing tests to prove each item is met. It must not ask the user for confirmation unless the item is strictly visual or requires external system access you lack.
      - **Code Quality Subagent (persona: `code-reviewer`)**: Provide it with `tech-stack.md` and `requirements.md`. Instruct it to generate and evaluate the full feature diff against the target base branch using `tech-stack.md` as its standard for Required and Critical issues.
 3. **Audit & Collect Findings**:
    - Wait for both subagents to return their reports.

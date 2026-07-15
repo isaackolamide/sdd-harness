@@ -22,14 +22,10 @@ Verify critical constraints from requirements.md are met:
 - [ ] Check 1
 - [ ] Check 2
 
-## PR Checklist
-- [ ] Code is formatted and linted
-- [ ] PR description includes testing evidence
-- [ ] Relevant documentation/artifacts updated
 
 ## Definition of Done
 
 This feature is mergeable when:
 - All acceptance criteria and binding constraints above are checked
 - No regressions in existing tests
-- PR Checklist is complete and Code review approved
+- Code review approved
