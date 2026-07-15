@@ -84,9 +84,8 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 
 ### Step 4: Bookkeeping & Hand-off
 Once all tasks and phases are complete:
-1. **Whole-Branch Review**: Run the final code review and fix loops from `superpowers:subagent-driven-development`, passing the path to `requirements.md` for the `[PLAN_OR_REQUIREMENTS]` template placeholder.
-2. **Tick Checkbox**: Once review passes, tick `- [ ] Feature plan code review passed` to `- [x] ...` in `plan.md`, then stage and commit all changes in this branch along with `plan.md`.
-3. **Handoff**: Print:
+1. **Commit**: Stage and commit all changes in this branch.
+2. **Handoff**: Print:
    > "✓ Implementation and initial developer review complete. Run: /sdd-verify-feature"
 
 ---

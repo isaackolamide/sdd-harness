@@ -55,9 +55,6 @@ created: [YYYY-MM-DD]
 
 ---
 
-## Plan Code Review
-- [ ] Feature plan code review passed
-
 ---
 
 ## Validation Fixes
