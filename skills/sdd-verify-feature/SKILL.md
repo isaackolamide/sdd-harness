@@ -3,7 +3,7 @@ name: sdd-verify-feature
 description: Use when a feature implementation is complete and you need to verify it against the spec, ensure code quality, and integrate the branch.
 metadata:
   type: verification
-  composesWith: [agent-skills:code-review-and-quality, superpowers:finishing-a-development-branch, superpowers:dispatching-parallel-agents]
+  composesWith: [superpowers:finishing-a-development-branch, superpowers:dispatching-parallel-agents]
 ---
 
 # SDD Feature Verification Driver
@@ -13,15 +13,6 @@ Verify that the implemented feature complies with the spec guidelines, passes ri
 **REQUIRED SUB-SKILL:** Use `superpowers:dispatching-parallel-agents` to run verification concurrent audits.
 **REQUIRED SUB-SKILL:** Use `superpowers:finishing-a-development-branch` to merge the branch.
 
-## Position in the SDD Trilogy
-
-```
-/sdd-write-spec        → sdd-specs/mission.md, tech-stack.md, roadmap.md
-/sdd-plan-feature      → sdd-specs/plans/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
-/sdd-implement-plan    → slice coding & developer self-review
-/sdd-verify-feature    → parallel verification & code quality (Step 1) → ticks plan/roadmap (Step 2) 
-                         → pre-merge audits (Step 3) → git branch integration (Step 4)
-```
 
 ## Workflow
 
@@ -37,11 +28,11 @@ To minimize execution time and collect all feedback in a single run, perform the
 1. **Prepare Inputs**:
    - Read the active `requirements.md` and `validation.md` files in full.
    - Read the `tech-stack.md` file in full.
-   - Generate the full git diff of the feature branch against the target base branch.
+   - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
 2. **Dispatch Parallel Subagents**:
    - In a single response block, dispatch the following two subagents to run concurrently:
      - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify the criteria in `validation.md` against the implementation and provide raw stdout logs of the passing tests to prove the criteria are met. It must not ask the user for confirmation unless the criterion is strictly visual or requires external system access you lack.
-     - **Code Quality Subagent (persona: `code-reviewer`)**: Require it to use the `agent-skills:code-review-and-quality` skill. Provide it with `tech-stack.md` and `requirements.md`. Instruct it to evaluate the full feature diff using `tech-stack.md` and `sdd-harness:references/testing-patterns.md` as its standard for Required and Critical issues.
+     - **Code Quality Subagent (persona: `code-reviewer`)**: Provide it with `tech-stack.md` and `requirements.md`. Instruct it to generate and evaluate the full feature diff against the target base branch using `tech-stack.md` as its standard for Required and Critical issues.
 3. **Audit & Collect Findings**:
    - Wait for both subagents to return their reports.
    - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if a criterion is unmet:
