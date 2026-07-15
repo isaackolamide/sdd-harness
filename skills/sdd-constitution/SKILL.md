@@ -15,7 +15,7 @@ Create a structured specification "constitution" with three core files in your p
 
 ## Workflow
 
-### Pre-Step 0: Existing Constitution Check
+### Step 1: Existing Constitution Check
 
 1. **Check Files**: **Before anything else**, check whether all three constitution files exist:
 
@@ -28,11 +28,11 @@ sdd-specs/roadmap.md
 2. **Evaluate State**:
    - **All three exist** → The constitution is already complete. Inform the user and instruct them to run `/sdd-write-spec` to specify new features, or `/sdd-plan-feature` if they already have a feature spec.
    - **Partial** (only some files exist) → Surface the gap: list which files exist and which are missing, then ask the user whether they intend to complete the constitution or start fresh before proceeding.
-   - **None exist** → Proceed to Pre-Step 1.
+   - **None exist** → Proceed to Step 2.
 
 ---
 
-### Pre-Step 1: Seed Input Check
+### Step 2: Seed Input Check
 
 1. **Check Input**: Check if the user provided any context when invoking the skill — draft ideas, requirements notes, a pasted brief, or bullet points.
 2. **Process Provided Seed**: **If seed input was provided:**
@@ -44,18 +44,18 @@ sdd-specs/roadmap.md
 
 ---
 
-### Pre-Step 2: Context Check
+### Step 3: Context Check
 
 1. **Ask User**: Ask: **"Is there an existing codebase for this initiative?"**
 2. **Branch**:
    - **Yes →** run the Analysis Branch (A1–A3) before brainstorming.
-   - **No →** skip directly to Step 1.
+   - **No →** skip directly to Step 4.
 
 ---
 
 ### Analysis Branch — Existing Codebase Only
 
-1. **Run Analysis**: Run A1–A3 before brainstorming. Carry evidence into Step 1 so brainstorming is focused confirmation rather than open-ended exploration.
+1. **Run Analysis**: Run A1–A3 before brainstorming. Carry evidence into Step 4 so brainstorming is focused confirmation rather than open-ended exploration.
 
 #### A1: Analyse Codebase Structure
 
@@ -92,12 +92,12 @@ git log --format="%s" | grep -oE "^(feat|fix|refactor|chore|docs)" | sort | uniq
 
 ---
 
-### Step 1: Brainstorm
+### Step 4: Brainstorm
 
 1. **Invoke Sub-Skill**: Unconditionally invoke `superpowers:brainstorming`.
 
 > [!IMPORTANT]
-> When executing the brainstorming step, do NOT save a design doc to `docs/superpowers/specs/` or create that folder, and do NOT invoke `writing-plans`. The brainstorming here is purely conversational to align on requirements and context. The actual constitution files are written in Step 5 to the chosen `sdd-specs/` location.
+> When executing the brainstorming step, do NOT save a design doc to `docs/superpowers/specs/` or create that folder, and do NOT invoke `writing-plans`. The brainstorming here is purely conversational to align on requirements and context. The actual constitution files are written in Step 8 to the chosen `sdd-specs/` location.
 
 2. **Branching Context**:
    - **New project:** Open-ended — explore problem space, requirements, boundaries (including TDD and mock boundary practices), and constraints
@@ -108,7 +108,7 @@ git log --format="%s" | grep -oE "^(feat|fix|refactor|chore|docs)" | sort | uniq
 
 ---
 
-### Step 2: Intent Clarity Check
+### Step 5: Intent Clarity Check
 
 1. **Assess Completeness**: Assess whether the intent has the four minimum viable fields — skipping any already answered by seed input or codebase analysis:
    - **Who** — who is the user / stakeholder?
@@ -122,7 +122,7 @@ git log --format="%s" | grep -oE "^(feat|fix|refactor|chore|docs)" | sort | uniq
 
 ---
 
-### Step 3: Choose Specs Location
+### Step 6: Choose Specs Location
 
 1. **Ask User**: Ask where the `sdd-specs/` folder should live:
    - `project-root/sdd-specs/` — Default
@@ -132,7 +132,7 @@ git log --format="%s" | grep -oE "^(feat|fix|refactor|chore|docs)" | sort | uniq
 
 ---
 
-### Step 4: Pre-Write Confirmation Gate
+### Step 7: Pre-Write Confirmation Gate
 
 1. **Present Summary**: Before writing any file, present a restate:
 
@@ -151,7 +151,7 @@ Here's what I understand we're building:
 
 ---
 
-### Step 5: Generate Constitution
+### Step 8: Generate Constitution
 
 1. **Create Files**: Create three files in the chosen `sdd-specs/` location:
    - **mission.md** — Objective, Boundaries, Commands
