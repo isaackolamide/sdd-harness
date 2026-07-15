@@ -16,7 +16,7 @@ sdd-harness delegates to the other two. It owns no copies of their skills.
 - `using-sdd-harness` — Authoritative routing tree across all plugins
 - `sdd-constitution` — Creates constitution docs: mission.md, tech-stack.md, roadmap.md
 - `sdd-prd` — Discovery interview and Product Requirements Document (PRD) generator
-- `sdd-write-spec` — Creates feature spec: sdd-specs/features/YYYY-MM-DD-<name>-spec.md
+- `sdd-write-spec` — Creates feature spec (`sdd-specs/features/YYYY-MM-DD-<name>-spec.md`) and drafts flow diagrams (`sdd-specs/diagrams/YYYY-MM-DD-<name>-flow.md`)
 - `sdd-plan-feature` — Creates YYYY-MM-DD-{feature}/plan.md (phase-structured: interface contracts + checkpoint blocks per phase), requirements.md, validation.md
 - `sdd-implement-plan` — Executes feature plan: slice execution loop, TDD, checkpoints, ending with whole-branch code review (Step 4.1).
 - `sdd-implement-parallel-plans` — Executes multiple independent feature plans concurrently using isolated git worktrees.

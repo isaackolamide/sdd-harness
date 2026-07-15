@@ -33,7 +33,7 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 | `/using-sdd-harness` | Routing tree — which skill for which task, across all plugins |
 | `/sdd-constitution` | Create or extract SDD constitution — works for new and existing projects |
 | `/sdd-prd` | Generate Product Requirements Document (PRD) from a rough idea via interactive discovery |
-| `/sdd-write-spec` | Create feature spec for a new feature — updates project roadmap and generates feature spec |
+| `/sdd-write-spec` | Create feature spec for a new feature — updates project roadmap, generates feature spec, and drafts a human-facing flow diagram |
 | `/sdd-plan-feature` | Plan a feature from a feature spec file — outputs plan.md/requirements.md/validation.md; triggers ADR for significant arch decisions |
 | `/sdd-implement-plan` | Execute a feature plan — 3-way mode (subagent-driven / autonomous / checkpoint), domain-aware dispatch, TDD enforced, phase checkpoints, developer whole-branch review |
 | `/sdd-implement-parallel-plans` | Execute multiple independent feature plans concurrently using isolated git worktrees |
@@ -167,6 +167,7 @@ Sets product requirements, project-wide boundaries, and creates feature specific
   * `sdd-specs/prds/YYYY-MM-DD-{name}-prd.md` — Comprehensive Product Requirements Document (PRD) detailing user journeys, MoSCoW priorities, and constraints. If a `figma.com` URL is present in the seed input, it is recorded verbatim under `## UI Design Reference`.
 * **`/sdd-write-spec` (PRD or idea exists):**
   * `sdd-specs/features/YYYY-MM-DD-{name}-spec.md` — Scoped feature specification (can translate a PRD into a technical spec). Carries a `UI Design Reference` field if a Figma URL was supplied.
+  * `sdd-specs/diagrams/YYYY-MM-DD-{name}-flow.md` — Optional Mermaid flow diagram for visual learners (requires user consent to save).
   * `sdd-specs/roadmap.md` — Appends the feature to the active roadmap phase.
 
 #### Phase 2: `/sdd-plan-feature`

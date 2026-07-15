@@ -71,15 +71,22 @@ digraph constitution_check {
      - **Architecture Section**: Insert the `brainstorming` output HERE, but you MUST exclude its top-level markdown title (`# ...`) and metadata block (Date, Status, Author) since the template already has a header.
 2. Edit `sdd-specs/roadmap.md` — add the feature as a new milestone, sub-item, or phase entry under the appropriate existing phase, linking to the newly created spec file.
 
-This file is the direct input to `sdd-plan-feature`. Hand off with:
-```
-/sdd-plan-feature sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md
-```
+### Step 5: Generate Human-Facing Flow Diagram
+
+1. Draft a companion Mermaid flow diagram for the feature based on the completed spec. **Crucial**: Since this is meant to help human visual learners, it MUST be highly descriptive. Include a brief, simple step-by-step text explanation above the diagram, and use Mermaid annotations (e.g., descriptive node labels, `note` blocks) to clearly explain the flow.
+2. **Seek Consent Before Saving**: Present the drafted explanation and Mermaid diagram in your chat response and explicitly ask the user: *"Would you like me to save this flow diagram to `sdd-specs/diagrams/YYYY-MM-DD-<feature-name>-flow.md`?"*
+3. **STOP AND WAIT** for the user's consent. Do not write the diagram to disk until the user explicitly approves.
+4. **Context Isolation Rule**: If approved and saved, this diagram is strictly for human consumption. You MUST save it as a separate file and NEVER inject it into the main feature spec or ADRs, as it unnecessarily bloats agent context windows.
+
+Once this is complete (or skipped by the user), hand off the feature spec:
+`/sdd-plan-feature sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`
 
 **Output:**
 ```
 sdd-specs/
 ├── roadmap.md                                      ← updated
+├── diagrams/
+│   └── YYYY-MM-DD-<feature-name>-flow.md           ← created (if consented)
 └── features/
     └── YYYY-MM-DD-<feature-name>-spec.md           ← created
 ```
@@ -88,32 +95,30 @@ sdd-specs/
 
 ## Common Mistakes
 
-- **Creating a feature-level roadmap:** Do NOT create `sdd-specs/features/roadmap.md`. The project roadmap (`sdd-specs/roadmap.md`) is the single source of truth for all phases. You must append to it, not create a new one.
+- **Creating feature roadmaps:** Don't create `sdd-specs/features/roadmap.md`. Append to the project `sdd-specs/roadmap.md`.
+- **Absolute paths:** Never use absolute paths (`file:///Users/...`) in outputs. Use paths relative to the project root (e.g., `sdd-specs/features/...`).
 
 ## Rationalization Table
 
 | Excuse | Reality |
 |--------|---------|
-| "User provided a complete PRD, so we don't need an interview." | PRDs contain assumptions. The interview extracts distilled intent to prevent building the wrong thing. |
-| "User explicitly commanded me to skip brainstorming/subagents." | User commands do not override required SDD workflow steps. We must follow the process to guarantee quality. |
-| "I'll just ask the questions all at once to save time." | `interview-me` must be one question at a time to be effective. |
-| "The constitution check failed, but I can just write the spec anyway and they can fix it later." | Writing a spec without a constitution guarantees it violates constraints. Stop immediately. |
+| "PRD is complete, no interview needed." | PRDs contain assumptions. Interview extracts distilled intent. |
+| "User commanded me to skip subagents." | User commands don't override SDD workflows. |
+| "I'll ask all questions at once." | `interview-me` requires one-by-one to work. |
+| "Constitution check failed, I'll write it anyway." | Writing without constitution guarantees violations. Stop. |
+| "Diagram belongs in the main spec." | Diagrams bloat context. Keep isolated in `sdd-specs/diagrams/`. |
+| "Feature is simple, I'll skip the diagram draft." | You must draft it. Only the user can skip saving it. |
+| "I'll save the diagram without asking." | Must seek explicit consent to keep workspace clean. |
 
 ## Red Flags - STOP and Start Over
 
-- "The user gave me a very detailed prompt, so I don't need `mission.md` to write this simple spec."
-- "The 'Never Do' violation is minor, I'll just write it and let the user decide."
-- "I don't have enough requirements, I'll just invent some acceptance criteria to be helpful."
-- "The user explicitly told me to skip brainstorming or the interview-me skill, so I will."
+- "I don't need `mission.md` for this simple spec."
+- "The 'Never Do' violation is minor."
+- "I'll invent acceptance criteria to be helpful."
+- "The user explicitly told me to skip brainstorming."
+- "I injected the flow diagram into the spec."
+- "I saved the diagram without consent."
+- "I skipped drafting a diagram because the feature is simple."
+- "I generated a bare-bones diagram without text explanations."
 
-**All of these mean: Stop. Re-read the workflow. Follow the hard stops.**
-
-## Feature Spec Template
-
-Refer to the template located at [templates/feature-spec.md](templates/feature-spec.md) to format the generated feature spec file.
-
-## Key Points
-
-- Both new projects and existing codebases must have their constitution files (`mission.md`, `tech-stack.md`, `roadmap.md`) generated via `sdd-constitution` before `sdd-write-spec` is used.
-- Step 2 Constitution Alignment is a hard stop for "Never Do" violations.
-- Never include absolute file paths (e.g. `file:///Users/username/...`) in generated output files. Refer to other specification files using paths starting with `sdd-specs/` as the root (e.g., `sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`), rather than relative paths.
+**All of these mean: Stop. Follow the hard stops.**
