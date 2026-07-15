@@ -2,7 +2,7 @@
 name: sdd-write-spec
 description: Use when creating a new feature specification document from raw ideas or PRDs, before any implementation plans are made.
 metadata:
-  type: implementation
+  type: planning
   composesWith: [superpowers:brainstorming, agent-skills:interview-me]
 ---
 
@@ -10,9 +10,12 @@ metadata:
 
 Generate a scoped feature specification (`sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`) and update the project roadmap. 
 
+**REQUIRED SUB-SKILL:** Use `agent-skills:interview-me` to extract the user's distilled intent.
+**REQUIRED SUB-SKILL:** Use `superpowers:brainstorming` to design the feature.
+
 ## Workflow
 
-### Pre-Step 0: Constitution Check
+### Step 0: Constitution Check
 
 **Before anything else**, check whether all three constitution files exist:
 
@@ -25,67 +28,42 @@ sdd-specs/roadmap.md
 ```dot
 digraph constitution_check {
     "All three exist?" [shape=diamond];
-    "Proceed to FS-1" [shape=box];
+    "Proceed to Step 1" [shape=box];
     "STOP. Demand /sdd-constitution" [shape=box];
 
-    "All three exist?" -> "Proceed to FS-1" [label="yes"];
+    "All three exist?" -> "Proceed to Step 1" [label="yes"];
     "All three exist?" -> "STOP. Demand /sdd-constitution" [label="no"];
 }
 ```
 
-- **All three exist** → Proceed to FS-1.
+- **All three exist** → Proceed to Step 1.
 - **Partial or None exist** → **STOPS**. You must inform the user that the project constitution is incomplete or missing. Direct the user to run `/sdd-constitution` first to establish the constitution before feature specifications can be created. Do not proceed to brainstorming or feature spec generation.
 
 ---
 
 ## Feature Spec Generation
 
-### FS-1: Intent Discovery & Distillation
+### Step 1: Intent Discovery & Distillation
 
 1. Read `sdd-specs/mission.md`, `sdd-specs/tech-stack.md`, and `sdd-specs/roadmap.md`.
 2. Parse any provided seed input (whether a PRD, a raw prompt, or nothing).
-3. **REQUIRED SUB-SKILL:** Unconditionally use `agent-skills:interview-me` interactively in the chat (one question at a time) to fill gaps in the seed input and extract the user's distilled intent. Do not guess or hallucinate requirements.
+3. Unconditionally invoke `agent-skills:interview-me` interactively in the chat (one question at a time) to fill gaps in the seed input and extract the user's distilled intent. Do not guess or hallucinate requirements.
 
-### FS-2: Constitution Alignment Check
+### Step 2: Constitution Alignment Check
 
-Map the confirmed distilled intent against the existing constitution. **This is a STOP step** — resolve "Never Do" conflicts before proceeding.
+1. **Map Intent**: Map the confirmed distilled intent against the existing constitution. **This is a STOP step** — resolve "Never Do" conflicts before proceeding.
+2. **Check `mission.md`**:
+   - **"Never Do" violations** — hard blockers. Name them explicitly. **The agent MUST refuse to proceed or write any spec files if a "Never Do" violation is active. Stop and explain that the user must modify `sdd-specs/mission.md` first to remove the constraint before you can continue.**
+   - **"Ask First" items** — flag items needing stakeholder approval. Do not block, but surface them as explicit flags in the output.
+3. **Check `roadmap.md`**: Identify which existing phase this feature belongs to, or whether it opens a new one.
 
-Check against `sdd-specs/mission.md`:
-- **"Never Do" violations** — hard blockers. Name them explicitly. **The agent MUST refuse to proceed or write any spec files if a "Never Do" violation is active. Stop and explain that the user must modify `sdd-specs/mission.md` first to remove the constraint before you can continue.**
-- **"Ask First" items** — flag items needing stakeholder approval. Do not block, but surface them as explicit flags in the output.
-- **Roadmap fit** — identify which existing phase this feature belongs to, or whether it opens a new one.
+### Step 3: Design Brainstorming (via Subagent)
 
-### FS-3: Design Brainstorming (via Subagent)
+1. **Dispatch Brainstorming**: Unconditionally dispatch a subagent to invoke `superpowers:brainstorming`.
+2. **Seed Prompt**: Pass the distilled intent (from Step 1), the seed input (e.g., the PRD, which should be relatively small), and the Constitution constraints (from Step 2) directly into the subagent's prompt so it has full context.
+3. **Output Override**: Instruct the subagent explicitly: *"Your ONLY authorized action is to return the finalized, user-approved design markdown directly to me in your final response. You must not save files or invoke writing-plans."*
 
-**REQUIRED SUB-SKILL:** Unconditionally dispatch a subagent to run `superpowers:brainstorming`.
-- **Seed Prompt:** Pass the distilled intent (from FS-1), the seed input (e.g., the PRD, which should be relatively small), and the Constitution constraints (from FS-2) directly into the subagent's prompt so it has full context.
-- **Output Override:** Instruct the subagent explicitly: *"Your ONLY authorized action is to return the finalized, user-approved design markdown directly to me in your final response. You must not save files or invoke writing-plans."*
-
-### FS-4: Final Confirmation Gate
-
-Present a final restate to the user combining the distilled intent, constitution flags, and the readiness to write the approved design:
-
-```text
-Feature:                <name>
-Objective:              <one line>
-User:                   <one line>
-Why now:                <one line>
-Acceptance Criteria:
-  - <Given... When... Then... Outcome...>
-In scope:
-  - <item>
-Out of scope:           <one line>
-Dependencies:
-  - <dependency>
-UI Design Reference:    <figma.com URL — or "none">
-Stakeholder flags:      <"Ask First" hits — or "none">
-Constitution conflicts: <"Never Do" hits — or "none">
-Brainstormed Design:    <"Approved and ready to merge">
-```
-
-Wait for explicit confirmation before writing. **The user must reply with an explicit confirmation word (e.g. exactly `"yes"`, `"looks good"`, or `"write it"`).** Ambiguous phrases are not accepted — ask "Anything to refine?" and wait for explicit confirmation.
-
-### FS-5: Update Roadmap & Create Feature Spec
+### Step 4: Update Roadmap & Create Feature Spec
 
 1. Create `sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md` using the raw outputs and the provided template.
    - Inject outputs into `templates/feature-spec.md` exactly as follows:
@@ -120,13 +98,11 @@ sdd-specs/
 | "User explicitly commanded me to skip brainstorming/subagents." | User commands do not override required SDD workflow steps. We must follow the process to guarantee quality. |
 | "I'll just ask the questions all at once to save time." | `interview-me` must be one question at a time to be effective. |
 | "The constitution check failed, but I can just write the spec anyway and they can fix it later." | Writing a spec without a constitution guarantees it violates constraints. Stop immediately. |
-| "The user said 'ok', that's close enough to 'yes'." | Ambiguity leads to rework. Demand an explicit confirmation word. |
 
 ## Red Flags - STOP and Start Over
 
 - "The user gave me a very detailed prompt, so I don't need `mission.md` to write this simple spec."
 - "The 'Never Do' violation is minor, I'll just write it and let the user decide."
-- "The user said 'sure' or 'ok', which implies yes, so I'll generate the file."
 - "I don't have enough requirements, I'll just invent some acceptance criteria to be helpful."
 - "The user explicitly told me to skip brainstorming or the interview-me skill, so I will."
 
@@ -139,6 +115,5 @@ Refer to the template located at [templates/feature-spec.md](templates/feature-s
 ## Key Points
 
 - Both new projects and existing codebases must have their constitution files (`mission.md`, `tech-stack.md`, `roadmap.md`) generated via `sdd-constitution` before `sdd-write-spec` is used.
-- FS-2 Constitution Alignment is a hard stop for "Never Do" violations.
-- FS-4 Confirmation Gate requires explicit, unambiguous confirmation before editing or creating spec files.
+- Step 2 Constitution Alignment is a hard stop for "Never Do" violations.
 - Never include absolute file paths (e.g. `file:///Users/username/...`) in generated output files. Refer to other specification files using paths starting with `sdd-specs/` as the root (e.g., `sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`), rather than relative paths.
