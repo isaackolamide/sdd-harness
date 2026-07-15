@@ -185,13 +185,13 @@ Read the templates located in the `templates/` directory to format the core cons
 - **tech-stack.md**: [templates/tech-stack.md](templates/tech-stack.md) — Core application directory mapping, code style guidelines, and test harness runner conventions.
 - **roadmap.md**: [templates/roadmap.md](templates/roadmap.md) — Scoped project milestones, phases, and release rollout steps.
 
-## Key Points
+## Common Rationalizations & Red Flags
 
-- Seed input short-circuits brainstorm/interview for topics it already covers — never re-ask answered questions
-- Analysis (A1–A3) runs before any user questions — come to brainstorming with evidence, not a blank form
-- Both paths (new and existing) produce the same three-file output
-- Code Style section must include a real code snippet — extracted from existing code when available, user-provided for new projects
-- Ask user where `sdd-specs/` should live — no default assumption
-- All three files go in the chosen `sdd-specs/` directory
-- **No superpowers/specs directory**: Do NOT create or use `docs/superpowers/specs/`. The brainstorming step is purely for requirement exploration, and all constitution files are saved to the chosen `sdd-specs/` location.
-- Never include absolute file paths (e.g. `file:///Users/username/...`) in generated output files. Refer to other specification files using paths starting with `sdd-specs/` as the root (e.g., `sdd-specs/mission.md`), rather than relative paths.
+| Excuse / Red Flag | Reality |
+|---|---|
+| "I'll just save the specs to `docs/superpowers/specs` because the brainstorming subagent usually does." | Do NOT create or use `docs/superpowers/specs/`. The brainstorming step is purely conversational. All files must be saved to the chosen `sdd-specs/` location. |
+| "The user provided a seed, so I'll just skip the brainstorm entirely." | Seed input only short-circuits topics it already covers. You must still brainstorm the remaining open areas. |
+| "I'll ask the user about the project structure before analyzing the codebase." | Analysis (A1–A3) runs *before* any user questions. Come to brainstorming with evidence, not a blank form. |
+| "I don't need to extract a code snippet for the tech stack because it's standard React/Python." | Extracting a real snippet is mandatory for existing codebases to ensure future AI agents match the exact existing style. |
+| "I'll just put `sdd-specs/` in the project root by default." | You must explicitly ask the user where the `sdd-specs/` folder should live. Do not make default assumptions. |
+| "I'll use absolute `file:///` paths to link the specs together." | Never include absolute file paths in generated output. Refer to other specification files using paths starting with `sdd-specs/` (e.g., `sdd-specs/mission.md`). |
