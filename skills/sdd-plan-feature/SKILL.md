@@ -57,13 +57,7 @@ digraph feature_spec_discovery {
 1. Read `sdd-specs/mission.md`, `tech-stack.md`, and `roadmap.md`. 
 2. Note missing files but do not block.
 
-### Step 3: Minimum Viable Fields Check
-1. Assess 5 core fields: Who, Why/Outcome, Success, Constraint, Dependencies.
-2. If fields are missing: STOP and ask the user to provide the missing fields. Do not proceed until the intent is clear.
-3. Propose finalized intent restatement to the user.
-4. **Wait for explicit confirmation.**
-
-### Step 4: Feature Naming & Classification
+### Step 3: Feature Naming & Classification
 1. Propose `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` and ask single confirmation question.
 2. Check spec against conditional triggers:
 
@@ -104,7 +98,7 @@ digraph conditional_classification {
    - **Architecture** (`controller`, `dto`): Add `clean-architecture-ddd-reference.md` to references.
    - Always include `testing-patterns.md` in references.
 
-### Step 5: Planning & Decomposition
+### Step 4: Planning & Decomposition
 1. Invoke `agent-skills:planning-and-task-breakdown`.
 2. Confirm order and sizing with user before formatting.
 3. Format directly into `plan.md` (MUST follow structure of `skills/sdd-plan-feature/templates/plan.md`). No intermediate files.
@@ -115,13 +109,13 @@ digraph conditional_classification {
    - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
 5. Apply ADR Trigger: For significant architectural choices, invoke `agent-skills:documentation-and-adrs` to save a decision record to `sdd-specs/docs/decisions/` and cross-reference it.
 
-### Step 6: Pre-Write Review (GATE)
+### Step 5: Pre-Write Review (GATE)
 1. Present summary of `plan.md`, `requirements.md`, and `validation.md`.
 2. Ask focused probe: "Does anything in the plan surprise you, or does any acceptance criterion feel wrong? If it looks correct, please confirm we are ready to write the files."
 3. Adjust and re-confirm if concerns raised.
 4. **STOP**: Wait for explicit approval before writing files.
 
-### Step 7: Output
+### Step 6: Output
 
 1. **REQUIRED ACTION:** You MUST use your file reading tools to read the template files before generating the output. Your output MUST exactly match the headings, sections, and structure of these templates.
 2. Read the templates located in the `skills/sdd-plan-feature/templates/` directory to format the generated planning files:
@@ -136,13 +130,12 @@ digraph conditional_classification {
 |--------|---------|
 | "I'll batch confirmations at the end." | Batching bypasses user guidance. Stop at each gate. |
 | "I don't need to ask for feature name." | Dictates future tooling. Confirm the name. |
-| "I'll assume missing fields." | Guessing builds the wrong feature. STOP and explicitly ask the user for the missing fields. |
 | "I'll skip the pre-write review." | Causes churn if plan is wrong. Final safety net. |
 | "I know how to write a plan." | Templates define mandatory SDD structural contracts. Read and follow them exactly. |
 | "I'll just add prose notes instead of the checklist." | Structural templates are mandatory. Do not negotiate the format or omit sections. |
 
 ## Red Flags - STOP and Correct
-- Combining Steps 2, 3, and 4 into a single prompt.
+- Combining Step 3 (Classification) and Step 4 (Planning) into a single prompt.
 - Proceeding past Step 5 without explicit affirmative response.
 - Skipping `**REQUIRED SUB-SKILL**` invocations.
 - Generating output files without reading the templates first.
