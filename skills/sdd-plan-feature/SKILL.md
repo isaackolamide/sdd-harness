@@ -3,12 +3,11 @@ name: sdd-plan-feature
 description: Use when planning a validated feature spec file within an active SDD project.
 metadata:
   type: planning
-  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:interview-me, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
+  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
 ---
 
 # SDD Feature Planner
 
-**REQUIRED SUB-SKILL:** Use `agent-skills:interview-me` to clarify missing intent fields.
 **REQUIRED SUB-SKILL:** Use `agent-skills:planning-and-task-breakdown` to structure the implementation plan.
 **REQUIRED SUB-SKILL:** Use `agent-skills:security-and-hardening` if the feature involves security.
 **REQUIRED SUB-SKILL:** Use `agent-skills:observability-and-instrumentation` if the feature involves telemetry.
@@ -60,7 +59,7 @@ digraph feature_spec_discovery {
 
 ### Step 3: Minimum Viable Fields Check
 1. Assess 5 core fields: Who, Why/Outcome, Success, Constraint, Dependencies.
-2. If fields are missing: invoke `agent-skills:interview-me` to clarify intent.
+2. If fields are missing: STOP and ask the user to provide the missing fields. Do not proceed until the intent is clear.
 3. Propose finalized intent restatement to the user.
 4. **Wait for explicit confirmation.**
 
@@ -137,7 +136,7 @@ digraph conditional_classification {
 |--------|---------|
 | "I'll batch confirmations at the end." | Batching bypasses user guidance. Stop at each gate. |
 | "I don't need to ask for feature name." | Dictates future tooling. Confirm the name. |
-| "I'll assume missing fields." | Guessing builds the wrong feature. Use interview-me. |
+| "I'll assume missing fields." | Guessing builds the wrong feature. STOP and explicitly ask the user for the missing fields. |
 | "I'll skip the pre-write review." | Causes churn if plan is wrong. Final safety net. |
 | "I know how to write a plan." | Templates define mandatory SDD structural contracts. Read and follow them exactly. |
 | "I'll just add prose notes instead of the checklist." | Structural templates are mandatory. Do not negotiate the format or omit sections. |
