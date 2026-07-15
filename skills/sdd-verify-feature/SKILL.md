@@ -31,14 +31,14 @@ To minimize execution time and collect all feedback in a single run, perform the
    - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
 2. **Dispatch Parallel Subagents**:
    - In a single response block, dispatch the following two subagents to run concurrently:
-     - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify the criteria in `validation.md` against the implementation and provide raw stdout logs of the passing tests to prove the criteria are met. It must not ask the user for confirmation unless the criterion is strictly visual or requires external system access you lack.
+     - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, Automation Checks, and PR Checklist) against the implementation. It must provide raw stdout logs of the passing tests to prove each item is met. It must not ask the user for confirmation unless the item is strictly visual or requires external system access you lack.
      - **Code Quality Subagent (persona: `code-reviewer`)**: Provide it with `tech-stack.md` and `requirements.md`. Instruct it to generate and evaluate the full feature diff against the target base branch using `tech-stack.md` as its standard for Required and Critical issues.
 3. **Audit & Collect Findings**:
    - Wait for both subagents to return their reports.
-   - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if a criterion is unmet:
+   - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if any checklist item is unmet:
      - First, scan `plan.md` to find the highest phase number `N` currently defined (e.g. `## Phase N: [Phase Name]`).
      - Append a new `## Phase <N+1>: Validation Fixes` header directly under the pre-existing `## Validation Fixes` header in `plan.md` (where `<N+1>` is the next phase number).
-     - For each failed or unchecked criterion, append a new structured task to `plan.md` under this new phase section.
+     - For each failed or unchecked item, append a new structured task to `plan.md` under this new phase section.
      - Each task must follow the standard task structure:
        - `### Task <N+1>.Y: [Validation Failure Name]`
        - `- [ ] Task Completed`
@@ -73,11 +73,11 @@ To minimize execution time and collect all feedback in a single run, perform the
        - `- [ ] All code quality fixes pass`
        - `Verification: [command to run quality suite, e.g. npm run lint && npm run build]`
 4. **Determine Exit or Completion**:
-   - If there are any failed validation criteria OR critical/required quality review findings:
+   - If there are any failed checklist items OR critical/required quality review findings:
      1. Exit and hand back: Stop execution of this skill. Instruct the user to run `/sdd-implement-plan` to execute and verify these fixes before re-running `/sdd-verify-feature`.
         > Note: Quality findings are about code craft, while validation is about spec compliance. However, once fixes for either validation or code quality are implemented (and their checkboxes ticked during the implementation loop), you must re-run the parallel verification gate in full to verify the fixes and ensure no regressions were introduced.
-   - If all validation criteria are met AND there are no open Critical/Required quality findings:
-     1. Tick all validation criteria `[ ]` → `[x]` in `validation.md`.
+   - If all validation items across all sections are met AND there are no open Critical/Required quality findings:
+     1. Tick all checkboxes `[ ]` → `[x]` across all sections in `validation.md`.
      2. Stage and commit validation:
         ```bash
         git add sdd-specs/plans/[feature-dir]/validation.md
@@ -126,7 +126,7 @@ Once all checks pass, handle the integration:
 
 ## Key Rules
 
-- Never proceed past the parallel verification gate (Step 1) if any validation criterion is unmet or any critical/required code quality findings are unresolved.
+- Never proceed past the parallel verification gate (Step 1) if any validation checklist item is unmet or any critical/required code quality findings are unresolved.
 - **No Checkbox Conflation**: Ticking `validation.md` (Step 1) and ticking `plan.md`/`roadmap.md` (Step 2) are separated by critical validation and quality reviews. They must be executed in strict sequence.
 - Never merge a branch if there are any unchecked boxes `[ ]` in `plan.md` or `validation.md`.
 - Never merge a branch with uncommitted changes in the working directory.
