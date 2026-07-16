@@ -63,6 +63,13 @@ created: [YYYY-MM-DD]
 ## Validation Fixes
 <!-- Validation fixes will be appended here as checklist tasks if validation fails -->
 
+---
+
 ## Code Quality Review Fixes
 <!-- Code quality review issues will be appended here as checklist tasks if findings are identified -->
+
+---
+
+## Security Fixes
+<!-- Security vulnerabilities will be appended here as checklist tasks if findings are identified -->
 
