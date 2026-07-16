@@ -59,9 +59,26 @@ digraph constitution_check {
 
 ### Step 3: Design Brainstorming (via Subagent)
 
-1. **Dispatch Brainstorming**: Unconditionally dispatch a subagent to invoke `superpowers:brainstorming`.
-2. **Seed Prompt**: Pass the distilled intent (from Step 1), the seed input (e.g., the PRD, which should be relatively small), and the Constitution constraints (from Step 2) directly into the subagent's prompt so it has full context.
-3. **Output Override**: Instruct the subagent explicitly: *"Your ONLY authorized action is to return the finalized, user-approved design markdown directly to me in your final response. You must not save files or invoke writing-plans."*
+1. **Dispatch Brainstorming**: Unconditionally dispatch a brainstorming subagent to invoke `superpowers:brainstorming`.
+2. **Seed Prompt**: You MUST use the following exact structured prompt when dispatching the brainstorming subagent. Inject the required context into the designated slots. This airtight contract overrides the brainstorming skill's default instruction to save files:
+
+   ```text
+   **Your Mission:** Use `superpowers:brainstorming` to design the feature alongside the user. 
+
+   **Distilled Intent & Seed Input:** 
+   [Inject Intent and PRD from Step 1]
+
+   **Constitution Constraints:**
+   [Inject Constraints from Step 2]
+
+   **REQUIRED OUTPUT CONTRACT (CRITICAL):**
+   Your ONLY authorized action is to return the finalized, user-approved design markdown directly to me in your final response. 
+
+   No exceptions:
+   - DO NOT save any files to disk (e.g., to superpowers/specs/ or anywhere else).
+   - DO NOT invoke writing-plans or any planning skills.
+   - If the brainstorming skill tells you to save a file, ignore it. Return the text directly to me instead.
+   ```
 
 ### Step 4: Update Roadmap & Create Feature Spec
 
@@ -71,28 +88,32 @@ digraph constitution_check {
      - **Architecture Section**: Insert the `brainstorming` output HERE, but you MUST exclude its top-level markdown title (`# ...`) and metadata block (Date, Status, Author) since the template already has a header.
 2. Edit `sdd-specs/roadmap.md` — add the feature as a new milestone, sub-item, or phase entry under the appropriate existing phase, linking to the newly created spec file.
 
-### Step 5: Generate Human-Facing Flow Diagram
+### Step 5: Delegate Flow Diagram Generation
 
-1. Draft a companion Mermaid flow diagram for the feature based on the completed spec. **Crucial**: Since this is meant to help human visual learners, it MUST be highly descriptive. Include a brief, simple step-by-step text explanation above the diagram, and use Mermaid annotations (e.g., descriptive node labels, `note` blocks) to clearly explain the flow.
+To keep your context clean while ensuring the workflow completes predictably, you MUST delegate the diagram creation to a flow diagram subagent and wait for it to confirm completion.
 
-**No exceptions:**
-- Don't skip drafting the diagram because the feature is "simple"
-- Don't assume the user wants to skip it
-- You MUST output the drafted diagram in your chat response first
+1. **Dispatch Diagram Subagent**: Unconditionally dispatch a background flow diagram subagent with the following explicit `Task` instruction:
 
-2. **Seek Consent Before Saving**: Present the drafted explanation and Mermaid diagram in your chat response and explicitly ask the user: *"Would you like me to save this flow diagram to `sdd-specs/diagrams/YYYY-MM-DD-<feature-name>-flow.md`?"*
-3. **STOP AND WAIT** for the user's consent. Do not write the diagram to disk until the user explicitly approves. Do not hand off to the next skill yet.
-4. **Context Isolation Rule**: If approved and saved, this diagram is strictly for human consumption. You MUST save it as a separate file and NEVER inject it into the main feature spec or ADRs, as it unnecessarily bloats agent context windows.
+   ```text
+   **Your Mission**: Read the feature spec at `sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`.
+   Draft a companion Mermaid flow diagram for it. Since this is for human visual learners, it MUST be highly descriptive. Include a brief step-by-step text explanation above the diagram, and use Mermaid annotations (e.g., descriptive node labels, `note` blocks).
+   Save the final diagram to `sdd-specs/diagrams/YYYY-MM-DD-<feature-name>-flow.md`.
+   Return a confirmation message when the file is successfully saved.
+   ```
 
-Once you have drafted the diagram, asked for consent, AND received the user's explicit response (whether they approve or decline), hand off the feature spec:
+2. **Wait and Confirm**: Wait for the flow diagram subagent to finish and return its confirmation. Present a brief summary to the user confirming that the diagram has been saved to the workspace.
+
+3. **Handoff**: After confirming the diagram is saved, hand off the feature spec to the planning phase:
 `/sdd-plan-feature sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`
+
+**Context Isolation Rule**: This diagram is strictly for human consumption. It MUST remain in the `diagrams/` folder and NEVER be injected into the main feature spec or ADRs, as it unnecessarily bloats agent context windows.
 
 **Output:**
 ```
 sdd-specs/
 ├── roadmap.md                                      ← updated
 ├── diagrams/
-│   └── YYYY-MM-DD-<feature-name>-flow.md           ← created (if consented)
+│   └── YYYY-MM-DD-<feature-name>-flow.md           ← created (by subagent)
 └── features/
     └── YYYY-MM-DD-<feature-name>-spec.md           ← created
 ```
@@ -103,6 +124,7 @@ sdd-specs/
 
 - **Creating feature roadmaps:** Don't create `sdd-specs/features/roadmap.md`. Append to the project `sdd-specs/roadmap.md`.
 - **Absolute paths:** Never use absolute paths (`file:///Users/...`) in outputs. Use paths relative to the project root (e.g., `sdd-specs/features/...`).
+- **Delegating roadmap check-offs:** Do not include checking off `roadmap.md` in the feature spec's "In Scope" or tasks. The `sdd-verify-feature` skill handles roadmap check-offs. The spec should only contain feature logic.
 
 ## Rationalization Table
 
@@ -113,8 +135,10 @@ sdd-specs/
 | "I'll ask all questions at once." | `interview-me` requires one-by-one to work. |
 | "Constitution check failed, I'll write it anyway." | Writing without constitution guarantees violations. Stop. |
 | "Diagram belongs in the main spec." | Diagrams bloat context. Keep isolated in `sdd-specs/diagrams/`. |
-| "Feature is simple, I'll skip the diagram draft." | You must draft it. Only the user can skip saving it. |
-| "I'll save the diagram without asking." | Must seek explicit consent to keep workspace clean. |
+| "Feature is simple, I'll skip the flow diagram." | You must dispatch the flow diagram subagent to build it. |
+| "I'll hand off to planning before the flow diagram subagent finishes." | You must wait for the flow diagram subagent to confirm the diagram is saved first. |
+| "The brainstorming skill told me to save to specs/" | The task override explicitly forbids saving files to disk. Return text only. |
+| "I should tell the implementer to check off the roadmap in the spec." | `sdd-verify-feature` handles roadmap check-offs. The spec must not include SDD process steps. |
 
 ## Red Flags - STOP and Start Over
 
@@ -123,8 +147,10 @@ sdd-specs/
 - "I'll invent acceptance criteria to be helpful."
 - "The user explicitly told me to skip brainstorming."
 - "I injected the flow diagram into the spec."
-- "I saved the diagram without consent."
-- "I skipped drafting a diagram because the feature is simple."
-- "I generated a bare-bones diagram without text explanations."
+- "I handed off to `/sdd-plan-feature` before the flow diagram subagent finished."
+- "I skipped the flow diagram subagent because the feature is simple."
+- "I generated the flow diagram myself instead of using the flow diagram subagent."
+- "The brainstorming subagent saved a design file to disk."
+- "I added roadmap check-off tasks to the feature spec's In Scope section."
 
 **All of these mean: Stop. Follow the hard stops.**

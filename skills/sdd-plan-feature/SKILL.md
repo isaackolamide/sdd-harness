@@ -3,7 +3,7 @@ name: sdd-plan-feature
 description: Use when planning a validated feature spec file within an active SDD project.
 metadata:
   type: planning
-  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration]
+  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration, agent-skills:api-and-interface-design]
 ---
 
 # SDD Feature Planner
@@ -12,6 +12,7 @@ metadata:
 **REQUIRED SUB-SKILL:** Use `agent-skills:security-and-hardening` if the feature involves security.
 **REQUIRED SUB-SKILL:** Use `agent-skills:observability-and-instrumentation` if the feature involves telemetry.
 **REQUIRED SUB-SKILL:** Use `agent-skills:deprecation-and-migration` if the feature involves migrations.
+**REQUIRED SUB-SKILL:** Use `agent-skills:api-and-interface-design` if the feature involves API or interface design.
 **REQUIRED SUB-SKILL:** Use `agent-skills:documentation-and-adrs` if the feature requires an ADR.
 
 ## When to Use
@@ -64,17 +65,22 @@ digraph feature_spec_discovery {
 ```dot
 digraph conditional_classification {
     "Check Keywords" [shape=box];
+    "API/Interface?" [shape=diamond];
     "Security?" [shape=diamond];
     "Telemetry?" [shape=diamond];
     "Migration?" [shape=diamond];
     "Architecture?" [shape=diamond];
+    "Inject API/Interface Sections" [shape=box];
     "Inject Security Sections" [shape=box];
     "Inject Telemetry Sections" [shape=box];
     "Inject Migration Sections" [shape=box];
     "Inject Arch References" [shape=box];
     "Proceed to Planning" [shape=box];
 
-    "Check Keywords" -> "Security?";
+    "Check Keywords" -> "API/Interface?";
+    "API/Interface?" -> "Inject API/Interface Sections" [label="yes"];
+    "API/Interface?" -> "Security?" [label="no"];
+    "Inject API/Interface Sections" -> "Security?";
     "Security?" -> "Inject Security Sections" [label="yes"];
     "Security?" -> "Telemetry?" [label="no"];
     "Inject Security Sections" -> "Telemetry?";
@@ -91,6 +97,7 @@ digraph conditional_classification {
 ```
 
 3. Apply required sub-skills based on triggers:
+   - **API/Interface** (`endpoint`, `GraphQL`, `interface`, `API`): invoke `agent-skills:api-and-interface-design` (inject API/Interface design requirements).
    - **Security** (`auth`, `login`, `payment`): invoke `agent-skills:security-and-hardening` (inject Security Constraints).
    - **Telemetry** (`API`, `cron`, `metric`): invoke `agent-skills:observability-and-instrumentation` (inject Telemetry sections).
    - **Migration** (`refactor`, `schema`): invoke `agent-skills:deprecation-and-migration` (inject Migration Plan).
