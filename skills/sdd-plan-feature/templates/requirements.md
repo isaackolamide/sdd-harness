@@ -28,6 +28,11 @@ Why this feature is being built:
 *(Only include if a figma.com URL is present in the feature spec. This is the feature-level design file — the source that per-task `Design:` lines in plan.md are drawn from, and the fallback reference. Carry the URL verbatim. Do not paraphrase.)*
 -
 
+## API & Interface Design [Conditional]
+
+*(Only include if feature is classified as API/Interface. Detail endpoint structures, GraphQL schemas, type contracts, and boundary definitions here)*
+-
+
 ## Security Constraints [Conditional]
 
 *(Only include if feature is classified as Security Sensitive. Detail encryption, access controls, input sanitization, or authentication rules here)*
