@@ -112,6 +112,7 @@ digraph conditional_classification {
 4. Apply the following constraints to `plan.md`:
    - Each task needs `Interfaces` (function signature + strict types). NO `any`/`unknown`.
    - Task headers: `### Task X.Y: [Name]`
+   - Task Acceptance Criteria MUST cover three dimensions (include multiple ACs per dimension as needed): 1. Happy path, 2. Error states/handling, and 3. Boundary conditions.
    - End phases with `### Checkpoint — Phase N` with a checkbox.
    - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
 5. Apply ADR Trigger: For significant architectural choices, invoke `agent-skills:documentation-and-adrs` to save a decision record to `sdd-specs/docs/decisions/` and cross-reference it.

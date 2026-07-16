@@ -13,9 +13,19 @@ Out of scope:
 Key technical decisions made:
 -
 
+## Open Questions
+
+Ambiguities or technical decisions that still need to be resolved:
+-
+
 ## Binding Constraints (Must-Haves)
 
 Critical constraints that must be met regardless of implementation details:
+-
+
+## Risks and Mitigations
+
+Potential risks, system impacts, and how they will be mitigated:
 -
 
 ## Context

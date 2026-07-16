@@ -21,9 +21,11 @@ created: [YYYY-MM-DD]
 - Scope: S/M/L
 - Files: `exact/path/to/file.ts` (create), `exact/path/to/existing.ts` (modify)
 - Interfaces: produces `functionName(param: Type): ReturnType`; consumes `otherFn(param: Type): ReturnType` from Task 1.X
-- Acceptance criteria:
-  - Given [context], When [action], Then [outcome]
-  - [Additional criterion]
+- Acceptance criteria (include multiple per dimension as needed):
+  - [Happy path]: Given [context], When [action], Then [outcome]
+  - [Error state]: Given [invalid/failure context], When [action], Then [handled outcome]
+  - [Boundary]: Given [edge case limit], When [action], Then [outcome]
+  - [Dimension]: (Add additional ACs as needed)
 - Verification: `npm test path/to/test.ts`
 - Dependencies: none
 
@@ -33,7 +35,10 @@ created: [YYYY-MM-DD]
 - Files: ...
 - Interfaces: produces `anotherFn(input: InputType): OutputType`; consumes `functionName(param: Type): ReturnType` from Task 1.1
 - Acceptance criteria:
-  - ...
+  - [Happy path]: ...
+  - [Error state]: ...
+  - [Boundary]: ...
+  - [Dimension]: ...
 - Verification: ...
 - Dependencies: Task 1.1
 
@@ -52,8 +57,6 @@ created: [YYYY-MM-DD]
 ### Checkpoint — Phase 2
 - [ ] [Integration condition for final phase — e.g., "all tests pass and build is clean, no TypeScript errors"]
 - Verification: `[command]`
-
----
 
 ---
 
