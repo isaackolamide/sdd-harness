@@ -30,7 +30,7 @@ To minimize execution time and collect all feedback in a single run, perform the
    - Read the `tech-stack.md` file in full.
    - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
 2. **Ask for Security Audit Consent**:
-   - STOP and ask the user: "Do you want to dispatch the optional `agent-skills:security-auditor` alongside the standard verification subagents?"
+   - STOP and ask the user: "Would you like to run an optional security audit on this feature alongside the standard verification?"
    - Wait for their explicit "yes" or "no" before proceeding.
 3. **Dispatch Parallel Subagents**:
    - In a single response block, dispatch the following subagents to run concurrently:
