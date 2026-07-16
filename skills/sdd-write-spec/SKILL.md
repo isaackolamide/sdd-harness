@@ -74,11 +74,17 @@ digraph constitution_check {
 ### Step 5: Generate Human-Facing Flow Diagram
 
 1. Draft a companion Mermaid flow diagram for the feature based on the completed spec. **Crucial**: Since this is meant to help human visual learners, it MUST be highly descriptive. Include a brief, simple step-by-step text explanation above the diagram, and use Mermaid annotations (e.g., descriptive node labels, `note` blocks) to clearly explain the flow.
+
+**No exceptions:**
+- Don't skip drafting the diagram because the feature is "simple"
+- Don't assume the user wants to skip it
+- You MUST output the drafted diagram in your chat response first
+
 2. **Seek Consent Before Saving**: Present the drafted explanation and Mermaid diagram in your chat response and explicitly ask the user: *"Would you like me to save this flow diagram to `sdd-specs/diagrams/YYYY-MM-DD-<feature-name>-flow.md`?"*
-3. **STOP AND WAIT** for the user's consent. Do not write the diagram to disk until the user explicitly approves.
+3. **STOP AND WAIT** for the user's consent. Do not write the diagram to disk until the user explicitly approves. Do not hand off to the next skill yet.
 4. **Context Isolation Rule**: If approved and saved, this diagram is strictly for human consumption. You MUST save it as a separate file and NEVER inject it into the main feature spec or ADRs, as it unnecessarily bloats agent context windows.
 
-Once this is complete (or skipped by the user), hand off the feature spec:
+Once you have drafted the diagram, asked for consent, AND received the user's explicit response (whether they approve or decline), hand off the feature spec:
 `/sdd-plan-feature sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md`
 
 **Output:**
