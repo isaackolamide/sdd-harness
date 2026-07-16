@@ -21,20 +21,24 @@ Verify that the implemented feature complies with the spec guidelines, passes ri
 1. Confirm the spec directory name. If it is inferable from conversation history, use it. Otherwise, list available directories under `sdd-specs/plans/` and ask the user to select the active one.
 2. Confirm the active Git branch. Ensure you are not on `main`, `master`, or another shared base branch.
 
-### Step 1: Parallel Verification Gate (Validation & Code Quality)
+### Step 1: Parallel Verification Gate (Validation, Code Quality & Optional Security)
 
-To minimize execution time and collect all feedback in a single run, perform the functional validation and code quality audit concurrently using `superpowers:dispatching-parallel-agents`.
+To minimize execution time and collect all feedback in a single run, perform the functional validation, code quality audit, and optionally a security audit concurrently using `superpowers:dispatching-parallel-agents`.
 
 1. **Prepare Inputs**:
    - Read the active `requirements.md` and `validation.md` files in full.
    - Read the `tech-stack.md` file in full.
    - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
-2. **Dispatch Parallel Subagents**:
-   - In a single response block, dispatch the following two subagents to run concurrently:
+2. **Ask for Security Audit Consent**:
+   - STOP and ask the user: "Do you want to dispatch the optional `agent-skills:security-auditor` alongside the standard verification subagents?"
+   - Wait for their explicit "yes" or "no" before proceeding.
+3. **Dispatch Parallel Subagents**:
+   - In a single response block, dispatch the following subagents to run concurrently:
      - **Validation Subagent (persona: `test-engineer`)**: Provide it with both `validation.md` and `requirements.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, and Automation Checks) against the implementation. It must provide raw stdout logs of the passing tests to prove each item is met. It must not ask the user for confirmation unless the item is strictly visual or requires external system access you lack.
      - **Code Quality Subagent (persona: `code-reviewer`)**: Provide it with `tech-stack.md` and `requirements.md`. Instruct it to generate and evaluate the full feature diff against the target base branch using `tech-stack.md` as its standard for Required and Critical issues.
-3. **Audit & Collect Findings**:
-   - Wait for both subagents to return their reports.
+     - **Security Subagent (persona: `security-auditor`)** *(Only if user approved in Step 2)*: Instruct it to apply the `agent-skills:security-auditor` skill to the feature diff against the target base branch to identify vulnerabilities.
+4. **Audit & Collect Findings**:
+   - Wait for all dispatched subagents to return their reports.
    - **Validation Audit**: Inspect the raw terminal logs from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". If any test fails, or if any checklist item is unmet:
      - First, scan `plan.md` to find the highest phase number `N` currently defined (e.g. `## Phase N: [Phase Name]`).
      - Append a new `## Phase <N+1>: Validation Fixes` header directly under the pre-existing `## Validation Fixes` header in `plan.md` (where `<N+1>` is the next phase number).
@@ -53,9 +57,9 @@ To minimize execution time and collect all feedback in a single run, perform the
        - `### Checkpoint — Phase <N+1>`
        - `- [ ] All validation fixes pass`
        - `Verification: [command to run validation suite, e.g., npm test]`
-   - **Code Quality Audit**: Review the code quality report.
-     - Any findings categorized as **Required** (no prefix) or **Critical** by the `code-reviewer` must be addressed. Do not downgrade these findings.
-     - For any Required or Critical findings, append them to `plan.md` under the pre-existing `## Code Quality Review Fixes` section.
+   - **Code Quality & Security Audit**: Review the code quality and security reports.
+     - Any findings categorized as **Required** (no prefix) or **Critical** by the `code-reviewer` (and any vulnerabilities found by the `security-auditor`) must be addressed. Do not downgrade these findings.
+     - For any Required or Critical findings or vulnerabilities, append them to `plan.md` under the pre-existing `## Code Quality Review Fixes` section.
      - First, determine the target phase number `Q` for the code quality review (e.g., `N + 2` if validation fixes were appended; `N + 1` if no validation fixes were appended).
      - Append a new `## Phase <Q>: Code Quality Review Fixes` header directly under the pre-existing `## Code Quality Review Fixes` header in `plan.md`.
      - Each task must follow the standard task structure:
@@ -72,7 +76,7 @@ To minimize execution time and collect all feedback in a single run, perform the
        - `### Checkpoint — Phase <Q>`
        - `- [ ] All code quality fixes pass`
        - `Verification: [command to run quality suite, e.g. npm run lint && npm run build]`
-4. **Determine Exit or Completion**:
+5. **Determine Exit or Completion**:
    - If there are any failed checklist items OR critical/required quality review findings:
      1. Exit and hand back: Stop execution of this skill. Instruct the user to run `/sdd-implement-plan` to execute and verify these fixes before re-running `/sdd-verify-feature`.
         > Note: Quality findings are about code craft, while validation is about spec compliance. However, once fixes for either validation or code quality are implemented (and their checkboxes ticked during the implementation loop), you must re-run the parallel verification gate in full to verify the fixes and ensure no regressions were introduced.
