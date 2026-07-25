@@ -1,1 +1,16 @@
-.claude-plugin/plugin.json
+{
+  "name": "sdd-harness",
+  "description": "SDD workflow orchestrator — unified routing across agent-skills and superpowers for the full development lifecycle",
+  "version": "2.4.41",
+  "author": {
+    "name": "Isaac"
+  },
+  "homepage": "https://github.com/isaackolamide/sdd-harness",
+  "repository": "https://github.com/isaackolamide/sdd-harness",
+  "license": "GPL-3.0",
+  "skills": "./skills",
+  "dependencies": [
+    "agent-skills@addy-agent-skills",
+    "superpowers@claude-plugins-official"
+  ]
+}

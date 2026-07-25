@@ -21,9 +21,6 @@ sdd-harness (orchestrator)      — 9 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
-frontend-design (UI/design)       — design direction, frontend quality
-figma (design bridge)             — design → code bridge (read Figma designs into implementation context)
-claude-md-management (tooling)    — CLAUDE.md audit and improvement
 ```
 
 ## Skills
@@ -38,49 +35,23 @@ claude-md-management (tooling)    — CLAUDE.md audit and improvement
 | `/sdd-implement-plan` | Execute a feature plan — 3-way mode (subagent-driven / autonomous / checkpoint), domain-aware dispatch, TDD enforced, phase checkpoints, developer whole-branch review |
 | `/sdd-implement-parallel-plans` | Execute multiple independent feature plans concurrently using isolated git worktrees |
 | `/sdd-verify-feature` | Run parallel verification gate (test engineer & code quality reviewer), update progress files, run pre-merge audits, and integrate the branch |
-| `/optimise-claude-md` | Audit and improve any project's CLAUDE.md |
+| `/optimise-agents-md` | Audit and improve any project's AGENTS.md |
 
 
 ## Installation
+
+```text
+Antigravity CLI / IDE
+agy plugin install https://github.com/addyosmani/agent-skills.git
+agy plugin install https://github.com/obra/superpowers.git
+agy plugin install https://github.com/isaackolamide/sdd-harness.git
+```
 
 > **SSH blocked?** If your network blocks SSH connections to GitHub, run this once before installing:
 > ```bash
 > git config --global url."https://github.com/".insteadOf "git@github.com:"
 > ```
 > This rewrites any `git@github.com:` URLs to HTTPS automatically.
-
-### Platform Integration Guides
-
-#### 1. Claude Code
-
-```bash
-# Register marketplaces
-claude plugin marketplace add https://github.com/addyosmani/agent-skills.git
-claude plugin marketplace add https://github.com/isaackolamide/sdd-harness.git
-
-# Install plugins
-claude plugin install superpowers@claude-plugins-official
-claude plugin install agent-skills@addy-agent-skills
-claude plugin install figma@claude-plugins-official
-claude plugin install claude-md-management@claude-plugins-official
-claude plugin install sdd-harness@sdd-harness
-```
-
-#### 2. Antigravity CLI / IDE
-
-```bash
-agy plugin install https://github.com/addyosmani/agent-skills.git
-agy plugin install https://github.com/obra/superpowers.git
-agy plugin install https://github.com/isaackolamide/sdd-harness.git
-```
-
-#### 3. GitHub Copilot
-
-```bash
-copilot plugin install addyosmani/agent-skills
-copilot plugin install obra/superpowers
-copilot plugin install isaackolamide/sdd-harness
-```
 
 ## How to Use
 
