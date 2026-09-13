@@ -1,6 +1,6 @@
 ---
 name: using-sdd-harness
-description: Unified skill router across sdd-harness, agent-skills, and superpowers. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
+description: Unified skill router across sdd-harness, agent-skills, superpowers, frontend-design, figma, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
 ---
 
 # Using Sdd-harness — Unified Skill Router
@@ -52,9 +52,23 @@ Task arrives
     │   manual testing post-implementation?         seed input: inline notes or path to findings file
     │                                               then: sdd-plan-feature → sdd-implement-plan
     │
+    ├── Task involves a Figma design or figma.com URL?
+    │   ├── Figma MCP tools NOT available in this session?
+    │   │   └── Note the Figma URL/design as context in spec or plan;
+    │   │       proceed with frontend-design + agent-skills:incremental-implementation
+    │   └── Figma MCP tools available (figma:* tools present in tool registry)?
+    │       ├── Implementing a screen/component from a design → figma:get_design_context FIRST,
+    │       │                                                    then agent-skills:incremental-implementation
+    │       ├── Spec or plan references Figma screens          → call figma:get_design_context per slice
+    │       │                                                    before coding that slice
+    │       └── Exploring design structure / tokens            → figma:get_metadata or figma:get_variable_defs
+    │
     ├── Implementing code (no plan)?             → agent-skills:incremental-implementation
     │   ├── Designing APIs or interfaces?        → agent-skills:api-and-interface-design
-    │   ├── Building frontend / UI?              → agent-skills:frontend-ui-engineering
+    │   ├── Building frontend / UI?
+    │   │   ├── Visual design / creative direction? → frontend-design:frontend-design
+    │   │   ├── Engineering quality (a11y, patterns, state)? → agent-skills:frontend-ui-engineering
+    │   │   └── Full frontend work?              → both in sequence (design → engineering)
     │   ├── Working from documentation?          → agent-skills:source-driven-development
     │   └── Following a spec file?               → agent-skills:spec-driven-development
     │
@@ -81,7 +95,8 @@ Task arrives
     ├── Git workflow (branching, commits, PRs)?  → agent-skills:git-workflow-and-versioning
     ├── Context engineering (system prompts)?    → agent-skills:context-engineering
     │
-    └── Optimising an AGENTS.md file?            → sdd-harness:optimise-agents-md
+    └── Optimising a CLAUDE.md file?             → sdd-harness:optimise-claude-md
+        └── (also: claude-md-management:claude-md-improver for base audit)
 ```
 
 ## Core Operating Behaviors
@@ -138,5 +153,7 @@ Every skill includes a verification step. A task is not complete until verificat
 | **sdd-harness** | SDD workflow orchestration — wraps primitives into opinionated workflows |
 | **agent-skills** | Engineering primitives — implementation, review, CI/CD, observability, etc. |
 | **superpowers** | Core disciplines — brainstorming, TDD, systematic debugging, writing plans |
+| **figma** | Design → code bridge — read Figma designs into implementation context |
+| **claude-md-management** | CLAUDE.md audit and improvement tooling |
 
 Use sdd-harness wrapper skills (sdd-constitution, sdd-prd, sdd-write-spec, sdd-plan-feature, sdd-implement-plan, sdd-implement-parallel-plans, sdd-verify-feature) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.

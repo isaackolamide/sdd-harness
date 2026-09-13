@@ -1,11 +1,11 @@
 ---
-name: optimise-agents-md
-description: Use when asked to update, audit, improve, create, or review a AGENTS.md (or AGENTS.md) in any project. Applies two-layer analysis — base quality audit plus the agent-skills lens — producing a minimal, high-signal file rather than a comprehensive one.
+name: optimise-claude-md
+description: Use when asked to update, audit, improve, create, or review a CLAUDE.md (or AGENTS.md) in any project. Applies two-layer analysis — base quality audit plus the agent-skills lens — producing a minimal, high-signal file rather than a comprehensive one.
 ---
 
-# Update AGENTS.md
+# Update CLAUDE.md
 
-Audits and improves AGENTS.md files, applying the agent-skills engineering lens to produce a minimal, high-signal file rather than a comprehensive one.
+Audits and improves CLAUDE.md files using the `claude-md-management` quality rubric as a baseline, then applies the agent-skills engineering lens on top. The goal is a minimal, high-signal file — not a comprehensive one.
 
 **Core principle:** Every line must be non-discoverable, operationally significant, and impossible to guess by convention. Everything else degrades agent performance and inflates cost.
 
@@ -13,10 +13,10 @@ Audits and improves AGENTS.md files, applying the agent-skills engineering lens 
 
 **Step 1a — Confirm scope.** Ask the user which directory to treat as the project root (default: cwd). This prevents accidentally scanning sibling projects or unrelated workspaces in a monorepo. Confirm before running any `find` commands.
 
-**Step 1b — Find existing AGENTS.md / AGENTS.md files:**
+**Step 1b — Find existing CLAUDE.md / AGENTS.md files:**
 
 ```bash
-find <root> -name "AGENTS.md" -o -name "AGENTS.md" 2>/dev/null | grep -v node_modules | grep -v .git
+find <root> -name "CLAUDE.md" -o -name "AGENTS.md" 2>/dev/null | grep -v node_modules | grep -v .git
 ```
 
 Read each file completely before continuing.
@@ -31,10 +31,13 @@ Read each file completely before continuing.
 find <root> -mindepth 2 -maxdepth 4 \( -name "package.json" -o -name "go.mod" -o -name "Cargo.toml" -o -name "pyproject.toml" -o -name "pom.xml" -o -name "build.gradle" \) 2>/dev/null | grep -v node_modules | grep -v .git | xargs -I{} dirname {} | sort -u
 ```
 
-For each major subdirectory found, note whether a AGENTS.md already exists there.
+For each major subdirectory found, note whether a CLAUDE.md already exists there.
 
+## Phase 2 — Base Audit
 
-## Phase 2 — Agent-Skills Lens
+Invoke `claude-md-management:claude-md-improver` for the structured quality score. Note what it flags as missing — you'll revisit those findings in Phase 3, where the criteria differ.
+
+## Phase 3 — Agent-Skills Lens
 
 Apply these five checks to every line. Flag anything that fails.
 
@@ -49,7 +52,7 @@ Flag for removal: directory structure, tech stack, commands the agent can discov
 
 ### Check 2: Five Non-Negotiables
 
-These must be present in every AGENTS.md — they are behavioral constraints no codebase makes discoverable. Add a `## Behaviour` section if missing:
+These must be present in every CLAUDE.md — they are behavioral constraints no codebase makes discoverable. Add a `## Behaviour` section if missing:
 
 ```markdown
 ## Behaviour
@@ -74,27 +77,27 @@ Flag content that belongs in another layer of the harness:
 
 ### Check 5: Router vs Monolith
 
-If the file exceeds 80 lines, check whether it's covering concerns from multiple modules. Flag sections that belong in a module-level AGENTS.md closer to the relevant code. The root file should route, not dump.
+If the file exceeds 80 lines, check whether it's covering concerns from multiple modules. Flag sections that belong in a module-level CLAUDE.md closer to the relevant code. The root file should route, not dump.
 
-See the **Subdirectory Coverage** section of the Phase 5 report for directories that may warrant their own AGENTS.md.
+See the **Subdirectory Coverage** section of the Phase 6 report for directories that may warrant their own CLAUDE.md.
 
-## Phase 3 — Anchoring Check
+## Phase 4 — Anchoring Check
 
 Scan for:
 - Deprecated patterns, libraries, or directories — even warnings load them into every context window
 - "Don't use X" statements — rewrite as positive constraints, or move to a module-level file scoped to where that code lives
 
-## Phase 4 — Codebase Smell Flag
+## Phase 5 — Codebase Smell Flag
 
 Every line flagged for removal is a signal about something confusing enough to trip an agent — which means it's probably confusing enough to trip a new engineer too. For each removal, note:
 > "Agent kept making this mistake → consider fixing [root cause] so this line can stay deleted."
 
-## Phase 5 — Quality Report
+## Phase 6 — Quality Report
 
 Output before making any changes:
 
 ```
-## AGENTS.md Audit
+## CLAUDE.md Audit
 
 ### Summary
 - Lines reviewed: X | Lines passing discoverability test: X | Lines flagged: X
@@ -114,17 +117,17 @@ Output before making any changes:
 - [Root causes worth fixing so the line stays gone]
 
 ### Subdirectory Coverage
-| Directory | Has AGENTS.md | Significance Signal |
+| Directory | Has CLAUDE.md | Significance Signal |
 |-----------|---------------|---------------------|
 | [path] | ✓ / ✗ | package.json / go.mod / Dockerfile / etc. |
 
-**Gaps:** [list uncovered dirs, or "none — all major subdirs have AGENTS.md"]
+**Gaps:** [list uncovered dirs, or "none — all major subdirs have CLAUDE.md"]
 
-If gaps exist: consider adding AGENTS.md to uncovered directories.
-Use `optimise-agents-md` on each to scaffold a minimal, module-scoped file.
+If gaps exist: consider adding CLAUDE.md to uncovered directories.
+Use `claude-md-management:claude-md-improver` on each to scaffold a minimal, module-scoped file.
 ```
 
-## Phase 6 — Apply With Approval
+## Phase 7 — Apply With Approval
 
 After user confirms, apply. Show final line count delta.
 
@@ -140,5 +143,5 @@ After user confirms, apply. Show final line count delta.
 | "These commands are non-obvious" | Can the agent run `npm run --list` or read package.json? Then delete them. |
 | "This is important architectural context" | If it's derivable from reading the code or a README, the agent finds it. Delete it. |
 | "We need to warn about the deprecated module" | You've loaded that module into every context window. Fix the import structure instead. |
-| "The documentation completeness will drop" | This skill rewards signal density over completeness. They measure different things. |
+| "The claude-md-management score will drop" | That rubric rewards completeness. This skill rewards signal density. They measure different things. |
 | "But it was useful before" | Models improve. Instructions that were essential six months ago may now be overhead. Re-test. |
