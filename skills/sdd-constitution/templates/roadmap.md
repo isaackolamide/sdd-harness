@@ -7,7 +7,7 @@
 
 ### Milestones
 - [x] [Completed deliverable]
-- [ ] [Deliverable 2]
+- [ ] [Deliverable 2] — [Task file link, once scoped via /sdd-task]
 
 **Dependencies**: [Tech decisions or prerequisites]
 
@@ -17,8 +17,8 @@
 **Goal**: [outcome]
 
 ### Milestones
-- [ ] [Deliverable 1]
-- [ ] [Deliverable 2]
+- [ ] [Deliverable 1] — [Task file link, once scoped via /sdd-task]
+- [ ] [Deliverable 2] — [Task file link, once scoped via /sdd-task]
 
 ## Rollout Plan
 

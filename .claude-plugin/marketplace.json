@@ -13,7 +13,7 @@
         "source": "github",
         "repo": "isaackolamide/sdd-harness"
       },
-      "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, frontend-design, and claude-md-management for the full development lifecycle",
+      "description": "SDD workflow orchestrator — unified routing across agent-skills, superpowers, and claude-md-management for the full development lifecycle",
       "homepage": "https://github.com/isaackolamide/sdd-harness",
       "license": "MIT",
       "keywords": ["sdd", "workflow", "orchestration", "skills", "agents"]

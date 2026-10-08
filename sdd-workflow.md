@@ -74,7 +74,7 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 * **Branch Creation:** Always prompts for or infers a branch name and runs `git checkout -b <branch-name>` before editing any files, even if already on a feature branch.
 * **Read Inputs:** Reads the three plan documents (`plan.md`, `requirements.md`, and `validation.md`) in full before starting implementation.
 * **Slice Execution Loop:** Iterates through unchecked tasks sequentially. For each task:
-  * **Classify:** Identifies task type (e.g., UI tasks get `frontend-ui-engineering` and Figma design contexts; API tasks get `api-and-interface-design` and potential ADRs).
+  * **Classify:** Identifies task type (e.g., UI tasks get `frontend-ui-engineering`; API tasks get `api-and-interface-design` and potential ADRs).
   * **Dispatch:** Spawns an implementation subagent to complete the task.
   * **Review:** Spawns a code-reviewer subagent to verify compliance with task constraints.
   * **Atomic Commit:** Commits the implementation/test changes and ticks the task checkbox in `plan.md` in a single atomic git commit.

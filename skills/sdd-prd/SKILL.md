@@ -17,7 +17,7 @@ Generate a comprehensive Product Requirements Document (`sdd-specs/prds/YYYY-MM-
 
 ### Step 1: Parse Seed and Formulate Hypothesis
 
-1. **Read Seed**: Read any provided seed requirements.
+1. **Read Seed**: Read any provided seed requirements. If the seed is a task file (`sdd-specs/tasks/*.md` from `sdd-harness:sdd-task`), treat its Context, Expected Implementation, Out of Scope, and Acceptance Criteria as background for your hypothesis — a task file raises your starting confidence, it does not shorten the interview in Step 2. Its Open Questions/Assumptions are unresolved gaps, not answers — surface them as real interview questions rather than treating the stated assumption as settled.
 2. **Formulate Hypothesis**: Formulate an initial hypothesis of the underlying user intent along with a confidence score (0–100%).
    - **If confidence is < 70%**: State the score and append a brief, one-line explanation of what foundational context is missing.
    - **If no seed requirements exist**: State `Confidence: 0%` and ask: *"What product or feature idea are we building?"*
@@ -29,7 +29,7 @@ CONFIDENCE: 45% (missing: target users, how alerts should be delivered, and bind
 
 ### Step 2: Interactive Discovery Interview
 
-1. **Interactive Loop**: Unconditionally invoke `agent-skills:interview-me` to run the interview. Ask exactly **one question at a time**, attaching your own guess/hypothesis with reasoning. Wait for the user to respond before asking the next question.
+1. **Interactive Loop**: Unconditionally invoke `agent-skills:interview-me` to run the interview — even when a task file already answers a topic well. Ask exactly **one question at a time**, attaching your own guess/hypothesis with reasoning (drawn from the task file when one exists). Wait for the user to respond before asking the next question.
 2. **Required Interview Topics**:
    - **Target Users**: Who benefits, and what are their pain points?
    - **Prioritization**: Which capabilities are critical for the initial version vs. nice-to-haves?
@@ -77,7 +77,8 @@ Please reply with "yes" or "looks good" to confirm, or suggest refinements.
 ### Step 5: Generate PRD
 
 1. **Create File**: Create `sdd-specs/prds/YYYY-MM-DD-<feature-name>-prd.md` using the template located at `templates/prd.md`.
-2. **Figma URL (conditional)**: If a `figma.com` URL was present in the seed input, record it verbatim under `## UI Design Reference` in the generated PRD. Do not paraphrase or describe the design — the URL is the reference.
+2. **Task Reference**: If a task file seeded this PRD, populate the `**Task Reference:**` line with its path. Otherwise leave the bracketed placeholder.
+3. **Acceptance Criteria**: Draft the Acceptance Criteria section fresh — Given/When/Then, at least two scenarios each for Happy Path, Error Path, and Boundary. If a task file seeded this PRD, use its Acceptance Criteria as your starting basis, but revise freely based on everything Steps 2–4 surfaced — don't preserve a scenario just because the task file had it, and don't feel bound to its exact wording. Use `agent-skills:interview-me` for any category (especially Error Path/Boundary) the Step 2 interview didn't already cover.
 
 ### Step 6: Handoff to Specification
 
@@ -104,3 +105,4 @@ Refer to the template located at [templates/prd.md](templates/prd.md) to format 
 | Asking multiple questions at once | Overwhelms the user and leads to generic or skimmed answers. Ask exactly one question at a time. |
 | Missing "Out of scope" / "Won't Have" | Silent disagreement about scope is the main cause of project bloat. Specify it explicitly. |
 | Generating the Feature Spec or Plan directly | `sdd-prd` only produces a PRD. Do not skip to code or specs before the product requirements are frozen. |
+| "Task file already answers this, skip that interview topic" | A task file raises your confidence in a hypothesis; it never replaces a Required Interview Topic. Ask all of them. |

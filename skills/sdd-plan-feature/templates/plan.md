@@ -19,6 +19,7 @@ created: [YYYY-MM-DD]
 ### Task 1.1: [Task Name]
 - [ ] Task Completed
 - Scope: S/M/L
+- TDD: required | N/A — [reason, e.g. config-only, docs-only]
 - Files: `exact/path/to/file.ts` (create), `exact/path/to/existing.ts` (modify)
 - Interfaces: produces `functionName(param: Type): ReturnType`; consumes `otherFn(param: Type): ReturnType` from Task 1.X
 - Acceptance criteria (include multiple per dimension as needed):
@@ -32,6 +33,7 @@ created: [YYYY-MM-DD]
 ### Task 1.2: [Task Name]
 - [ ] Task Completed
 - Scope: S/M/L
+- TDD: required
 - Files: ...
 - Interfaces: produces `anotherFn(input: InputType): OutputType`; consumes `functionName(param: Type): ReturnType` from Task 1.1
 - Acceptance criteria:

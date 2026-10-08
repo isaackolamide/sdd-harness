@@ -51,8 +51,7 @@ digraph feature_spec_discovery {
 2. Multiple files? Ask user to select.
 3. Exactly one? Propose and confirm.
 4. None? **STOP**. Direct user to `/sdd-write-spec`.
-5. Parse the spec for: Objective (Why/Outcome), User (Who), Acceptance Criteria (Success), Technical Constraints (Constraint), Dependencies. 
-6. Carry any `figma.com` UI Design References verbatim into `requirements.md`.
+5. Parse the spec for: Objective (Why/Outcome), User (Who), Acceptance Criteria (Success), Technical Constraints (Constraint), Dependencies.
 
 ### Step 2: Gather Project Context
 1. Read `sdd-specs/mission.md`, `tech-stack.md`, and `roadmap.md`. 
@@ -102,7 +101,6 @@ digraph conditional_classification {
    - **Telemetry** (`API`, `cron`, `metric`): invoke `agent-skills:observability-and-instrumentation` (inject Telemetry sections).
    - **Migration** (`refactor`, `schema`): invoke `agent-skills:deprecation-and-migration` (inject Migration Plan).
 4. Gather references:
-   - **Architecture** (`controller`, `dto`): Add `clean-architecture-ddd-reference.md` to references.
    - Always include `testing-patterns.md` in references.
 
 ### Step 4: Planning & Decomposition
@@ -112,6 +110,7 @@ digraph conditional_classification {
 4. Apply the following constraints to `plan.md`:
    - Each task needs `Interfaces` (function signature + strict types). NO `any`/`unknown`.
    - Task headers: `### Task X.Y: [Name]`
+   - Each task needs a `TDD:` line: `TDD: required`, or `TDD: N/A — <reason>` for tasks with no testable behaviour (config-only, docs-only). Never omit it — implementers only record RED/GREEN evidence when the task says TDD is required.
    - Task Acceptance Criteria MUST cover three dimensions (include multiple ACs per dimension as needed): 1. Happy path, 2. Error states/handling, and 3. Boundary conditions.
    - End phases with `### Checkpoint — Phase N` with a checkbox.
    - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
@@ -140,6 +139,7 @@ digraph conditional_classification {
 | "I don't need to ask for feature name." | Dictates future tooling. Confirm the name. |
 | "I'll skip the pre-write review." | Causes churn if plan is wrong. Final safety net. |
 | "I know how to write a plan." | Templates define mandatory SDD structural contracts. Read and follow them exactly. |
+| "TDD is obvious for code tasks, I don't need the `TDD:` line." | Implementers and reviewers only enforce RED/GREEN evidence when the task says `TDD: required`. Omitting it silently disables the gate. |
 | "I'll just add prose notes instead of the checklist." | Structural templates are mandatory. Do not negotiate the format or omit sections. |
 
 ## Red Flags - STOP and Correct

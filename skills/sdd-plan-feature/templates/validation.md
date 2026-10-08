@@ -17,6 +17,7 @@ Verify critical constraints from requirements.md are met:
 - [ ] Unit tests pass for new logic
 - [ ] Integration tests pass
 - [ ] E2E covers critical path (if applicable)
+- [ ] Every `TDD: required` task in plan.md has an entry in tdd-evidence.md with RED (command, failing output, why the failure was expected) and GREEN (command, passing output); every `TDD: N/A` entry states its reason
 
 ## Automation Checks
 - [ ] Check 1

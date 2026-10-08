@@ -24,10 +24,6 @@
 ## Dependencies
 - [Existing system component or in-progress feature this touches]
 
-## UI Design Reference [Conditional]
-(Only include if a figma.com URL was provided. Record the URL verbatim — it is the UI design reference; do not paraphrase or describe the design.)
-- [figma.com URL]
-
 ---
 
 ## Architecture & Implementation Design

@@ -1,6 +1,6 @@
 ---
 name: using-sdd-harness
-description: Unified skill router across sdd-harness, agent-skills, superpowers, frontend-design, figma, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
+description: Unified skill router across sdd-harness, agent-skills, superpowers, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
 ---
 
 # Using Sdd-harness — Unified Skill Router
@@ -21,24 +21,34 @@ Task arrives
     │                                               outputs: sdd-specs/mission.md, sdd-specs/tech-stack.md, sdd-specs/roadmap.md
     │
     ├── Constitution exists:
+    │   ├── Starting a roadmap milestone, or     → sdd-harness:sdd-task  (ALWAYS before sdd-prd)
+    │   │   a rough idea not yet scoped?            size gatekeeper: splits oversized work into one task file per capability
+    │   │                                           outputs sdd-specs/tasks/YYYY-MM-DD-<name>-task.md + links it in roadmap.md
+    │   │
     │   ├── Feature idea is vague/rough?
     │   │   ├── Vague / don't know what to build?    → agent-skills:interview-me
-    │   │   ├── Rough concept, explore variants?    → agent-skills:idea-refine
-    │   │   └── Need a PRD from rough idea?         → sdd-harness:sdd-prd
-    │   │                                               (outputs sdd-specs/prds/YYYY-MM-DD-<name>-prd.md)
+    │   │   └── Rough concept, explore variants?    → agent-skills:idea-refine
+    │   │
+    │   ├── Have a task file (sdd-specs/tasks/)?  → sdd-harness:sdd-prd <task-file>
+    │   │                                               (outputs sdd-specs/prds/YYYY-MM-DD-<name>-prd.md with Task Reference)
+    │   │                                               one task file at a time if sdd-task split the milestone
     │   │
     │   ├── Need a spec?
-    │   │   ├── Constitution exists + feature reqs   → sdd-harness:sdd-write-spec
-    │   │   │                                           updates sdd-specs/roadmap.md, creates sdd-specs/features/YYYY-MM-DD-<name>-spec.md
+    │   │   ├── Have a PRD (or findings seed)        → sdd-harness:sdd-write-spec
+    │   │   │                                           creates sdd-specs/features/YYYY-MM-DD-<name>-spec.md, links it on the
+    │   │   │                                           roadmap milestone; asks before drawing an optional flow diagram
+    │   │   │                                           (detail level + Mermaid or Excalidraw)
     │   │   └── Have a feature spec, want a plan     → sdd-harness:sdd-plan-feature
     │
     ├── Planning a feature?                      → sdd-harness:sdd-plan-feature
     │                                               (wraps agent-skills:planning-and-task-breakdown;
-    │                                                outputs phase-structured plan.md with interface contracts + checkpoint blocks per phase)
+    │                                                outputs phase-structured plan.md with interface contracts, a TDD: line
+    │                                                per task, and checkpoint blocks per phase)
     │
     ├── Executing a feature plan?                → sdd-harness:sdd-implement-plan
     │                                               (wraps superpowers:subagent-driven-development;
-    │                                                slice loop, checkpoints, and whole-branch developer review)
+    │                                                slice loop, checkpoints, RED/GREEN recorded in tdd-evidence.md,
+    │                                                and whole-branch developer review)
     │
     ├── Executing multiple independent plans?    → sdd-harness:sdd-implement-parallel-plans
     │                                               (wraps superpowers:dispatching-parallel-agents with git worktrees
@@ -46,29 +56,16 @@ Task arrives
     │
     ├── Verifying, ticking progress, and         → sdd-harness:sdd-verify-feature
     │   integrating/merging the branch?             (wraps superpowers:dispatching-parallel-agents + agent-skills:code-review-and-quality
-    │                                                + test-engineer persona + superpowers:finishing-a-development-branch)
+    │                                                + test-engineer persona + superpowers:finishing-a-development-branch;
+    │                                                blocks merge if any plan task lacks a tdd-evidence.md entry)
     │
     ├── Found bugs/missing features after        → sdd-harness:sdd-write-spec
-    │   manual testing post-implementation?         seed input: inline notes or path to findings file
+    │   manual testing post-implementation?         seed input: inline notes or path to findings file (no task file needed)
     │                                               then: sdd-plan-feature → sdd-implement-plan
-    │
-    ├── Task involves a Figma design or figma.com URL?
-    │   ├── Figma MCP tools NOT available in this session?
-    │   │   └── Note the Figma URL/design as context in spec or plan;
-    │   │       proceed with frontend-design + agent-skills:incremental-implementation
-    │   └── Figma MCP tools available (figma:* tools present in tool registry)?
-    │       ├── Implementing a screen/component from a design → figma:get_design_context FIRST,
-    │       │                                                    then agent-skills:incremental-implementation
-    │       ├── Spec or plan references Figma screens          → call figma:get_design_context per slice
-    │       │                                                    before coding that slice
-    │       └── Exploring design structure / tokens            → figma:get_metadata or figma:get_variable_defs
     │
     ├── Implementing code (no plan)?             → agent-skills:incremental-implementation
     │   ├── Designing APIs or interfaces?        → agent-skills:api-and-interface-design
-    │   ├── Building frontend / UI?
-    │   │   ├── Visual design / creative direction? → frontend-design:frontend-design
-    │   │   ├── Engineering quality (a11y, patterns, state)? → agent-skills:frontend-ui-engineering
-    │   │   └── Full frontend work?              → both in sequence (design → engineering)
+    │   ├── Building frontend / UI?              → agent-skills:frontend-ui-engineering
     │   ├── Working from documentation?          → agent-skills:source-driven-development
     │   └── Following a spec file?               → agent-skills:spec-driven-development
     │
@@ -144,7 +141,7 @@ Every skill includes a verification step. A task is not complete until verificat
 
 1. **Check for an applicable skill before starting work.**
 2. **Skills are workflows, not suggestions.** Follow the steps in order.
-3. Multiple skills can apply in sequence. Example: `sdd-harness:sdd-constitution` → `sdd-harness:sdd-prd` → `sdd-harness:sdd-write-spec` → `sdd-harness:sdd-plan-feature` → `sdd-harness:sdd-implement-plan` → `sdd-harness:sdd-verify-feature`.
+3. Multiple skills can apply in sequence. Example: `sdd-harness:sdd-constitution` → `sdd-harness:sdd-task` → `sdd-harness:sdd-prd` → `sdd-harness:sdd-write-spec` → `sdd-harness:sdd-plan-feature` → `sdd-harness:sdd-implement-plan` → `sdd-harness:sdd-verify-feature`.
 
 ## Plugin Stack Overview
 
@@ -153,7 +150,6 @@ Every skill includes a verification step. A task is not complete until verificat
 | **sdd-harness** | SDD workflow orchestration — wraps primitives into opinionated workflows |
 | **agent-skills** | Engineering primitives — implementation, review, CI/CD, observability, etc. |
 | **superpowers** | Core disciplines — brainstorming, TDD, systematic debugging, writing plans |
-| **figma** | Design → code bridge — read Figma designs into implementation context |
 | **claude-md-management** | CLAUDE.md audit and improvement tooling |
 
-Use sdd-harness wrapper skills (sdd-constitution, sdd-prd, sdd-write-spec, sdd-plan-feature, sdd-implement-plan, sdd-implement-parallel-plans, sdd-verify-feature) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.
+Use sdd-harness wrapper skills (sdd-constitution, sdd-task, sdd-prd, sdd-write-spec, sdd-plan-feature, sdd-implement-plan, sdd-implement-parallel-plans, sdd-verify-feature) when running the SDD workflow. Use agent-skills primitives directly for standalone tasks outside that workflow.

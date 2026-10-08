@@ -48,8 +48,6 @@ Loop through each unchecked task in `plan.md` in order:
 - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
 - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
 
-**Figma Design Context:** If `requirements.md` contains a `## UI Design Reference` section with a Figma URL, record it as `[figma_url]` to pass to the implementer brief in Step 3.3. **Do not fetch the URL here.**
-
 3.2. **ANNOUNCE**: Print:
 `Starting slice N of M: [task name from plan.md]`
 Show any scope constraints from `requirements.md` relevant to this slice.
@@ -65,14 +63,24 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 | Interface contract | Task's `Interfaces` line from `plan.md` (or `"N/A"` if the task has no interfaces line or is a validation/quality review task) — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures. |
 | Spec constraints | Relevant constraints from `requirements.md` scoped to this slice only |
 | ADR reference | ADR path if written for this slice; else `N/A` |
-| **Figma design** | If this is a UI task and `[figma_url]` was recorded: `"REQUIRED: Figma design at [figma_url]. (Call figma:get_design_context if available)."` Else: `N/A` |
-| Commit scope | `"Commit implementation and test files only — do not touch plan.md, validation.md, or roadmap.md"` |
+| Commit scope | `"Commit implementation and test files only — do not touch plan.md, tdd-evidence.md, validation.md, or roadmap.md"` |
 
-3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with two items: the path to `requirements.md`, AND the exact **Acceptance Criteria** and **Verification** text copied from the current task slice.
+3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with the path to `requirements.md`, the exact **Acceptance Criteria** and **Verification** text copied from the current task slice, and — if the task's `TDD:` field is `required` — this line verbatim:
+   `TDD evidence gate: this task is TDD: required. The implementer's report must contain RED (command, failing output, why the failure was expected) and GREEN (command, passing output). If either is missing, report it under Spec Compliance as ❌ Missing and set Task quality to Needs fixes.`
 
-3.5. **SDD ADDITIONS — fix subagent dispatch**: If a fix subagent is required, pass it the exact same **Interface contract**, **Spec constraints**, **Figma design**, and **Commit scope** fields that the implementer received. Fixers must adhere to the same constraints to prevent breaking contracts while fixing bugs.
+3.5. **SDD ADDITIONS — fix subagent dispatch**: If a fix subagent is required, pass it the exact same **Interface contract**, **Spec constraints**, and **Commit scope** fields that the implementer received. Fixers must adhere to the same constraints to prevent breaking contracts while fixing bugs.
 
-3.6. **LEDGER & COMMIT**: Once the task review passes, update the progress ledger (`.superpowers/sdd/progress.md`). Then, tick the task's checklist checkbox `- [ ] Task Completed` → `- [x] Task Completed` in `plan.md`. Stage and commit `plan.md` as a bookkeeping commit (e.g., `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Task [N] Complete"`).
+3.6. **LEDGER & COMMIT**: Once the task review passes:
+   1. Update the progress ledger (`.superpowers/sdd/progress.md`).
+   2. Tick the task's checklist checkbox `- [ ] Task Completed` → `- [x] Task Completed` in `plan.md`.
+   3. **SDD ADDITION — TDD evidence**: Append the task's entry to `sdd-specs/plans/[feature-dir]/tdd-evidence.md` (create it with heading `# TDD Evidence: [feature]` if absent). Copy from the **TDD Evidence** section of the implementer's report file: commands verbatim, output condensed to the decisive lines. The report file is git-ignored scratch — this entry is the only committed record that RED preceded GREEN. Entry shape:
+      ```
+      ## Task N.M: [name] — TDD: required
+      - RED: `<command>` → <decisive failing line(s)>. Expected because: <reason from report>
+      - GREEN: `<command>` → <decisive passing line(s)>
+      ```
+      For a `TDD: N/A — <reason>` task, write the heading with its N/A reason and no RED/GREEN lines. If the report of a `TDD: required` task lacks RED or GREEN, do not tick: treat it as a failed review and dispatch a fix subagent to produce the missing evidence.
+   4. Stage `plan.md` and `tdd-evidence.md` together and commit as one bookkeeping commit (e.g., `git add sdd-specs/plans/[feature-dir]/plan.md sdd-specs/plans/[feature-dir]/tdd-evidence.md && git commit -m "✓ Task [N] Complete"`).
 
 3.7. **CHECKPOINT**: At the end of a phase or review section (e.g. `## Phase N`, `## Validation Fixes`, `## Code Quality Review Fixes`):
 - Run the `Verification:` command from the corresponding checkpoint block (e.g. `### Checkpoint — Phase N`, `### Checkpoint — Validation Fixes`, `### Checkpoint — Code Quality Review Fixes`) in `plan.md`.
@@ -116,6 +124,8 @@ Once all tasks and phases are complete:
 - You are batching `plan.md` checkbox updates instead of committing them immediately after each task.
 - You are modifying files on `main` or another shared branch.
 - You skipped `git checkout -b` because you thought the current branch was already suitable.
+- You ticked a task without appending its entry to `tdd-evidence.md`.
+- You wrote RED or GREEN content the implementer's report does not contain.
 
 ### Common Rationalizations
 
@@ -130,5 +140,5 @@ Once all tasks and phases are complete:
 | "I don't need to read `requirements.md` because I already know the task scope." | **Context loss risk.** Requirements contain critical design constraints. Read both spec files before coding. |
 | "I completed the validation step for this task, so I'll check it off in `validation.md`." | **Process violation.** `validation.md` is exclusively for the verification phase. Do not touch it during implementation. |
 | "I finished the feature, I'll update `roadmap.md`." | **Process violation.** `roadmap.md` is exclusively updated by `/sdd-verify-feature`. |
+| "The evidence is in the implementer's report, that's enough." | **Evidence loss.** Reports live in git-ignored `.superpowers/sdd/` and never reach the branch. `/sdd-verify-feature` reads only `tdd-evidence.md`. |
 | "I'm already on a feature branch, so I don't need to create a new one." | **Step 1 is unconditional.** Always run `git checkout -b <branch-name>`. The current branch is irrelevant. |
-| "There's a Figma URL in requirements.md but I'll just infer the UI from the task description." | **Design-to-code skipped.** When `requirements.md` has a `## UI Design Reference` and the slice is a UI task, the brief's **Figma design** field is REQUIRED — the subagent must call `figma:get_design_context` before writing UI code. Inferring from prose defeats the design reference. |

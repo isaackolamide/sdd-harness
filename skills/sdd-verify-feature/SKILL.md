@@ -26,14 +26,14 @@ Verify that the implemented feature complies with the spec guidelines, passes ri
 To minimize execution time and collect all feedback in a single run, perform the functional validation, code quality audit, and optionally a security audit concurrently using `superpowers:dispatching-parallel-agents`.
 
 1. **Prepare Inputs**:
-   - Locate the active `validation.md`, `requirements.md`, `tech-stack.md`, and `plan.md` files. You will pass specific paths to each subagent as defined below. Do not read them into your own context yet to save tokens. `plan.md` is strictly for the controller's use to append required fix phases or verify overall completion status; it MUST NOT be seeded to subagents.
+   - Locate the active `validation.md`, `requirements.md`, `tdd-evidence.md`, `tech-stack.md`, and `plan.md` files. You will pass specific paths to each subagent as defined below. Do not read them into your own context yet to save tokens. `plan.md` is strictly for the controller's use to append required fix phases or verify overall completion status; it MUST NOT be seeded to subagents.
    - Determine the target base branch (e.g., origin/main or a parent feature branch) to be used for the diff.
 2. **Ask for Security Audit Consent**:
    - STOP and ask the user: "Would you like to dispatch an optional security auditor subagent for this feature?"
    - STOP and wait for the user's explicit response. DO NOT proceed to Step 1.3 or dispatch ANY subagents in the same response.
 3. **Dispatch Parallel Subagents**:
    - In a single response block, dispatch the following subagents to run concurrently:
-     - **Validation Subagent (persona: `test-engineer`)**: Provide it ONLY with `validation.md` and `requirements.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, and Automation Checks) against the implementation. It must provide the specific commands run and brief snippets of the passing output to prove each item is met (avoid dumping full raw logs to prevent context bloat). If an item is strictly visual or requires external system access you lack, do not attempt to ask the user. Instead, mark it as 'Requires Human Verification' in your report. For all other items, verify them silently.
+     - **Validation Subagent (persona: `test-engineer`)**: Provide it ONLY with `validation.md`, `requirements.md`, and `tdd-evidence.md`. Instruct it to verify EVERY checklist section in `validation.md` (Acceptance Criteria, Binding Constraints Checklist, Test Coverage, and Automation Checks) against the implementation, using `tdd-evidence.md` as the committed record of each task's RED/GREEN results. It must provide the specific commands run and brief snippets of the passing output to prove each item is met (avoid dumping full raw logs to prevent context bloat). If an item is strictly visual or requires external system access you lack, do not attempt to ask the user. Instead, mark it as 'Requires Human Verification' in your report. For all other items, verify them silently.
      - **Code Quality Subagent (persona: `code-reviewer`)**: Provide it ONLY with `tech-stack.md` and `requirements.md`. Instruct it to generate and evaluate the full feature diff against the target base branch using `tech-stack.md` as its standard for Required and Critical issues.
      - **Security Subagent (`agent-skills:security-auditor`)** *(Only if user approved the security auditor in Step 1.2)*: Provide it ONLY with `requirements.md` and `tech-stack.md`. Instruct it to generate the full feature diff against the target base branch, identify vulnerabilities, and verify that any constraints in the Security Constraints section were met.
 4. **Audit & Collect Findings**:
@@ -85,11 +85,14 @@ Before performing any merge operations, programmatically audit the feature readi
    - Verify that **every single checkbox** in both files is ticked `[x]`.
    - If any checkbox is left unchecked `[ ]` (whether a slice task, checkpoint, validation/quality fix, or validation criterion), **STOP immediately**. Print a warning:
      > "⚠ Integration Blocked: Feature has unchecked items in plan.md or validation.md. Please resolve outstanding tasks first."
-2. **Check Git cleanliness**: Run `git status --porcelain` to check the local working tree.
+2. **Check TDD evidence coverage**: For every `### Task X.Y` in `plan.md` (including fix-phase tasks), confirm `tdd-evidence.md` has a matching `## Task X.Y` heading — with RED and GREEN lines if the task is `TDD: required`, or the N/A reason otherwise. The validation subagent cannot do this check because it never sees `plan.md`.
+   - If any task is missing its entry, **STOP immediately**. Print a warning:
+     > "⚠ Integration Blocked: tdd-evidence.md has no entry for [Task X.Y]. Re-run /sdd-implement-plan for that task or restore the entry from its implementer report."
+3. **Check Git cleanliness**: Run `git status --porcelain` to check the local working tree.
    - You may allow local files that are registered in `.gitignore` (e.g., local configs, workspace cache files).
    - If there are uncommitted changes in tracked source files, or untracked source files (such as `.ts`, `.js`, `.py`, `.go`, or spec `.md` files) not listed in `.gitignore`, **STOP immediately**. Print a warning:
      > "⚠ Integration Blocked: Local git working tree has uncommitted source files. Please commit or stash your changes before integrating."
-3. **Pre-Merge Test Run**: Run the main workspace build, lint, and test scripts on the feature branch. If any tests fail, type-checking errors occur, or linting fails, **STOP immediately** and report the failure. Do not merge broken code.
+4. **Pre-Merge Test Run**: Run the main workspace build, lint, and test scripts on the feature branch. If any tests fail, type-checking errors occur, or linting fails, **STOP immediately** and report the failure. Do not merge broken code.
 
 ### Step 4: Branch Integration
 
@@ -111,6 +114,7 @@ Once all checks pass, handle the integration:
 - **Checkbox Conflation**: Ticking `validation.md` (Step 1) and ticking `plan.md`/`roadmap.md` (Step 2) at the same time. They are separated by critical validation and quality reviews and must be executed in strict sequence.
 - Attempting to merge a branch if there are ANY unchecked boxes `[ ]` in `plan.md` or `validation.md`. **STOP and fix.**
 - Attempting to merge a branch with uncommitted changes in the working directory. **STOP and commit/stash.**
+- Accepting a strict-TDD claim from `plan.md` or the conversation instead of `tdd-evidence.md`. **The committed evidence file is the only proof the validator and Step 3.2 accept.**
 - Failing to explicitly override the target base branch when invoking the finishing primitive. **STOP and specify the base branch.**
 - **Dismissing Hard Failures**: If the user attempts to dismiss a failing unit test or missing Acceptance Criterion, warn them that bypassing validation breaks the SDD contract. Suggest they either fix the code, or update `validation.md` / `requirements.md` if the spec is outdated.
 
