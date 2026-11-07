@@ -15,7 +15,7 @@ Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superp
 ## Position in the SDD Trilogy
 
 ```
-/sdd-write-spec        → sdd-specs/mission.md, tech-stack.md, roadmap.md
+/sdd-constitution      → sdd-specs/mission.md, tech-stack.md, roadmap.md
 /sdd-plan-feature      → sdd-specs/plans/YYYY-MM-DD-{feature}/plan.md, requirements.md, validation.md
 /sdd-implement-plan    → commits per slice via subagents; developer self-review (4.1)
                          → hands off to /sdd-verify-feature
@@ -44,7 +44,7 @@ Read the following two files before touching code:
 Loop through each unchecked task in `plan.md` in order:
 
 3.1. **CLASSIFY**: Match the task title, scope description, and filenames against keywords to identify required **domain** skill instructions. Classification determines *which* domain skill to pass to the subagent — it does NOT determine *whether* to use a subagent. All tasks require a subagent regardless of classification outcome.
-- `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`
+- `frontend`, `UI`, `component`, `page`, `layout`, `design`, `style` → Instruct implementation/use of `agent-skills:frontend-ui-engineering`. If `requirements.md` has a `Design Direction` section, also instruct `frontend-design:frontend-design` and pass that section.
 - `API`, `endpoint`, `schema`, `interface`, `contract`, `route` → Instruct implementation/use of `agent-skills:api-and-interface-design`. (If making a significant architectural design choice, write an ADR at the controller level using `agent-skills:documentation-and-adrs` first, then pass the ADR path).
 - *Ambiguous cases*: Default to no domain skill. Match keywords only against task title, scope description, and filenames.
 
@@ -63,7 +63,7 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 | Interface contract | Task's `Interfaces` line from `plan.md` (or `"N/A"` if the task has no interfaces line or is a validation/quality review task) — what this slice must produce (function name + type) and what it may consume from prior tasks. This is the contract to honour; do not invent different names or signatures. |
 | Spec constraints | Relevant constraints from `requirements.md` scoped to this slice only |
 | ADR reference | ADR path if written for this slice; else `N/A` |
-| Commit scope | `"Commit implementation and test files only — do not touch plan.md, tdd-evidence.md, validation.md, or roadmap.md"` |
+| Commit scope | `"Commit implementation and test files only — do not touch plan.md, tdd-evidence.md, validation.md, roadmap.md, mission.md, or tech-stack.md"` |
 
 3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with the path to `requirements.md`, the exact **Acceptance Criteria** and **Verification** text copied from the current task slice, and — if the task's `TDD:` field is `required` — this line verbatim:
    `TDD evidence gate: this task is TDD: required. The implementer's report must contain RED (command, failing output, why the failure was expected) and GREEN (command, passing output). If either is missing, report it under Spec Compliance as ❌ Missing and set Task quality to Needs fixes.`
@@ -82,8 +82,8 @@ Show any scope constraints from `requirements.md` relevant to this slice.
       For a `TDD: N/A — <reason>` task, write the heading with its N/A reason and no RED/GREEN lines. If the report of a `TDD: required` task lacks RED or GREEN, do not tick: treat it as a failed review and dispatch a fix subagent to produce the missing evidence.
    4. Stage `plan.md` and `tdd-evidence.md` together and commit as one bookkeeping commit (e.g., `git add sdd-specs/plans/[feature-dir]/plan.md sdd-specs/plans/[feature-dir]/tdd-evidence.md && git commit -m "✓ Task [N] Complete"`).
 
-3.7. **CHECKPOINT**: At the end of a phase or review section (e.g. `## Phase N`, `## Validation Fixes`, `## Code Quality Review Fixes`):
-- Run the `Verification:` command from the corresponding checkpoint block (e.g. `### Checkpoint — Phase N`, `### Checkpoint — Validation Fixes`, `### Checkpoint — Code Quality Review Fixes`) in `plan.md`.
+3.7. **CHECKPOINT**: At the end of a phase (including fix phases under `## Additional Fixes`):
+- Run the `Verification:` command from the corresponding checkpoint block (`### Checkpoint — Phase N`) in `plan.md`.
 - If it passes: tick the checkpoint checkbox in `plan.md`, then run:
   `git add sdd-specs/plans/[feature-dir]/plan.md && git commit -m "✓ Checkpoint — [Section Name]"`
 - If it fails: halt implementation and ask the user. Do not proceed until resolved.
@@ -105,7 +105,7 @@ Once all tasks and phases are complete:
 * **Subagent Isolation**: Never write implementation code in the controller session. Always dispatch a subagent for each slice as required by `superpowers:subagent-driven-development`.
 * **Full Subagent Lifecycle**: You MUST execute the complete `superpowers:subagent-driven-development` lifecycle for every task. This includes the task reviewer phase, and if a bug is found, you MUST dispatch a fixer subagent. Never bypass the fixer subagent by fixing issues directly in the controller.
 * **Spec First**: Always read `plan.md` and `requirements.md` before touching code.
-* **Strict Boundary**: Never read or modify `validation.md` or `roadmap.md` during implementation. Those files belong to the verification phase.
+* **Strict Boundary**: Never read or modify `validation.md` or `roadmap.md` during implementation, and never create or modify `requirements.md` (you read it, you do not edit it). `/sdd-plan-feature` creates `requirements.md` and `validation.md`; all three files are then owned by `/sdd-verify-feature`. `roadmap.md` checkbox ticking is verify-only; any structural roadmap edits were made by `/sdd-plan-feature` at plan time. Never modify `mission.md` or `tech-stack.md` either; `/sdd-plan-feature` already updated them at plan time.
 * **Contract Adherence**: Implement signatures exactly as specified in the task's `Interfaces` line.
 * **Checkpoints**: Never skip verification commands or checkpoints.
 * **Task Ordering**: Do not commit code for a task if any preceding task in `plan.md` remains unchecked.
@@ -115,7 +115,7 @@ Once all tasks and phases are complete:
 ## Bulletproofing
 
 ### Red Flags (STOP and Start Over)
-- You modified or checked off items in `validation.md` or `roadmap.md`.
+- You created or modified `requirements.md`, or modified or checked off items in `validation.md` or `roadmap.md`.
 - You are writing implementation code directly in the controller session instead of dispatching a subagent.
 - You rationalized that text, config, or Bazel files don't require a subagent.
 - You are fixing a bug found by the task reviewer directly in the controller session instead of dispatching a fixer subagent.

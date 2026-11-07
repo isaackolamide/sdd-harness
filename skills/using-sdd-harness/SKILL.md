@@ -1,6 +1,6 @@
 ---
 name: using-sdd-harness
-description: Unified skill router across sdd-harness, agent-skills, superpowers, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
+description: Unified skill router across sdd-harness, agent-skills, superpowers, frontend-design, and claude-md-management. Use at session start or when you need to discover which skill applies to the current task. Authoritative routing tree — supersedes agent-skills:using-agent-skills.
 ---
 
 # Using Sdd-harness — Unified Skill Router
@@ -65,7 +65,10 @@ Task arrives
     │
     ├── Implementing code (no plan)?             → agent-skills:incremental-implementation
     │   ├── Designing APIs or interfaces?        → agent-skills:api-and-interface-design
-    │   ├── Building frontend / UI?              → agent-skills:frontend-ui-engineering
+    │   ├── Building frontend / UI?
+    │   │   ├── Visual design / creative direction? → frontend-design:frontend-design
+    │   │   ├── Engineering quality (a11y, patterns, state)? → agent-skills:frontend-ui-engineering
+    │   │   └── Full frontend work?              → both in sequence (design → engineering)
     │   ├── Working from documentation?          → agent-skills:source-driven-development
     │   └── Following a spec file?               → agent-skills:spec-driven-development
     │

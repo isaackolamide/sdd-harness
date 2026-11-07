@@ -23,6 +23,11 @@ Verify critical constraints from requirements.md are met:
 - [ ] Check 1
 - [ ] Check 2
 
+## Manual Checks
+
+Notes for the operator or developer to carry out in their own time. Plain bullets, never checkboxes; verify does not gate on them.
+- Manual check 1
+
 
 ## Definition of Done
 

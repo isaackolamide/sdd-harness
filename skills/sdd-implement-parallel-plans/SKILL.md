@@ -67,6 +67,8 @@ git worktree remove .worktrees/<feature2-branch>
    > 1. `git checkout <feature1-branch>` then run `/sdd-verify-feature`
    > 2. `git checkout <feature2-branch>`, run `git rebase main` to sync with the first feature's merge, then run `/sdd-verify-feature`."
 
+   Plans made by `/sdd-plan-feature` may each have edited `mission.md`, `tech-stack.md`, or `roadmap.md` on their own branch. Expect rebase conflicts in those files; resolve by keeping both branches' additions, never by dropping the merged feature's entries.
+
 ## Common Rationalizations (RED vs GREEN)
 
 | Excuse | Reality / Action |

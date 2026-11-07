@@ -50,7 +50,7 @@ GUESS: Developers and QA engineers, because they need immediate indicators when 
 
 ### Step 3: Propose Approaches & Trade-offs
 
-1. **Propose Approaches**: Once you understand the features, invoke `superpowers:brainstorming` to propose **2-3 product approaches** or architectures with explicit trade-offs and your recommended path.
+1. **Propose Approaches**: Once you understand the features, invoke `superpowers:brainstorming` for its conversation style, then present **2-3 product approaches** or architectures with explicit trade-offs and your recommended path. The 2-3 approaches is this skill's requirement; brainstorming only shows a comparison when it helps the user decide.
 
 *Example:*
 - **Approach A (Polled UI)**: Client-side polling of status endpoints. Simple, lightweight, but adds server overhead.

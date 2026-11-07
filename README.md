@@ -12,7 +12,7 @@ constitution → task → prd → spec → plan → implement → verify-feature
                                                  findings → spec → plan → implement
 ```
 
-It wraps skills from two major plugins -> `superpowers` and `agent-skills`
+It wraps skills from two major plugins -> `superpowers` and `agent-skills`, plus `frontend-design` for UI work.
 
 ## Plugin Stack
 
@@ -22,6 +22,7 @@ sdd-harness (orchestrator)      — 10 SDD workflow skills
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
 claude-md-management (tooling)    — CLAUDE.md audit and improvement
+frontend-design (design)          — Distinctive visual design for new UI surfaces (required)
 ```
 
 ## Skills
@@ -61,8 +62,11 @@ claude plugin marketplace add https://github.com/isaackolamide/sdd-harness.git
 claude plugin install superpowers@claude-plugins-official
 claude plugin install agent-skills@addy-agent-skills
 claude plugin install claude-md-management@claude-plugins-official
+claude plugin install frontend-design@claude-plugins-official
 claude plugin install sdd-harness@sdd-harness
 ```
+
+> **`frontend-design` is a required prerequisite.** `/sdd-plan-feature` invokes it for features that introduce a new screen or visual direction, and `/sdd-implement-plan` passes it to UI tasks.
 
 #### 2. Antigravity CLI / IDE
 
@@ -72,19 +76,9 @@ agy plugin install https://github.com/obra/superpowers.git
 agy plugin install https://github.com/isaackolamide/sdd-harness.git
 ```
 
-#### 3. GitHub Copilot
-
-```bash
-copilot plugin install addyosmani/agent-skills
-copilot plugin install obra/superpowers
-copilot plugin install isaackolamide/sdd-harness
-```
-
 ## How to Use
 
 The SDD (Spec-Driven Development) workflow is structured into four main phases, executed in sequence.
-
-![alt text](image.png)
 
 ```mermaid
 flowchart TD
@@ -178,9 +172,11 @@ Sets product requirements, project-wide boundaries, and creates feature specific
 Breaks the feature spec into structured, implementable tasks.
 * **Outputs:**
   * `sdd-specs/plans/YYYY-MM-DD-{name}/plan.md` — Task breakdown with strict interface contracts, a `TDD: required` or `TDD: N/A — <reason>` line per task, and phase checkpoints.
-  * `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — Project scope, out-of-scope items, and design constraints (e.g. security, telemetry, migration risk).
+  * `sdd-specs/plans/YYYY-MM-DD-{name}/requirements.md` — Project scope, out-of-scope items, and design constraints (e.g. security, telemetry, migration risk, UI constraints, design direction).
   * `sdd-specs/plans/YYYY-MM-DD-{name}/validation.md` — Acceptance criteria checklist and definition of done.
   * `sdd-specs/docs/decisions/ADR-{NNN}.md` — Generated automatically if significant architectural choices surface.
+  * Updates `mission.md`, `tech-stack.md` and `roadmap.md` (structure only) when the plan decides new dependencies, structure or scope. Nothing is written until you approve the pre-write review.
+* **Sub-skills:** security, telemetry, migration, API/interface and UI advisors run in parallel subagents when the spec triggers them; `frontend-design` runs only for new visual surfaces.
 
 #### Phase 3: `/sdd-implement-plan`
 Executes the plan slice by slice using Test-Driven Development (TDD) on an isolated feature branch.
@@ -200,7 +196,7 @@ Executes the plan slice by slice using Test-Driven Development (TDD) on an isola
 Validates code compliance and merges the feature branch.
 * **Workflow:**
   * Runs a **Parallel Verification Gate**: dispatches the `test-engineer` subagent (given `validation.md`, `requirements.md`, and `tdd-evidence.md`) to verify validation criteria and a `code-quality-reviewer` subagent to audit code quality simultaneously.
-  * Audits raw execution logs and quality reports. Any issues found are added to `plan.md` under `## Validation Fixes` and `## Code Quality Review Fixes` to be resolved via `/sdd-implement-plan`.
+  * Audits raw execution logs and quality reports. Any issues found are added to `plan.md` under `## Additional Fixes` to be resolved via `/sdd-implement-plan`.
   * Ticks off progress in `plan.md` and `roadmap.md` upon completion.
   * Runs a pre-merge programmatic verification gate (checks every plan task has a `tdd-evidence.md` entry, checks git cleanliness, runs main build, lint, and test scripts).
   * Integrates the branch and cleans up using `superpowers:finishing-a-development-branch`.

@@ -27,4 +27,4 @@
 ---
 
 ## Architecture & Implementation Design
-[INJECT RAW BRAINSTORMING SUBAGENT OUTPUT HERE (Exclude its `# Title` and metadata block)]
+[Approved design from brainstorming (Step 4): architecture, components, data flow, error handling, testing]

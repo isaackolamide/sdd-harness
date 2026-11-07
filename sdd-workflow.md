@@ -1,6 +1,6 @@
 # SDD Workflow Orchestration Steps
 
-This document outlines the 7 core steps of the Spec-Driven Development (SDD) workflow orchestrated by `sdd-harness`.
+This document outlines the 8 core steps of the Spec-Driven Development (SDD) workflow orchestrated by `sdd-harness`.
 
 ---
 
@@ -20,12 +20,28 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 
 ---
 
-## 2. sdd-prd (Product Requirements Document)
+## 2. sdd-task (Task Scoping & Size Gatekeeper)
 
-**Goal:** Refine a rough idea into a frozen product specification before writing code or technical details.
+**Goal:** Turn a roadmap milestone or rough idea into one or more right-sized task files before a PRD is written, catching oversized work before it becomes an expensive-to-resplit PRD or plan.
 
 **Process:**
-* **Interview:** The agent asks exactly one question at a time (proposing hypotheses/guesses with each) to define target users, MoSCoW priorities, user journeys, success metrics, and constraints.
+* **Constitution & Milestone Check:** Verifies the constitution exists and locates (or creates) the roadmap milestone this task belongs to.
+* **Light Interview:** Uses `agent-skills:interview-me` to fill any gaps in Context, Expected Implementation, or edge cases not already answered by the seed.
+* **Size Gatekeeper Assessment:** Runs a mandatory rubric (multiple actors, multiple workflows, un-splittable "and" in the summary, etc.) against the draft. If any trigger fires, splits the work into multiple descriptively-named task files — regardless of user framing, deadlines, or explicit "don't split it" instructions — instead of asking permission.
+* **Confirmation Gate:** Presents the task(s), and any split rationale, requiring explicit approval before writing files.
+
+**Artifact Outputs:**
+* [Task file(s)](sdd-specs/tasks/YYYY-MM-DD-<task-name>-task.md): Context, Expected Implementation, Out of Scope, Acceptance Criteria (Given/When/Then, at least two scenarios each for Happy Path, Error Path, and Boundary), Open Questions/Assumptions, and a minimal Definition of Done.
+* Updates [roadmap.md](sdd-specs/roadmap.md) with one milestone bullet per task file.
+
+---
+
+## 3. sdd-prd (Product Requirements Document)
+
+**Goal:** Refine a rough idea (or a task file produced by `sdd-task`) into a frozen product specification before writing code or technical details.
+
+**Process:**
+* **Interview:** The agent asks exactly one question at a time (proposing hypotheses/guesses with each) to define target users, MoSCoW priorities, user journeys, success metrics, and constraints. Runs in full even when a task file seeds the PRD — the task file only raises confidence in a hypothesis, it never shortens the interview.
 * **Propose Approaches:** Proposes 2-3 product/architectural approaches with trade-offs and a recommendation.
 * **Intent Restatement Gate:** The user must explicitly approve (yes or looks good) a high-level summary of the scope.
 
@@ -34,23 +50,25 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 
 ---
 
-## 3. sdd-write-spec (Feature Specification)
+## 4. sdd-write-spec (Feature Specification)
 
 **Goal:** Translate the PRD into a technical feature specification aligned with the project's core constitution.
 
 **Process:**
 * **Constitution Check:** Verifies that the project's [mission.md](sdd-specs/mission.md), [tech-stack.md](sdd-specs/tech-stack.md), and [roadmap.md](sdd-specs/roadmap.md) exist.
 * **Alignment & Gates:** Checks the feature against "Never Do" constraints in the mission. If it violates a constraint, the agent refuses to proceed until the mission document is updated.
-* **Design Brainstorming:** Dispatches a subagent using `superpowers:brainstorming` to explore the architectural design and injects the output into the specification template.
+* **Intent:** With a PRD seed, runs a gap check (asks only about TBDs, undecided Should/Could items and contradictions) instead of repeating the PRD interview. Without a PRD, runs `agent-skills:interview-me`.
+* **Design Brainstorming:** Runs `superpowers:brainstorming` in the main agent so the user can answer its questions directly. Every size (including a small change or a spike) ends in the spec file, never in code. The Visual Companion is offered whenever the feature has a screen, layout, flow, lifecycle, or component relationships worth seeing.
+* **Review:** Self-review, a reviewer subagent, then a user review gate on the written spec.
 * **Confirmation Gate:** Presents a final restate of the distilled intent, constitution flags, and the readiness to write the approved design, requiring explicit user approval before writing.
-* **Roadmap Integration:** Adds the feature as a milestone/sub-item in the master [roadmap.md](sdd-specs/roadmap.md).
+* **Roadmap Integration:** If the PRD traces back to a task file, appends the spec link to that task's existing milestone bullet in [roadmap.md](sdd-specs/roadmap.md); otherwise adds a new milestone bullet.
 
 **Artifact Output:**
 * [Feature Spec](sdd-specs/features/YYYY-MM-DD-<feature-name>-spec.md)
 
 ---
 
-## 4. sdd-plan-feature (Technical Implementation Plan)
+## 5. sdd-plan-feature (Technical Implementation Plan)
 
 **Goal:** Break down the feature spec into concrete, typed tasks and validation criteria.
 
@@ -66,7 +84,7 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 
 ---
 
-## 5. sdd-implement-plan (Slice Execution Loop)
+## 6. sdd-implement-plan (Slice Execution Loop)
 
 **Goal:** Implement the feature slice-by-slice on an isolated branch using Test-Driven Development (TDD).
 
@@ -83,15 +101,15 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 
 ---
 
-## 6. sdd-verify-feature (Validation, Quality Gate, & Merge)
+## 7. sdd-verify-feature (Validation, Quality Gate, & Merge)
 
 **Goal:** Formally audit, test, and integrate the completed feature.
 
 **Process:**
 * **Parallel Verification Gate:** Dispatches a validation subagent (persona: `test-engineer`) and a code quality subagent (persona: `code-reviewer`) concurrently using `superpowers:dispatching-parallel-agents` to minimize execution time.
 * **Audit & Collect Findings:**
-  * **Validation:** Controller reviews raw stdout logs from the `test-engineer` to verify functional tests passed. Appends any failures to `plan.md` under `## Validation Fixes`.
-  * **Code Quality:** Appends any Required or Critical code quality findings to `plan.md` under `## Code Quality Review Fixes`.
+  * **Validation:** Controller reviews raw stdout logs from the `test-engineer` to verify functional tests passed. Appends any failures to `plan.md` under `## Additional Fixes`.
+  * **Code Quality:** Appends any Required or Critical code quality findings to `plan.md` under `## Additional Fixes`.
   * **Gate Exit:** If any issues exist, exits immediately to let the user resolve them via `/sdd-implement-plan`. Otherwise, ticks and commits `validation.md`.
 * **Administrative Ticking:** Verifies all checkboxes in `plan.md` are checked, marks the feature complete in the master `roadmap.md`, and commits.
 * **Programmatic Verification:** Checks that all checklist items in `plan.md` and `validation.md` are marked complete `[x]`, verifies that the Git working tree has no uncommitted source changes, and runs the main build, lint, and test scripts to prevent merging broken code.
@@ -99,7 +117,7 @@ This document outlines the 7 core steps of the Spec-Driven Development (SDD) wor
 
 ---
 
-## 7. sdd-implement-parallel-plans (Parallel SDD Implementation)
+## 8. sdd-implement-parallel-plans (Parallel SDD Implementation)
 
 **Goal:** Execute multiple independent feature plans concurrently using isolated Git worktrees.
 

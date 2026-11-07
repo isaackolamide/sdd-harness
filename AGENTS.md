@@ -4,11 +4,12 @@ SDD workflow orchestrator. Thin orchestration layer that wraps skills from two m
 
 ## Architecture
 
-Four-plugin dependency stack:
+Five-plugin dependency stack:
 - **sdd-harness** — 10 SDD workflow skills + unified routing tree (this plugin)
 - **agent-skills** — 24 engineering primitive skills (from `addyosmani/agent-skills`)
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming (from `claude-plugins-official`)
 - **claude-md-management** — CLAUDE.md audit and improvement (from `claude-plugins-official`)
+- **frontend-design** — Distinctive visual design for new UI surfaces (from `claude-plugins-official`)
 
 sdd-harness delegates to the other four. It owns no copies of their skills.
 
