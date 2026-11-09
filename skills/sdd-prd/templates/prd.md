@@ -1,6 +1,6 @@
 # Product Requirement Document: {feature-name}
 
-**Task Reference:** [Link or path to task file, if provided]
+**Task Reference:** [Path to task file, or `None`]
 
 ## Objective & Goal
 * **Problem**: What pain point does this solve?
@@ -14,7 +14,7 @@
    - Given [context], When [action], Then [outcome]
 
 ## Acceptance Criteria
-[If a task file seeded this PRD, carry its Acceptance Criteria forward unchanged. Otherwise draft directly with agent-skills:interview-me. At least two scenarios each for Happy Path, Error Path, and Boundary.]
+[Draft from the Step 2 interview. If a task file seeded this PRD, use its Acceptance Criteria as a starting basis and revise. At least two scenarios each for Happy Path, Error Path, and Boundary.]
 
 ### Happy Path (at least 2)
 * Given [context], When [action], Then [expected outcome]
@@ -51,3 +51,10 @@
 
 ## Success Metrics
 * How we measure the feature's business or user value.
+
+## Handoff Notes for Spec
+Context for `sdd-write-spec` that is not a requirement. Write `None` in any slot with nothing to record.
+* **Decisions & rejected alternatives**: [What was ruled out, and why]
+* **Implementation hints**: [How-preferences the user volunteered. Not requirements; the spec may override them]
+* **Open questions**: [Unresolved items the spec must settle]
+* **References**: [Paths or links to code, tickets, mockups, prior art]

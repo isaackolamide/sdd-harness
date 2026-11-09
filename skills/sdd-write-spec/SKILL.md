@@ -33,8 +33,8 @@ Pick the row that matches the seed:
 | Anything else (raw idea, bug-fix findings, notes) | Invoke `agent-skills:interview-me` interactively (one question at a time). Do not guess requirements. |
 
 **PRD gap check:**
-1. Fill the six intent fields from the PRD: Outcome and Why now ← Objective & Goal; User ← User Personas; Success ← Success Metrics; Constraint ← Technical & Non-Functional Constraints; Out of scope ← Out of Scope + Won't Have.
-2. List the gaps: leftover `[...]` or `TBD`, Should/Could Have items with no in/out decision, and contradictions between sections. Only these become questions. Ask them one at a time in interview-me's `Q:` / `GUESS:` format. Questions about *how* to build belong in Step 4, not here.
+1. Fill the six intent fields from the PRD: Outcome and Why now ← Objective & Goal; User ← User Personas; Success ← Success Metrics; Constraint ← Technical & Non-Functional Constraints; Out of scope ← Out of Scope + Won't Have. The spec is the only document `/sdd-plan-feature` reads, so also carry these into it at Step 5.1: PRD Acceptance Criteria → spec Acceptance Criteria (reformatted to Given/When/Then/Outcome); Must Have and Should Have → In Scope; Risks & Dependencies → Dependencies; Core User Journeys → Objective & User.
+2. List the gaps: leftover `[...]` or `TBD`, every item under the PRD's Handoff Notes → Open questions that is about *what* to build, Should/Could Have items with no in/out decision, and contradictions between sections. Only these become questions. Ask them one at a time in interview-me's `Q:` / `GUESS:` format. Questions about *how* to build belong in Step 4, not here. If a question needs a fact nobody in the session knows, ask the user once whether they can answer it. If not, record it in the spec's Dependencies as `Unverified: <claim>; owner: <name or unassigned>`. Never settle it by assumption.
 3. Present the six-line restate (Outcome / User / Why now / Success / Constraint / Out of scope) with the answers folded in. Wait for an explicit yes.
 
 **After the explicit yes (either row):** go straight on to Step 3 in the same turn. interview-me's terminal turn (stop and offer downstream paths, save to `docs/intent/`) does not apply here: this skill is the downstream path.
@@ -45,7 +45,7 @@ Map intent against the constitution:
 - **`roadmap.md`**: Identify existing or new phase for this feature.
 
 ### 4. Design Brainstorming
-Run `superpowers:brainstorming` yourself. Never delegate it to a subagent: it needs live back-and-forth with the user. The brief is the confirmed intent from Step 2 plus the constraints from Step 3. *What* to build is settled; brainstorming decides *how*.
+Run `superpowers:brainstorming` yourself. Never delegate it to a subagent: it needs live back-and-forth with the user. The brief is the confirmed intent from Step 2 plus the constraints from Step 3. If the PRD has Handoff Notes, add its Decisions & rejected alternatives, Implementation hints, References and any Open questions about *how* to build to the brief; the hints are starting points the design may override. *What* to build is settled; brainstorming decides *how*.
 
 Brainstorming is written to stand alone. Inside this skill, follow its process with these replacements:
 
@@ -75,14 +75,14 @@ If yes and the user hasn't seen the offer yet, send it now as its own message, w
   - **FORMAT CRITERIA**: Ensure Acceptance Criteria strictly follows the `Given, When, Then, Outcome` pattern as required by the template.
   - **INSERT ARCHITECTURE**: Put the approved Step 4 design into the Architecture section. For a small change, that is the short design the user approved in chat.
 **5.2. Edit** `sdd-specs/roadmap.md`:
-  - **If the PRD has a populated `Task Reference`**: find the existing milestone bullet for that task file and append the spec link to it (e.g. `... — sdd-specs/tasks/....md, sdd-specs/features/....md`). Do not add a second bullet for the same milestone.
-  - **Otherwise** (no task file upstream — e.g. the post-implementation bug-fix path): add a new milestone bullet under the appropriate phase, linking to the spec file.
+  - **If the PRD's `Task Reference` is a path (not `None`)**: find the existing milestone bullet for that task file and append the spec link to it (e.g. `... — sdd-specs/tasks/....md, sdd-specs/features/....md`). Do not add a second bullet for the same milestone.
+  - **Otherwise** (`Task Reference: None`, e.g. a typed or session-context seed, or the post-implementation bug-fix path): add a new milestone bullet under the appropriate phase, linking to the spec file.
 
 **5.3. Self-review.** Check: no placeholders or `TBD`; sections don't contradict each other; scope fits one feature plan; no requirement reads two ways. Also check: headings match the template, every criterion is Given/When/Then/Outcome, no `[...]` left. Fix issues inline.
 
 **5.4. Reviewer subagent.** Dispatch a fresh subagent with the reviewer prompt that `superpowers:brainstorming` ships for its written-design check. Read that skill's `SKILL.md` to find which file it names for the step; do not assume a filename. Fill the prompt's placeholders by meaning: the document path is the spec path, the domain is "software engineer". If the skill names no such file, dispatch with this brief: "You must plan the build from this spec and cannot ask its author anything. Read `<spec path>` and report only the issues or questions where a wrong guess would change the plan, ranked by importance, or say nothing important is left."
   - **Nothing left** (approved): go to 5.5.
-  - **Issues or questions:** sort each into *already answered* (put the answer in the spec), *minor* (settle it, mark it as your call in the spec), or *only the user can answer* (the answer changes what gets built). Fix the first two inline. Ask the user the third in one message, most important first. Then dispatch again.
+  - **Issues or questions:** sort each into *already answered* (put the answer in the spec), *minor* (settle it, mark it as your call in the spec; a missing fact is never minor, record it as `Unverified` in Dependencies), or *only the user can answer* (the answer changes what gets built). Fix the first two inline. Ask the user the third in one message, most important first. Then dispatch again.
   - After 3 rounds without a clean result, show the open items to the user and let them decide.
 
 **5.5. User review gate.** Say: "Spec written to `sdd-specs/features/YYYY-MM-DD-<name>-spec.md` and roadmap updated. Please review it and tell me about any changes before we continue." Wait for explicit approval. If they ask for changes, edit and repeat 5.3–5.4.
@@ -150,7 +150,7 @@ Wait for subagent confirmation and notify the user.
 | "We used the Visual Companion" / "Feature is simple" — "so no need to ask about the flow diagram." | The companion is a live aid; the diagram is a saved file. The user decides whether one is drawn. Always ask (6.1). |
 | "I'll pick a sensible level myself." / "Mermaid is the default." / "They mentioned Excalidraw, no need to ask." | Level and format are the user's choice. Ask 6.2 and 6.3 separately and wait. |
 | "I'll tweak the dispatch template for Excalidraw." | Fill the `[FORMAT]`/`[DIAGRAM SLOT]`/`[FILES]` slots from the 6.3 row. Do not hand-edit the template. |
-| "PRD has a Task Reference but I'll add a fresh milestone bullet anyway." | The milestone bullet already exists from `sdd-task`. Append to it — a duplicate bullet breaks 1:1 milestone-to-task tracking. |
+| "PRD has a Task Reference path but I'll add a fresh milestone bullet anyway." | The milestone bullet already exists from `sdd-task`. Append to it — a duplicate bullet breaks 1:1 milestone-to-task tracking. |
 
 ## Red Flags - STOP and Start Over
 - Proceeding without all three constitution files
