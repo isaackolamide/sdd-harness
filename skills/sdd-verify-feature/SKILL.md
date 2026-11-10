@@ -41,12 +41,13 @@ To minimize execution time and collect all feedback in a single run, perform the
    - **Validation Audit**: Inspect the provided commands and output snippets from the `test-engineer` to verify that the assertions actually ran and passed. Do not accept a simple text assertion of "all tests passed". Identify any failed tests or unmet checklist items.
    - **Code Quality Audit**: Review the code quality report. Collect every finding whatever its label (Critical, Required, Optional, Nit). Low-value findings still go in the report, because many of them can be fixed in this session (Route `Now`).
    - **Security Audit**: If the optional security auditor subagent was dispatched, review its report. Identify any vulnerabilities found by the `security-auditor`.
+   - **Debt overlap**: if `sdd-specs/tech-debt.md` exists, grep its `## Open` rows (never the whole file) for the paths in `git diff --name-only <base>`. Each match not already a finding becomes a Low-severity, Optional, Route `Plan` finding, "TD-N still open in a file this feature changed", Source `tech-debt TD-N`. If there are no other findings, skip the Findings Report and ask one line: "TD-N is still open in a file this feature changed. `plan TD-N` to fix it, or `continue`." Wait for the reply; `continue` proceeds to Step 1.5 as "no findings".
    - **Merge duplicates**: When two subagents flag the same line or the same root cause, make it one finding that cites both sources and takes the higher severity.
    - If there are findings:
-     - **STOP** and present the [Findings Report](#findings-report) to the user.
+     - **STOP** and present the Findings Report (see [Findings Report](#findings-report)) to the user.
      - **STOP** and wait for the user's response. DO NOT proceed until the user replies.
      - **Apply approved `Now` fixes.** Make the edits, then run the workspace lint and test scripts. If a check fails, revert that edit, change the finding's Route to `Plan`, and tell the user. Commit the surviving fixes once, as `chore(verify): in-session fixes (#N, #M)`.
-     - **Update verify-owned spec docs.** `requirements.md`, `validation.md`, and `sdd-specs/roadmap.md` belong to this skill; `/sdd-implement-plan` is forbidden to create or edit them. After the user replies, and before appending any task, make every update below that the user's decisions call for. Cite the ruling or ADR and the date in each edit.
+     - **Update verify-owned spec docs.** `requirements.md`, `validation.md`, `sdd-specs/roadmap.md`, and `sdd-specs/tech-debt.md` belong to this skill; `/sdd-implement-plan` is forbidden to create or edit them. After the user replies, and before appending any task, make every update below that the user's decisions call for. Cite the ruling or ADR and the date in each edit.
        - `requirements.md`: correct stale constants or wording; add a binding requirement for any new behaviour rule an approved code fix introduces.
        - `validation.md`:
          - Reword an acceptance criterion that cannot be tested as written, with a dated note naming the ruling or ADR.
@@ -55,11 +56,12 @@ To minimize execution time and collect all feedback in a single run, perform the
          - Annotate each manual note the user confirmed with the date and operator; annotate each deferred one with the date, operator, and reason.
          - Record results that needed approval or containers (e.g. a full coverage run) as annotations.
          - Reword any check that contradicts verify's ownership, e.g. "`git diff --stat sdd-specs/roadmap.md` is empty" becomes "no plan-task commit touches `roadmap.md`". Never report such a check as FAIL and never revert the roadmap to satisfy it.
+     - **Record approved `Debt` findings** in `sdd-specs/tech-debt.md`, following [Tech Debt Ledger](#tech-debt-ledger). Commit once, separately: `docs(verify): record tech debt (TD-N)`. A `Debt` finding gets no plan task and no checkbox.
      - **Append fix tasks** for ONLY the findings the user approved with Route `Plan`:
        - Determine the next available Phase number in `plan.md`.
        - Create ONE new phase headed `## Phase N: Fixes` (same level as the template's phases; its tasks stay `### Task N.M`) containing every approved finding, whatever its category (validation, code quality, security), appended after the `## Additional Fixes` header at the end of `plan.md`. Do not split by category.
        - Open each phase with this intro, verbatim: "Verify has already updated `requirements.md`, `validation.md` and `roadmap.md`. These tasks change code, tests and ADRs only." No task's `Files` line may list any of those three files.
-       - For each approved finding, append a new task using the standard task structure from `plan.md` (including Scope, Files, Interfaces, Acceptance criteria, Verification, and Dependencies) plus a `Source:` line right after `Scope:` set to `validation`, `code-quality`, or `security` (for a merged finding, list each source, e.g. `code-quality, security`).
+       - For each approved finding, append a new task using the standard task structure from `plan.md` (including Scope, Files, Interfaces, Acceptance criteria, Verification, and Dependencies) plus a `Source:` line right after `Scope:` set to `validation`, `code-quality`, `security`, or `tech-debt TD-N` (for a merged finding, list each source, e.g. `code-quality, security`).
        - After appending all tasks for a phase, add a standard Checkpoint block to verify those fixes pass.
      - **Commit**: stage the spec documents you changed together with `plan.md` and commit once, e.g. `docs(verify): add Phase N fixes and verify-owned spec updates`. If no task was appended, commit the spec documents alone as `docs(verify): update verify-owned spec docs`.
 
@@ -68,7 +70,7 @@ To minimize execution time and collect all feedback in a single run, perform the
      1. Exit and hand back: Stop execution of this skill. Tell the user the spec documents are already updated and committed (name the commit), so `/sdd-implement-plan` only needs to run the new phase(s). Instruct the user to run it to execute and verify these fixes before re-running `/sdd-verify-feature`.
         > Note: If approved findings mixed `Now` and `Plan` routes, the full re-run also covers the `Now` fixes, so do not run the gate twice.
         > Note: Quality and security findings are about code craft, while validation is about spec compliance. However, once fixes for any of these are implemented (and their checkboxes ticked during the implementation loop), you must re-run the parallel verification gate in full to verify the fixes and ensure no regressions were introduced.
-   - If there were NO findings initially, OR the user dismissed ALL findings, OR every approved finding was routed `Now` or `Spec` (no plan task appended; those fixes are already committed and lint- and test-checked, so do NOT re-run the parallel gate):
+   - If there were NO findings initially, OR the user dismissed ALL findings, OR every approved finding was routed `Now`, `Spec`, or `Debt` (no plan task appended; those fixes are already committed and lint- and test-checked, so do NOT re-run the parallel gate):
      1. Tick all checkboxes `[ ]` → `[x]` in the Acceptance Criteria, Binding Constraints Checklist, Test Coverage, and Automation Checks sections of `validation.md`.
      2. Stage and commit validation:
         ```bash
@@ -121,63 +123,47 @@ Once all checks pass, handle the integration:
 
 ## Findings Report
 
-Write for a human who has not read the diff. Present a headline, a triage table with its key, one card per finding, the recommendation, then the reply prompt.
+**Read `references/findings-report.md` in full before presenting any findings.** It defines the headline, triage table, key, cards, recommendation, and reply prompt, including the Route rules for `Now`, `Spec`, `Plan`, `Human`, `Debt`, and `Spec + Plan`. Do not present a report from memory.
 
-**0. Headline** — exactly one line in this shape: `N findings: <count> <Verdict>, <count> <Verdict>. Biggest risk: #<n>, <plain words>.` N counts every row in the table, Low included. List only the verdicts that occur, in this order: Must fix, Should fix, Optional, Dismiss, Confirm. E.g. "3 findings: 1 Must fix, 1 Should fix, 1 Optional. Biggest risk: #1, anyone can read every customer's invoices."
 
-**1. Triage table**, sorted by severity, with one row per merged finding:
+## Tech Debt Ledger
 
-| # | Finding | Category | Severity | Likelihood | Verdict | Effort | Route |
-|---|---------|----------|----------|------------|---------|--------|-------|
-| 1 | Customer ID pasted straight into SQL | Security | Critical | High | Must fix | S | Plan |
-| 2 | Typo "seperator" in comment | Quality | Low | Low | Optional | S | Now |
-| 3 | Spec says 10,000 rows; ADR-007 (newer) says 50,000 | Validation | Medium | High | Should fix | S | Spec |
+`sdd-specs/tech-debt.md` is the one place accepted risk lives. Only this skill writes it, plus the opt-in brownfield seed in `sdd-constitution`, which uses the format below. Create it on the first `Debt` approval, with this header and both tables; never scaffold it earlier.
 
-Print this key under the table, verbatim:
-> **Key** — Severity: how bad if shipped · Likelihood: how likely it is to actually bite · Effort: S small, M medium, L large · Route: `Now` fixed in this session, `Plan` new task for `/sdd-implement-plan`, `Spec` spec doc edited here, `Human` you check it yourself
+```markdown
+# Tech Debt
 
-- **Finding**: plain words of about 8 words or fewer. Leave out file paths and jargon (they go in the card).
-- **Category**: Validation · Quality · Security · Manual. A merged finding takes the category of its highest-severity source; on a tie, Security wins over Validation, and Validation over Quality. A `Human` finding is Category Manual, Severity Low, Likelihood Medium, Effort S.
-- **Severity** (how bad if shipped): Critical = data loss, a security breach, or a core flow broken · High = a user-visible bug or a failing AC · Medium = an edge-case bug or maintainability risk · Low = cosmetic. Map code-reviewer labels as Critical → Critical, Required → High, Optional → Low, Nit → Low. Raise a label only with a stated reason in the card.
-- **Likelihood** (how likely the harm is to actually happen once shipped): High = happens in normal use, anyone can trigger it, or a test or AC already fails · Medium = needs an unusual but realistic input, load, or sequence of steps · Low = needs rare conditions or deliberate effort. Likelihood does not change Severity or Verdict; it tells the user how urgent the finding feels.
-- **Verdict** (your recommendation): Must fix · Should fix · Optional · Dismiss. Must fix = Critical severity, a failing test, or an unmet AC. Should fix = High or Medium severity that is not Must fix. Optional = Low severity. A `Human` finding always gets the verdict Confirm. A Dismiss finding gets Route `—`, and its card or Low line gives the reason (false positive or intended design).
-- **Effort**: S = one file and about 15 lines or fewer · M = several files, new tests, or more than about 15 lines · L = a design change or an ADR.
-- **Route**:
-  - `Now`: verify fixes it in this session. Use `Now` only if ALL of these are true: the fix changes no runtime behaviour; it adds or changes no test assertion (cosmetic edits to test files are fine); its Effort is S; it touches 2 files or fewer; and it is not Security, not a failing test, and not an unmet AC. Typical cases are typos, dead imports, comments, formatting, and lint.
-  - `Spec`: verify edits `requirements.md`, `validation.md`, or `roadmap.md` directly. Use `Spec` when the spec or ADR is the stale side; when the spec and ADR agree and only the code differs, route `Plan`.
-  - `Plan`: a fix task appended to `plan.md` for `/sdd-implement-plan`.
-  - `Human`: a manual check for the user.
-  - `Spec + Plan`: verify first adds the requirement to the spec, then appends the task that implements it. Use this when the fix brings in a new behaviour rule.
+Verify-owned. Do not edit by hand or from plan tasks. IDs are never reused.
 
-**2. One card per finding** that is not Low. Group all Low findings into a single one-line-each list.
+## Open
 
-> **#1 Customer ID pasted straight into SQL** — `src/export/query.ts:42` (code-reviewer + security-auditor)
-> **Like you're 5:** The app asks "which customer?" and copies whatever you say straight into its question to the database. Say "me, or everyone" and it happily answers both.
-> **As a user:** A customer edits the web address to `customerId=1 OR 1=1` and downloads every customer's invoices.
-> **As an engineer:** The `customerId` query param is concatenated into the SQL string, so it is parsed as SQL, not as a value.
-> **Likelihood:** High — the endpoint is public and the trick takes one edited URL.
-> **Impact:** Critical — every customer's invoices leak, which is a reportable data breach.
-> **Alternatives:** parameterised query *(recommended)* · ORM query builder · allow-list validation only *(weaker)*
+| ID | Finding | Where | Sev / Lik / Effort | Origin | Recorded | Accepted by, reason | Revisit when |
+|----|---------|-------|--------------------|--------|----------|---------------------|--------------|
+| TD-004 | Export loads all rows in memory | src/export/query.ts | Med / Low / L | 2026-11-10-export | 2026-11-10 | Isaac: under 10k rows today | Rows > 10k, or before multi-tenant |
 
-Every card has these lines, in this order:
-- **Like you're 5**: one or two sentences, everyday words, built on an object or situation from daily life (a lock, a queue, a recipe, a library book). No code terms, no file names, no acronyms.
-- **As a user**: one concrete sentence naming an actor, what they do, and what they see or lose. Describe the user or business consequence, not the code mechanism.
-- **As an engineer**: one or two sentences on the cause in code terms: the mechanism, the trigger, and what breaks.
-- **Likelihood**: the table value, a dash, then one reason naming who or what triggers it.
-- **Impact**: the table's Severity value, a dash, then one reason naming what is lost or broken.
-- **Alternatives**: include them only where a real choice exists, and mark the one you recommend.
+## Resolved
 
-**Low findings** go in one list, one line each: `#N <finding> — <path:line> — <why it is low-risk, or what you need to do>`. They get no card.
+| ID | Finding | Outcome | Resolved | By | Note |
+|----|---------|---------|----------|----|------|
+```
 
-**3. Recommendation** — after the cards, give your suggested decision so the user can accept it in one reply. It has these parts, in order:
-- **Suggested reply**: a ready-to-send line in the reply format below, e.g. `approve 1,3 · dismiss 2 (intended)`. Approve every `Must fix` and `Should fix`. Dismiss every `Dismiss`. Approve `Optional` findings only when the route is `Now`. Leave `Human` findings out.
-- **Why**: one sentence per group (not per finding) giving the reason, e.g. "1 is a security hole and 3 is a spec mismatch; 2 is a typo that Now fixes for free."
-- **Caveat**: only if a recommended approval is a judgement call (a `Should fix` with effort `L`, or a route you would change), name it and say what the user gives up by skipping it.
-
-**4. Reply prompt** — end with exactly this:
-> Reply with numbers, e.g. `approve 1,3 · dismiss 2 (intended)`. Approving a finding follows its Route, so `Now` items are fixed in this session and `Plan` items go to `plan.md`. To change a route, say so, e.g. `2 → plan`. For manual checks, `confirm 5` means you did it and `defer 5 (reason)` means you will do it later; each is noted under `## Manual Checks` with the date and your name.
+- One row per finding, one line per row. The finding card is not saved, so the reason goes in the row.
+- `Revisit when` is mandatory. Propose one if the user gave none.
+- `Where` is a path; the line number is optional. Leave it blank if the finding names no path.
+- `Accepted by` is the output of `git config user.name`, then the user's reason.
+- If one reply mixes allowed and barred approvals, apply the allowed ones, hold the barred finding on its current Route, and tell the user why.
+- A Critical Security finding is prefixed `CRITICAL-ACCEPTED` in `Finding`, and its `Revisit when` is "before next release".
+- If a finding matches an open row, annotate that row "seen again in <feature>, <date>". Do not add a duplicate.
+- Resolve a row only after a `Plan` fix for it passes the gate. Find these in Step 1 by the `Source: tech-debt TD-N` line on the fix tasks. Move the row to Resolved with `Outcome` (`fixed`, `obsolete`, or `accepted permanently`), `Resolved` set to today's date, and `By` set to the feature, phase and commit. Commit as `docs(verify): resolve TD-N`, before `✓ validation complete`.
+- If `git log` shows anyone but this skill changed `tech-debt.md` (e.g. an implementer marked a row resolved), revert that edit and redo it here, and tell the user.
+- At 30 open rows, tell the user to triage before adding more.
 
 ## Red Flags - STOP and Start Over
+
+- Recording an accepted risk anywhere but `sdd-specs/tech-debt.md` (`validation.md`, `## Manual Checks`, a per-feature file), or as `Dismiss`. **STOP: route it `Debt`.**
+- Approving `Debt` for a failing test or an unmet AC. **STOP: route it `Plan`, or update the spec if it is stale.**
+- Approving `Debt` for a Critical Security finding without the user typing the acceptance. **STOP: ask for `debt N (accept <risk> risk)`.**
+- Writing a `Debt` row with no reason or no `Revisit when`. **STOP and fill both.**
 
 - Proceeding past the parallel verification gate (Step 1) if the user approved findings that were added to `plan.md`. **STOP and exit so the user can fix them.**
 - Automatically adding findings to `plan.md` without explicitly presenting them to the user and asking for consent. **STOP and ask for consent.**
@@ -197,5 +183,8 @@ Every card has these lines, in this order:
 |--------|---------|
 | "The implementer can fix the stale constant in `requirements.md`." | `/sdd-implement-plan` is forbidden to touch that file, so the task gets deferred or blocked. Verify edits it now. |
 | "This bug fix is only 3 lines, so I'll route it `Now` to save the round trip." | Size is not the test. A behaviour change needs RED/GREEN evidence in `tdd-evidence.md`, and only `/sdd-implement-plan` writes that file. Route it `Plan`. |
+| "The owner accepts the risk, so I'll log it in `validation.md` and merge." | An accepted risk belongs in `sdd-specs/tech-debt.md` as `Debt`, where plan-feature can find it. A Critical Security finding also needs the typed acceptance. |
+| "The user said ship it, so I'll tick the failing AC and note it as debt." | `Debt` is barred for a failing test or an unmet AC. A tick records a pass that never happened. Fix it, or update the spec. |
+| "It's a Should fix, so `Dismiss` with an accepted-risk note is close enough." | `Dismiss` means it isn't a problem. A real problem the user accepts is `Debt`, so it stays visible. |
 | "An unticked manual check blocks Step 3.1, so I'll tick it and annotate it as deferred." | A tick records a pass that never happened. Manual checks are notes, not checkboxes, so Step 3.1 has nothing to block on. Move it under `## Manual Checks`. |
 

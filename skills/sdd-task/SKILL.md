@@ -40,7 +40,8 @@ Check the seed/idea against `sdd-specs/mission.md`. Name any "Never Do" violatio
    - What should happen instead, for which single actor/workflow? (Expected Implementation)
    - What's deliberately NOT included, even though it's adjacent? (Out of Scope)
 3. Draft Out of Scope / Non-Goals. If a candidate exclusion turns out to be load-bearing for Expected Implementation, that's a signal this is really two tasks — flag it for Step 5.
-4. **Do not draft Acceptance Criteria yet.** Scope must clear the Gatekeeper first. Drafting Acceptance Criteria before the split decision is settled is what lets the AC minimum in Step 6 quietly smuggle in extra scope instead of triggering a split.
+4. **Debt check:** if `sdd-specs/tech-debt.md` exists, read only its `## Open` section. Surface each row whose `Where` falls inside the Expected Implementation, or whose `Revisit when` condition now holds for this milestone, and ask the user whether to include it. An included row is added to Expected Implementation and cited as `TD-N`, so it goes through the Step 5 rubric like any other scope. Never edit the ledger; `/sdd-verify-feature` closes the row. No file, or no match, means skip silently.
+5. **Do not draft Acceptance Criteria yet.** Scope must clear the Gatekeeper first. Drafting Acceptance Criteria before the split decision is settled is what lets the AC minimum in Step 6 quietly smuggle in extra scope instead of triggering a split.
 
 ### 5. Size Gatekeeper Assessment — MANDATORY, RUNS EVERY TIME
 

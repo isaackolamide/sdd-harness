@@ -21,6 +21,7 @@ metadata:
 | `mission.md`, `tech-stack.md` | Edits additively (Step 4.6), written in Step 6 | Nobody edits |
 | `roadmap.md` | Edits structure only (split, reword, add, link to plan), written in Step 6; never ticks a checkbox | `/sdd-verify-feature` ticks |
 | `requirements.md`, `validation.md` | Creates (Step 6) | `/sdd-verify-feature` owns |
+| `tech-debt.md` | Reads only (Step 4.7); never edits | `/sdd-verify-feature` owns |
 
 No task's `Files` line may list any of these files. A constitution update is never a plan task.
 
@@ -82,6 +83,7 @@ No task's `Files` line may list any of these files. A constitution update is nev
 6. **4.6 Constitution changes:** compare the plan against `mission.md`, `tech-stack.md`, `roadmap.md` and propose edits for anything the plan decides: new dependencies, project structure, commands, and test strategy (all `tech-stack.md`), mission scope (`mission.md`), and roadmap milestone structure (`roadmap.md`).
    - Hold the diff in memory until Step 6. New files or directories the plan creates are listed as project-structure additions in the `tech-stack.md` diff. If the plan decides nothing, the diff is empty and the Step 5 summary says "no constitution changes".
    - A missing constitution file is flagged and pointed to `/sdd-constitution`, never created; edits to it (including linking the plan from `roadmap.md`) are skipped. The flag is shown in the Step 5 summary, separately from "no constitution changes".
+7. **4.7 Tech debt overlap:** if `sdd-specs/tech-debt.md` exists, grep its `## Open` rows for each path in the plan's task `Files` lines. Never load the whole file. For each match, ask the user in one question whether to add a task that pays down `TD-n` (cite `TD-n` in its Scope), with a recommendation. The plan never edits the ledger; verify closes the row after the fix passes the gate. No file, or no match, means skip silently.
    - Edits are additive or corrective. A contradiction with an existing constraint is an open decision for Step 4.2, not an overwrite.
 
 ### Step 5: Pre-Write Review (GATE)

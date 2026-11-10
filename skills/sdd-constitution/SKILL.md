@@ -48,14 +48,14 @@ sdd-specs/roadmap.md
 
 1. **Ask User**: Ask: **"Is there an existing codebase for this initiative?"**
 2. **Branch**:
-   - **Yes →** run the Analysis Branch (A1–A3) before brainstorming.
+   - **Yes →** run the Analysis Branch (A1–A4) before brainstorming.
    - **No →** skip directly to Step 4.
 
 ---
 
 ### Analysis Branch — Existing Codebase Only
 
-1. **Run Analysis**: Run A1–A3 before brainstorming. Carry evidence into Step 4 so brainstorming is focused confirmation rather than open-ended exploration.
+1. **Run Analysis**: Run A1–A4 before brainstorming. Carry evidence into Step 4 so brainstorming is focused confirmation rather than open-ended exploration.
 
 #### A1: Analyse Codebase Structure
 
@@ -89,6 +89,10 @@ git log --format="%s" | grep -oE "^(feat|fix|refactor|chore|docs)" | sort | uniq
    - Phases of development already completed
    - Recurring concerns in commit messages that reveal undocumented boundaries
 3. **Map to Roadmap**: This informs roadmap.md — mark completed phases as done, show what's in progress.
+
+#### A4: Offer to Seed Tech Debt
+
+While reading in A1–A3, note concrete problems (a TODO/FIXME cluster, a core module with no tests, a known-broken area). If you found any, ask once, right after A3 and before brainstorming, listing them: "Record these as known tech debt in `sdd-specs/tech-debt.md`?" Only on a yes, create the file in the format of the Tech Debt Ledger section of `sdd-verify-feature`, one `Open` row per problem. `Accepted by` is the user, and `Revisit when` is mandatory. On a no, or if nothing concrete was found, create nothing. Never create it for a greenfield project.
 
 ---
 
@@ -191,7 +195,7 @@ Read the templates located in the `templates/` directory to format the core cons
 |---|---|
 | "I'll just save the specs to `docs/superpowers/specs` because the brainstorming subagent usually does." | Do NOT create or use `docs/superpowers/specs/`. The brainstorming step is purely conversational. All files must be saved to the chosen `sdd-specs/` location. |
 | "The user provided a seed, so I'll just skip the brainstorm entirely." | Seed input only short-circuits topics it already covers. You must still brainstorm the remaining open areas. |
-| "I'll ask the user about the project structure before analyzing the codebase." | Analysis (A1–A3) runs *before* any user questions. Come to brainstorming with evidence, not a blank form. |
+| "I'll ask the user about the project structure before analyzing the codebase." | Analysis (A1–A4) runs *before* any user questions. Come to brainstorming with evidence, not a blank form. |
 | "I don't need to extract a code snippet for the tech stack because it's standard React/Python." | Extracting a real snippet is mandatory for existing codebases to ensure future AI agents match the exact existing style. |
 | "I'll just put `sdd-specs/` in the project root by default." | You must explicitly ask the user where the `sdd-specs/` folder should live. Do not make default assumptions. |
 | "I'll use absolute `file:///` paths to link the specs together." | Never include absolute file paths in generated output. Refer to other specification files using paths starting with `sdd-specs/` (e.g., `sdd-specs/mission.md`). |

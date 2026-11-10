@@ -57,7 +57,8 @@ Task arrives
     ├── Verifying, ticking progress, and         → sdd-harness:sdd-verify-feature
     │   integrating/merging the branch?             (wraps superpowers:dispatching-parallel-agents + agent-skills:code-review-and-quality
     │                                                + test-engineer persona + superpowers:finishing-a-development-branch;
-    │                                                blocks merge if any plan task lacks a tdd-evidence.md entry)
+    │                                                blocks merge if any plan task lacks a tdd-evidence.md entry;
+    │                                                owns sdd-specs/tech-debt.md, the ledger of accepted risk)
     │
     ├── Found bugs/missing features after        → sdd-harness:sdd-write-spec
     │   manual testing post-implementation?         seed input: inline notes or path to findings file (no task file needed)
