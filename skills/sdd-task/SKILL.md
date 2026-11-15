@@ -3,7 +3,7 @@ name: sdd-task
 description: Use when a roadmap milestone or rough idea needs to become one small, right-sized unit of work before a PRD is written, or when a task file bundles more than one actor, workflow, or independently-shippable capability and needs to be split.
 metadata:
   type: planning
-  composesWith: [agent-skills:interview-me]
+  composesWith: [agent-skills:interview-me, agent-skills:idea-refine]
 ---
 
 # sdd-task
@@ -16,6 +16,9 @@ Turns a roadmap milestone or rough idea into a scoped task file (`sdd-specs/task
 **REQUIRED SUB-SKILL:** Use `agent-skills:interview-me` to fill any gaps in Context, Expected Implementation, or edge cases not already answered by the seed.
 
 ## Workflow
+
+### Step 0: Branch Guard
+Run `git branch --show-current`. If it prints `main`, `master`, or the repo's default branch, **STOP** before reading or writing anything else. Tell the user `main` must stay clean, suggest they branch out immediately (`git switch -c <type>/<short-name>`, e.g. `docs/<name>`), and wait. Continue only once the branch is not the default branch. If it prints nothing (not a git repo, or detached HEAD), say so and continue.
 
 ### 1. Constitution Check
 **Before anything else**, verify these exist:
@@ -35,6 +38,7 @@ Check the seed/idea against `sdd-specs/mission.md`. Name any "Never Do" violatio
 
 ### 4. Draft Scope: Context, Expected Implementation, Out of Scope
 1. Parse any seed input (roadmap milestone text, rough notes) into a first draft of Context and Expected Implementation.
+   - **Rough-idea seed:** if the seed is a rough idea with no roadmap milestone (Step 2 found no match), offer `agent-skills:idea-refine` to shape it first. Decline its `docs/ideas/` save; its one-pager (Problem Statement, Recommended Direction, MVP Scope, Not Doing) feeds this draft, with Not Doing seeding Out of Scope. A seed that maps to an existing milestone skips this.
 2. Invoke `agent-skills:interview-me` for anything the seed doesn't answer:
    - What's the specific gap or current behaviour? (Context)
    - What should happen instead, for which single actor/workflow? (Expected Implementation)

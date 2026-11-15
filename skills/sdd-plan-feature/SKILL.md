@@ -3,7 +3,7 @@ name: sdd-plan-feature
 description: Use when planning a validated feature spec file within an active SDD project.
 metadata:
   type: planning
-  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration, agent-skills:api-and-interface-design, agent-skills:frontend-ui-engineering, frontend-design:frontend-design, agent-skills:documentation-and-adrs]
+  composesWith: [agent-skills:planning-and-task-breakdown, agent-skills:security-and-hardening, agent-skills:observability-and-instrumentation, agent-skills:deprecation-and-migration, agent-skills:ci-cd-and-automation, agent-skills:api-and-interface-design, agent-skills:frontend-ui-engineering, frontend-design:frontend-design, agent-skills:documentation-and-adrs]
 ---
 
 # SDD Feature Planner
@@ -27,6 +27,9 @@ No task's `Files` line may list any of these files. A constitution update is nev
 
 ## Workflow
 
+### Step 0: Branch Guard
+Run `git branch --show-current`. If it prints `main`, `master`, or the repo's default branch, **STOP** before reading or writing anything else. Tell the user `main` must stay clean, suggest they branch out immediately (`git switch -c <type>/<short-name>`, e.g. `docs/<name>`), and wait. Continue only once the branch is not the default branch. If it prints nothing (not a git repo, or detached HEAD), say so and continue.
+
 ### Step 1: Feature Spec Verification
 1. If no spec is provided, check `sdd-specs/features/`.
 2. Multiple files? Ask user to select.
@@ -47,6 +50,7 @@ No task's `Files` line may list any of these files. A constitution update is nev
 | Security | `auth`, `login`, `payment`, `token`, `secret`, `PII` | `agent-skills:security-and-hardening` | subagent | `Security Constraints` section + ACs |
 | Telemetry | `cron`, `metric`, `alert`, `queue`, `background job` | `agent-skills:observability-and-instrumentation` | subagent | `Telemetry & Observability` section + ACs |
 | Migration | `refactor`, `schema`, `deprecate`, `rename column` | `agent-skills:deprecation-and-migration` | subagent | `Migration & Deprecation Plan` section + ACs |
+| CI/CD | `CI`, `pipeline`, `deploy`, `GitHub Actions`, `release` | `agent-skills:ci-cd-and-automation` | subagent | `CI/CD & Automation` section + ACs |
 | Frontend | `frontend`, `UI`, `page`, `screen`, `component`, `layout`, `form`, `responsive` | `agent-skills:frontend-ui-engineering` | subagent | `UI Constraints` section + ACs |
 | New visual surface | Frontend matched AND the spec introduces a new screen/surface or asks for a new visual direction | `frontend-design:frontend-design` | main agent | `Design Direction` section |
 | Architecture | judgement, not keywords: a choice between structurally different approaches that is costly to reverse | `agent-skills:documentation-and-adrs` | main agent | ADR (drafted in Step 4.5, written in Step 6) |
@@ -55,6 +59,7 @@ No task's `Files` line may list any of these files. A constitution update is nev
    - **Security:** if any row matched and Security did not, decide whether the feature handles user data, is externally reachable, or triggers costly work. If so, select Security. A change with no behaviour change and no new reachable surface (e.g. an internal rename) is not a Security trigger.
    - **API/Interface:** an HTTP verb plus path (e.g. `POST /exports`) counts as a match.
    - **Migration:** if the change renames, moves, splits or restructures existing code or data, select Migration even without a keyword.
+   - **CI/CD:** if the spec introduces a new test, lint, type-check or build command, or a new deployable artifact, select CI/CD even without a keyword: those commands become quality gates.
 3. **Frontend design scope:** check `tech-stack.md` and `mission.md` for an established design system. If Frontend matched but you still cannot tell whether the surface is new, include that question in the confirmation below. Changes inside an established design system do NOT invoke `frontend-design:frontend-design`.
 4. **Confirm:** propose `sdd-specs/plans/YYYY-MM-DD-{feature-name}/` together with the matched trigger rows and the one-line reason for each judgement decision (selected or declined), in one question. The user may add or drop rows; their answer is final. If no row matched, say so in the question and invite the user to add one; then go to Step 4. For a trivial spec (e.g. a constant-response endpoint), recommend dropping the advisor row and cover its ACs yourself in Step 4.4.
 5. **Dispatch advisors in parallel** (one message, one Agent call per subagent row). Each prompt contains: the spec path, the `tech-stack.md` path, the skill to invoke, and this return contract — nothing else is returned:
@@ -63,7 +68,7 @@ No task's `Files` line may list any of these files. A constitution update is nev
    - `OPEN_QUESTIONS`: decisions that need the user (advisors cannot ask them).
    An advisor that returns nothing or a malformed result: re-dispatch once, then tell the user and ask how to proceed (the user's answer is final, including "skip it", in which case cover that row's ACs yourself in Step 4.4). Never skip a selected row on your own.
 6. Merge the returned fragments yourself; do not paste advisor prose into the plan.
-7. If New visual surface matched, now invoke `frontend-design:frontend-design` in the main agent; its output is the `Design Direction` section, and the Frontend `UI Constraints` ACs apply on top of it.
+7. If New visual surface matched, now invoke `frontend-design:frontend-design` in the main agent; its output is the `Design Direction` section, and the Frontend `UI Constraints` ACs apply on top of it. If the spec's Architecture section has a `Visual direction` line, that choice is settled: `Design Direction` extends it with what the spec leaves open (type scale, neutrals, states, motion) and does not propose a different look. It still lands in `requirements.md`, the only file `/sdd-implement-plan` reads for it.
 8. Relay all `OPEN_QUESTIONS` (advisors' and `frontend-design`'s) to the user now, as one consolidated question, before Step 4. Skip this if there are none.
 
 ### Step 4: Planning & Decomposition

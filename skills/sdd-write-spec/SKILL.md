@@ -16,6 +16,9 @@ Generates a scoped feature specification (`sdd-specs/features/YYYY-MM-DD-<name>-
 
 ## Workflow
 
+### Step 0: Branch Guard
+Run `git branch --show-current`. If it prints `main`, `master`, or the repo's default branch, **STOP** before reading or writing anything else. Tell the user `main` must stay clean, suggest they branch out immediately (`git switch -c <type>/<short-name>`, e.g. `docs/<name>`), and wait. Continue only once the branch is not the default branch. If it prints nothing (not a git repo, or detached HEAD), say so and continue.
+
 ### 1. Constitution Check
 **Before anything else**, verify these exist:
 - `sdd-specs/mission.md`
@@ -67,6 +70,12 @@ Brainstorming is written to stand alone. Inside this skill, follow its process w
 - design options that would look different from each other
 
 If yes and the user hasn't seen the offer yet, send it now as its own message, with nothing else in it, using brainstorming's wording: "This might be easier if I show you. Want me to open a browser tab with some mockups?" Don't add cost or setup caveats; they read as reasons to decline. If they declined earlier, stay in text.
+
+**Visual direction check.** Run it once, right after the Visual Companion check. If the Step 2 intent introduces a new screen or surface, and neither `tech-stack.md`, `mission.md` nor the user has already settled its look, the visual direction is an open choice and the user makes it:
+1. Invoke `frontend-design:frontend-design` yourself to draft 2–3 distinct directions. Each gets a name, a one-line character, and its type and palette in one line.
+2. Send them as your next message with your recommendation, and ask the user to pick one or redirect. Present no layout, component or behaviour detail for the screen until they answer.
+3. Put the chosen direction in the spec's Architecture section under a `Visual direction` line, with the user's reason if given. `/sdd-plan-feature` carries it into `requirements.md` as the `Design Direction`.
+If a look is already settled, record it in Architecture and skip this check.
 
 ### 5. Create Spec & Review
 **5.1. Create** `sdd-specs/features/YYYY-MM-DD-<name>-spec.md` using `templates/feature-spec.md`.
@@ -161,6 +170,7 @@ Wait for subagent confirmation and notify the user.
 - Skipping brainstorming because user said so
 - Delegating brainstorming to a subagent
 - Playing back a design chunk about a screen, layout, flow, or component relationships without having made the Visual Companion offer
+- Presenting layout, component or behaviour detail for a new surface before the user has chosen its visual direction
 - Changing code, scaffolding, or invoking `writing-plans` during this skill
 - Writing a design file outside the feature spec (e.g. `docs/superpowers/specs/`)
 - Skipping the self-review, reviewer subagent, or user review gate (at any size)

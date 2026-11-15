@@ -17,7 +17,7 @@ It wraps skills from two major plugins -> `superpowers` and `agent-skills`, plus
 ## Plugin Stack
 
 ```
-sdd-harness (orchestrator)      — 10 SDD workflow skills
+sdd-harness (orchestrator)      — 11 SDD workflow skills
      ↓ delegates to
 agent-skills (primitives)         — 24 engineering skills
 superpowers (discipline)          — TDD, subagent-driven execution, brainstorming
@@ -29,6 +29,7 @@ frontend-design (design)          — Distinctive visual design for new UI surfa
 
 | Skill | What It Does |
 |-------|-------------|
+| `/sdd-harness-101` | New-user guided tour (~12 min, 15 max) — what SDD is and why, then one example walked through every stage; read-only |
 | `/using-sdd-harness` | Routing tree — which skill for which task, across all plugins |
 | `/sdd-constitution` | Create or extract SDD constitution — works for new and existing projects |
 | `/sdd-task` | Scope a roadmap milestone into one or more right-sized task files — size gatekeeper that splits oversized work before it reaches `/sdd-prd` |
@@ -66,7 +67,7 @@ claude plugin install frontend-design@claude-plugins-official
 claude plugin install sdd-harness@sdd-harness
 ```
 
-> **`frontend-design` is a required prerequisite.** `/sdd-plan-feature` invokes it for features that introduce a new screen or visual direction, and `/sdd-implement-plan` passes it to UI tasks.
+> **`frontend-design` is a required prerequisite.** `/sdd-write-spec` invokes it to draft visual directions when a new screen has no settled look, `/sdd-plan-feature` invokes it for features that introduce a new screen or visual direction (extending the direction chosen in the spec), and `/sdd-implement-plan` passes it to UI tasks.
 
 #### 2. Antigravity CLI / IDE
 

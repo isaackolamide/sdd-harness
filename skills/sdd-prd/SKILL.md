@@ -14,6 +14,9 @@ Generate a comprehensive Product Requirements Document (`sdd-specs/prds/YYYY-MM-
 
 ## Workflow
 
+### Step 0: Branch Guard
+Run `git branch --show-current`. If it prints `main`, `master`, or the repo's default branch, **STOP** before reading or writing anything else. Tell the user `main` must stay clean, suggest they branch out immediately (`git switch -c <type>/<short-name>`, e.g. `docs/<name>`), and wait. Continue only once the branch is not the default branch. If it prints nothing (not a git repo, or detached HEAD), say so and continue.
+
 ### Step 1: Parse Seed and Formulate Hypothesis
 
 1. **Read Seed**: Read any provided seed requirements. If the seed is a task file (`sdd-specs/tasks/*.md` from `sdd-harness:sdd-task`), treat its Context, Expected Implementation, Out of Scope, and Acceptance Criteria as background for your hypothesis — a task file raises your starting confidence, it does not shorten the interview in Step 2. Its Open Questions/Assumptions are unresolved gaps, not answers — surface them as real interview questions rather than treating the stated assumption as settled.

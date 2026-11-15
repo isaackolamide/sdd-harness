@@ -45,7 +45,7 @@ To minimize execution time and collect all feedback in a single run, perform the
    - **Merge duplicates**: When two subagents flag the same line or the same root cause, make it one finding that cites both sources and takes the higher severity.
    - If there are findings:
      - **STOP** and present the Findings Report (see [Findings Report](#findings-report)) to the user.
-     - **STOP** and wait for the user's response. DO NOT proceed until the user replies.
+     - **STOP** and collect the user's decision with the Decision prompt in `references/findings-report.md` (`AskUserQuestion`). DO NOT proceed until the user has decided.
      - **Apply approved `Now` fixes.** Make the edits, then run the workspace lint and test scripts. If a check fails, revert that edit, change the finding's Route to `Plan`, and tell the user. Commit the surviving fixes once, as `chore(verify): in-session fixes (#N, #M)`.
      - **Update verify-owned spec docs.** `requirements.md`, `validation.md`, `sdd-specs/roadmap.md`, and `sdd-specs/tech-debt.md` belong to this skill; `/sdd-implement-plan` is forbidden to create or edit them. After the user replies, and before appending any task, make every update below that the user's decisions call for. Cite the ruling or ADR and the date in each edit.
        - `requirements.md`: correct stale constants or wording; add a binding requirement for any new behaviour rule an approved code fix introduces.

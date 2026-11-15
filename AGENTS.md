@@ -5,7 +5,7 @@ SDD workflow orchestrator. Thin orchestration layer that wraps skills from two m
 ## Architecture
 
 Five-plugin dependency stack:
-- **sdd-harness** — 10 SDD workflow skills + unified routing tree (this plugin)
+- **sdd-harness** — 11 SDD workflow skills + unified routing tree (this plugin)
 - **agent-skills** — 24 engineering primitive skills (from `addyosmani/agent-skills`)
 - **superpowers** — Core disciplines: TDD, debugging, brainstorming (from `claude-plugins-official`)
 - **claude-md-management** — CLAUDE.md audit and improvement (from `claude-plugins-official`)
@@ -18,10 +18,11 @@ sdd-harness delegates to the other four. It owns no copies of their skills.
 | Skill | Purpose |
 |-------|---------|
 | `using-sdd-harness` | Authoritative routing tree across all plugins |
+| `sdd-harness-101` | Read-only guided tour for new users (~12 min, 15 max): why SDD, path fork, one running example, ten stops, never invokes real skills or writes files |
 | `sdd-constitution` | Constitution: mission.md, tech-stack.md, roadmap.md — new and existing projects |
 | `sdd-task` | Scopes a roadmap milestone into one or more right-sized task files (`sdd-specs/tasks/YYYY-MM-DD-<name>-task.md`) — size gatekeeper that splits oversized work before it reaches sdd-prd |
 | `sdd-prd` | Discovery interview and Product Requirements Document (PRD) generator |
-| `sdd-write-spec` | Feature spec (`sdd-specs/features/YYYY-MM-DD-<name>-spec.md`) and optional flow diagrams (`sdd-specs/diagrams/YYYY-MM-DD-<name>-flow.md`) |
+| `sdd-write-spec` | Feature spec (`sdd-specs/features/YYYY-MM-DD-<name>-spec.md`) with the user's chosen visual direction for new screens, and optional flow diagrams (`sdd-specs/diagrams/YYYY-MM-DD-<name>-flow.md`) |
 | `sdd-plan-feature` | Feature plan: phase-structured plan.md (interface contracts + checkpoint blocks per phase), requirements.md, validation.md — triggers ADR for significant arch decisions |
 | `sdd-implement-plan` | Executes feature plan — slice execution loop, TDD, checkpoints, ending with developer whole-branch code review (Step 4.1) |
 | `sdd-implement-parallel-plans` | Executes multiple independent feature plans concurrently using isolated git worktrees |

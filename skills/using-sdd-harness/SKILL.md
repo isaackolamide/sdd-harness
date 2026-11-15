@@ -16,6 +16,9 @@ When a task arrives, identify the development phase and apply the corresponding 
 ```
 Task arrives
     │
+    ├── New to the harness / wants a tour?       → sdd-harness:sdd-harness-101
+    │                                               (read-only guided intro; writes nothing)
+    │
     ├── No constitution yet?                     → sdd-harness:sdd-constitution
     │                                               (wraps superpowers:brainstorming + agent-skills:interview-me + codebase analysis)
     │                                               outputs: sdd-specs/mission.md, sdd-specs/tech-stack.md, sdd-specs/roadmap.md
@@ -24,6 +27,7 @@ Task arrives
     │   ├── Starting a roadmap milestone, or     → sdd-harness:sdd-task  (ALWAYS before sdd-prd)
     │   │   a rough idea not yet scoped?            size gatekeeper: splits oversized work into one task file per capability
     │   │                                           outputs sdd-specs/tasks/YYYY-MM-DD-<name>-task.md + links it in roadmap.md
+    │   │                                           offers agent-skills:idea-refine for rough-idea seeds with no milestone
     │   │
     │   ├── Feature idea is vague/rough?
     │   │   ├── Vague / don't know what to build?    → agent-skills:interview-me

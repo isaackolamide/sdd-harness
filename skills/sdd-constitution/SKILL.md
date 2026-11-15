@@ -15,6 +15,9 @@ Create a structured specification "constitution" with three core files in your p
 
 ## Workflow
 
+### Step 0: Branch Guard
+Run `git branch --show-current`. If it prints `main`, `master`, or the repo's default branch, **STOP** before reading or writing anything else. Tell the user `main` must stay clean, suggest they branch out immediately (`git switch -c <type>/<short-name>`, e.g. `docs/<name>`), and wait. Continue only once the branch is not the default branch. If it prints nothing (not a git repo, or detached HEAD), say so and continue.
+
 ### Step 1: Existing Constitution Check
 
 1. **Check Files**: **Before anything else**, check whether all three constitution files exist:

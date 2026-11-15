@@ -53,6 +53,11 @@ Why this feature is being built:
 *(Only include if the Migration trigger matched. Detail backward compatibility, API deprecation strategies, or schema migrations)*
 -
 
+## CI/CD & Automation [Conditional]
+
+*(Only include if the CI/CD trigger matched. Detail required pipeline stages and quality gates, new commands to run in CI, deployment and rollback strategy, and secrets handling)*
+-
+
 ## UI Constraints [Conditional]
 
 *(Only include if the Frontend trigger matched. Detail component structure, state management, accessibility (WCAG), responsive behaviour, and loading/empty/error states)*
