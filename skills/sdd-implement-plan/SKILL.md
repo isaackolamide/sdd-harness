@@ -8,6 +8,8 @@ metadata:
 
 # SDD Implementation Driver
 
+> **Recommended model & effort:** Sonnet 5.5, medium effort. Your session is only the controller (dispatch prompts and bookkeeping). Subagents inherit the session model by default, so for security-sensitive or complex-migration slices, override the implementer to Opus 5.5 at high effort.
+
 Execute a feature plan produced by `/sdd-plan-feature`. This skill wraps `superpowers:subagent-driven-development` to guarantee invocation of the right primitives.
 
 **REQUIRED SUB-SKILL:** Use `superpowers:subagent-driven-development` to execute the implementation slices.
@@ -65,7 +67,7 @@ Show any scope constraints from `requirements.md` relevant to this slice.
 | ADR reference | ADR path if written for this slice; else `N/A` |
 | Commit scope | `"Commit implementation and test files only — do not touch plan.md, tdd-evidence.md, validation.md, roadmap.md, mission.md, or tech-stack.md"` |
 
-3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with the path to `requirements.md`, the exact **Acceptance Criteria** and **Verification** text copied from the current task slice, and — if the task's `TDD:` field is `required` — this line verbatim:
+3.4. **SDD ADDITIONS — task reviewer dispatch**: Fill the `[GLOBAL_CONSTRAINTS]` placeholder with the path to `requirements.md`, the exact **Acceptance Criteria** and **Verification** text copied from the current task slice (for a `TDD: N/A` task, its **Done when** list instead), and — if the task's `TDD:` field is `required` — this line verbatim:
    `TDD evidence gate: this task is TDD: required. The implementer's report must contain RED (command, failing output, why the failure was expected) and GREEN (command, passing output). If either is missing, report it under Spec Compliance as ❌ Missing and set Task quality to Needs fixes.`
 
 3.5. **SDD ADDITIONS — fix subagent dispatch**: If a fix subagent is required, pass it the exact same **Interface contract**, **Spec constraints**, and **Commit scope** fields that the implementer received. Fixers must adhere to the same constraints to prevent breaking contracts while fixing bugs.

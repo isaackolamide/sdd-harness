@@ -8,6 +8,8 @@ metadata:
 
 # Product Requirements Document (PRD) Generator
 
+> **Recommended model & effort:** Sonnet 5.5, medium effort. The work is a discovery interview, which needs conversational skill more than deep reasoning. Use Opus 5.5 if the domain is ambiguous or contested.
+
 Generate a comprehensive Product Requirements Document (`sdd-specs/prds/YYYY-MM-DD-<feature-name>-prd.md`) from a rough idea by running a discovery interview.
 
 **REQUIRED SUB-SKILL:** Use `agent-skills:interview-me` to run the interactive discovery interview.

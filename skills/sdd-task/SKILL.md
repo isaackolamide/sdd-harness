@@ -8,6 +8,8 @@ metadata:
 
 # sdd-task
 
+> **Recommended model & effort:** Opus 5.5, medium effort. The size gatekeeper decides whether work is split, and a wrong call carries through every later stage. Sonnet 5.5 at high effort is an acceptable cheaper choice.
+
 ## Overview
 Turns a roadmap milestone or rough idea into a scoped task file (`sdd-specs/tasks/YYYY-MM-DD-<name>-task.md`) that seeds `sdd-prd`. Every task file always has the same structure: Context, Expected Implementation, Out of Scope, Acceptance Criteria (Given/When/Then, at least two scenarios each for Happy Path, Error Path, and Boundary), Open Questions/Assumptions, and Definition of Done. Acceptance Criteria and Definition of Done are deliberately separate — AC proves the behaviour is correct, DoD states what else must be true for this specific task to be complete (not a second set of behavioral tests, and not a generic checklist).
 

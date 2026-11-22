@@ -24,6 +24,8 @@ Task arrives
     │                                               outputs: sdd-specs/mission.md, sdd-specs/tech-stack.md, sdd-specs/roadmap.md
     │
     ├── Constitution exists:
+    │   ├── Constitution from an older harness version, needs the current templates? → sdd-harness:sdd-constitution
+    │   │                                               (upgrade mode: applies upgrade.md migrations, edits only named fields)
     │   ├── Starting a roadmap milestone, or     → sdd-harness:sdd-task  (ALWAYS before sdd-prd)
     │   │   a rough idea not yet scoped?            size gatekeeper: splits oversized work into one task file per capability
     │   │                                           outputs sdd-specs/tasks/YYYY-MM-DD-<name>-task.md + links it in roadmap.md

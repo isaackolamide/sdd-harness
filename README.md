@@ -41,6 +41,21 @@ frontend-design (design)          — Distinctive visual design for new UI surfa
 | `/sdd-verify-feature` | Run parallel verification gate (test engineer & code quality reviewer), check TDD evidence, update progress files, run pre-merge audits, and integrate the branch |
 | `/optimise-claude-md` | Audit and improve any project's CLAUDE.md |
 
+### Recommended Model & Effort
+
+Guidance for the main session when running each stage. Spend on the stages whose output later stages consume (spec, plan, verification); the implementation controller mostly follows a pre-decided plan.
+
+| Skill | Model | Effort | Why |
+|-------|-------|--------|-----|
+| `/sdd-task` | Opus 5.5 | medium | The size gatekeeper decides whether work is split, and a wrong call carries downstream. Sonnet 5.5 at high effort is an acceptable cheaper choice. |
+| `/sdd-prd` | Sonnet 5.5 | medium | Discovery interview; conversational skill matters more than deep reasoning. Use Opus 5.5 for ambiguous or contested domains. |
+| `/sdd-write-spec` | Opus 5.5 | high | Design brainstorming runs in your session and cannot be delegated. Spec errors are the most expensive to fix later. |
+| `/sdd-plan-feature` | Opus 5.5 | high (xhigh for large or cross-cutting features) | Phase decomposition and interface contracts shape the whole implementation run. |
+| `/sdd-implement-plan` | Sonnet 5.5 | medium | Your session is only the controller. Override implementer subagents to Opus 5.5 at high effort for security-sensitive or complex-migration slices. |
+| `/sdd-verify-feature` | Opus 5.5 | high | Merging findings, setting severity and routing fixes are judgment calls. |
+
+Subagents dispatched by these skills inherit your session model by default, so picking a lighter model for the controller also lightens its subagents unless you override them. These are recommendations, not enforced settings.
+
 
 ## Installation
 

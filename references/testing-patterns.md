@@ -275,3 +275,6 @@ test('user can create and complete a task', async ({ page }) => {
 | Using `test.skip` permanently | Dead code | Remove or fix it |
 | Overly broad assertions | Doesn't catch regressions | Be specific |
 | No async error handling | Swallowed errors, false passes | Always `await` async tests |
+| Same behaviour tested at unit and integration layer | Double the tests and the slow runtime for one behaviour | Test it once, at the lowest layer that can observe it; the higher layer tests the wiring once |
+| Test that walks the source tree to enforce an import rule | Reads every file on each run; slowest tests in the suite | A lint rule (`no-restricted-imports`, dependency-cruiser) |
+| One `it` per input value of the same rule | Near-identical tests that drift apart | One table-driven test (`it.each`) |

@@ -46,7 +46,13 @@ For detailed implementation guidelines (AAA structure, mocks, and builders), ref
 ### Framework & Tools
 - Test Runner: [framework]
 - Assertion Library: [library]
-- Coverage Target: [%]
+- Coverage Floor: [measured % per metric, e.g. lines 72 / branches 69; new project: unset until the first CI run]. A regression guard: CI fails only when coverage drops below it. Set it to the measured value, and raise it to the new measured value after coverage rises from tests written for behaviour.
+
+### Test Speed Budget
+- Unit suite: under [N] seconds wall-clock (e.g. 30s)
+- Single unit test: under [N] ms (e.g. 100ms), with no network, database, file system or sleeps
+- Integration suite: under [N] minutes
+- A test over budget is a finding. Fix it by testing the behaviour at a lower level, by replacing the test with a lint or type check, or by moving it to the integration suite.
 
 ### TDD & Mocking Conventions
 - **TDD Cycle**: Follow Red-Green-Refactor. Always write a failing test before introducing logic.
@@ -61,9 +67,6 @@ Tests live in: `tests/` and `src/[feature].test.ts`
 
 - **Unit**: Test individual functions, pure logic
 - **Integration**: Test feature workflows, database interactions
-- **E2E**: Test user flows, critical paths
+- **E2E**: Test user flows, critical paths only
 
-Coverage expectations by level:
-- Unit: 80%+
-- Integration: [%]
-- E2E: Critical paths only
+Each behaviour is tested once, at the lowest level that can observe it. A higher level tests the wiring between parts, not the behaviours a lower level already covers.

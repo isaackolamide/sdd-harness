@@ -1,6 +1,6 @@
 ---
 name: sdd-constitution
-description: Use when starting a new project, setting up the core specification files (constitution) for an active SDD project, or analyzing an existing codebase to initialize constitution files.
+description: Use when starting a new project, setting up the core specification files (constitution) for an active SDD project, analyzing an existing codebase to initialize constitution files, or updating an existing constitution to the current templates after a sdd-harness upgrade.
 metadata:
   type: planning
   composesWith: [superpowers:brainstorming, agent-skills:interview-me]
@@ -29,7 +29,8 @@ sdd-specs/roadmap.md
 ```
 
 2. **Evaluate State**:
-   - **All three exist** → The constitution is already complete. Inform the user and instruct them to run `/sdd-write-spec` to specify new features, or `/sdd-plan-feature` if they already have a feature spec.
+   - **All three exist, and the user asks to update, upgrade or sync them to the current templates** → Follow [upgrade.md](upgrade.md). It replaces Steps 2–8.
+   - **All three exist** (any other request) → The constitution is already complete. Inform the user and instruct them to run `/sdd-write-spec` to specify new features, or `/sdd-plan-feature` if they already have a feature spec.
    - **Partial** (only some files exist) → Surface the gap: list which files exist and which are missing, then ask the user whether they intend to complete the constitution or start fresh before proceeding.
    - **None exist** → Proceed to Step 2.
 
@@ -66,6 +67,7 @@ sdd-specs/roadmap.md
    - Root-level structure (`src/`, `lib/`, `packages/`, `apps/`, etc.)
    - Package files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, etc.) — extract frameworks, major dependencies, scripts
    - Test structure and test runner
+   - Coverage thresholds already configured in the test runner or CI config: these become the Coverage Floor. If none are configured, the floor stays unset.
    - Mocking structures: identify if the codebase contains test builders or factories (e.g. `*Builder.ts` or `*Factory.ts`) and check for TDD configuration files
    - Build tooling, lint config, CI config (`.github/`, `Makefile`, etc.)
 2. **Map to Specs**: This populates the **Project Structure** and **Testing Strategy** sections of tech-stack.md.

@@ -22,11 +22,10 @@ created: [YYYY-MM-DD]
 - TDD: required | N/A — [reason, e.g. config-only, docs-only]
 - Files: `exact/path/to/file.ts` (create), `exact/path/to/existing.ts` (modify)
 - Interfaces: produces `functionName(param: Type): ReturnType`; consumes `otherFn(param: Type): ReturnType` from Task 1.X
-- Acceptance criteria (include multiple per dimension as needed):
-  - [Happy path]: Given [context], When [action], Then [outcome]
-  - [Error state]: Given [invalid/failure context], When [action], Then [handled outcome]
-  - [Boundary]: Given [edge case limit], When [action], Then [outcome]
-  - [Dimension]: (Add additional ACs as needed)
+- Acceptance criteria (only the ACs this task owns, at the lowest layer that can observe them):
+  - [Happy path, AC-H1]: Given [context], When [action], Then [outcome]
+  - [Error state, AC-E1]: Given [invalid/failure context], When [action], Then [handled outcome]
+  - [Boundary, AC-B1]: Given [edge case limit], When [action], Then [outcome]
 - Verification: `npm test path/to/test.ts`
 - Dependencies: none
 
@@ -36,13 +35,19 @@ created: [YYYY-MM-DD]
 - TDD: required
 - Files: ...
 - Interfaces: produces `anotherFn(input: InputType): OutputType`; consumes `functionName(param: Type): ReturnType` from Task 1.1
-- Acceptance criteria:
-  - [Happy path]: ...
-  - [Error state]: ...
-  - [Boundary]: ...
-  - [Dimension]: ...
+- Acceptance criteria (higher layer: only what Task 1.1's tests cannot observe):
+  - [Wiring, AC-H2]: Given [real dependencies and the happy-path context], When [entry point is called], Then [the happy-path outcome]
+  - [Error state, AC-E2]: Given [a failure only the real dependency produces], When [action], Then [handled outcome]
 - Verification: ...
 - Dependencies: Task 1.1
+
+### Task 1.3: [Docs or config task]
+- [ ] Task Completed
+- Scope: S
+- TDD: N/A — [reason]
+- Files: ...
+- Done when: [command output, file present, or review item]
+- Dependencies: ...
 
 ### Checkpoint — Phase 1
 - [ ] [Integration condition — be specific, not "all tasks complete"; e.g., "all Phase 1 tests pass end-to-end", "API contract validated against consumer"]

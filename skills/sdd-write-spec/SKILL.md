@@ -8,6 +8,8 @@ metadata:
 
 # sdd-write-spec
 
+> **Recommended model & effort:** Opus 5.5, high effort. Design brainstorming (Step 4) runs in your session and cannot be delegated, so this model does the design thinking. Spec errors are the most expensive to fix later.
+
 ## Overview
 Generates a scoped feature specification (`sdd-specs/features/YYYY-MM-DD-<name>-spec.md`) and updates the roadmap.
 

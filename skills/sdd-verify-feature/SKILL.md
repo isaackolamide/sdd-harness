@@ -8,6 +8,8 @@ metadata:
 
 # SDD Feature Verification Driver
 
+> **Recommended model & effort:** Opus 5.5, high effort. The controller merges duplicate findings, sets severity, routes each fix (`Now`, `Spec`, `Debt`, or a new plan task) and records accepted risk. These are judgment calls. Auditor subagents inherit the session model.
+
 Verify that the implemented feature complies with the spec guidelines, passes rigorous tests, has up-to-date documentation, and conforms to code quality standards before integrating it into the base branch.
 
 **REQUIRED SUB-SKILL:** Use `superpowers:dispatching-parallel-agents` to run verification concurrent audits.

@@ -8,6 +8,8 @@ metadata:
 
 # SDD Feature Planner
 
+> **Recommended model & effort:** Opus 5.5, high effort (xhigh for large or cross-cutting features). A poor phase decomposition or interface contract wastes the whole implementation run. Advisor subagents inherit your session model.
+
 **REQUIRED SUB-SKILL:** Use `agent-skills:planning-and-task-breakdown` to structure the plan (main agent, interactive). Other sub-skills are selected by the Step 3 trigger table.
 
 ## When to Use
@@ -80,7 +82,11 @@ Run `git branch --show-current`. If it prints `main`, `master`, or the repo's de
    - Each task needs `Interfaces` (function signature + strict types in the project's language; no `any`/`unknown` equivalents).
    - Task headers: `### Task X.Y: [Name]`
    - Each task needs a `TDD:` line: `TDD: required`, or `TDD: N/A — <reason>` for tasks with no testable behaviour (config-only, docs-only). Never omit it — implementers only record RED/GREEN evidence when the task says TDD is required.
-   - Task Acceptance Criteria MUST cover three dimensions (multiple ACs per dimension as needed): 1. Happy path, 2. Error states/handling, 3. Boundary conditions. Attach advisor `ACS` to the tasks they constrain.
+   - **Acceptance criteria ownership.** Build the ACs in this order:
+     1. List the feature's behavioural ACs from the spec, plus advisor `ACS`. Across the whole feature they cover happy path, error states and boundary conditions. The three dimensions are a feature-level check, not a per-task one.
+     2. Give each AC exactly one owning task, carrying its spec AC id. The owner is the task whose tests run at the lowest layer that can observe the behaviour: unit when a stub can produce it, integration only when it needs the real guard, database, network or file system.
+     3. A task at a higher layer (e.g. an integration outer loop) lists only the ACs a lower layer cannot observe, plus one `[Wiring]` AC stating that the entry point returns the lower layer's result through the real dependencies. The wiring AC is the feature's main happy-path AC run end to end, labelled `[Wiring, AC-Hn]`; it is not a separate criterion.
+     4. A `TDD: N/A` task has no Given/When/Then ACs. Its `Acceptance criteria` line is replaced by `Done when:` and a short list of checks (a command's output, a file present, a review item).
    - End phases with `### Checkpoint — Phase N` with a checkbox.
    - Inject `feature`, `specFile`, `targetBaseBranch: <current-branch>`, and `created: YYYY-MM-DD` in YAML frontmatter.
    - Use `sdd-specs/...` relative paths; output interface contracts, not code.
@@ -92,7 +98,7 @@ Run `git branch --show-current`. If it prints `main`, `master`, or the repo's de
    - Edits are additive or corrective. A contradiction with an existing constraint is an open decision for Step 4.2, not an overwrite.
 
 ### Step 5: Pre-Write Review (GATE)
-1. Present summary of `plan.md`, `requirements.md`, and `validation.md`, plus the proposed constitution diff and any ADR draft.
+1. Present summary of `plan.md`, `requirements.md`, and `validation.md`, plus the proposed constitution diff and any ADR draft. If AC ownership (Step 4.4) put an AC at a different layer from the one the spec names, or merged or dropped a test case the spec lists, list each one in the summary with its reason.
 2. Ask focused probe: "Does anything in the plan surprise you, or does any acceptance criterion feel wrong? If it looks correct, please confirm we are ready to write the files."
 3. Adjust and re-confirm if concerns raised.
 4. **STOP**: Wait for explicit approval before writing ANY file (plan files, constitution edits, ADR). An earlier instruction such as "write it now" does not count as approval, and a request to "skip the questions" waives nothing before this gate except rows dropped in Step 3.4.
@@ -118,6 +124,7 @@ Run `git branch --show-current`. If it prints `main`, `master`, or the repo's de
 | "I'll batch confirmations at the end." | Batching bypasses user guidance. Stop at each gate. |
 | "I'll skip the pre-write review." | Causes churn if plan is wrong. Final safety net. |
 | "TDD is obvious for code tasks, I don't need the `TDD:` line." | Omitting it silently disables the RED/GREEN gate. |
+| "This task needs its own error and boundary ACs too." | Implementers write one test per AC. An AC listed on two tasks is tested twice, at two layers. Dimensions are checked across the feature. |
 | "It's quicker to run the advisor skills inline." | Advisor skill bodies crowd out the plan. Dispatch in parallel with the return contract. |
 | "The spec is UI, so I'll run frontend-design too." | Inside an existing design system it invents a new look. New surfaces only. |
 | "I'll add a plan task to update tech-stack.md." | Planning decided it; update it after the gate. A task is wasted work and leaves verify judging code against a stale standard. |
